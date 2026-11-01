@@ -1,0 +1,30 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      redis:  # Redis 8 with the search module, on the port the tests expect
+        image: redis:8.2.2-alpine3.22
+        ports: ["6380:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-models-v1
+      - run: pip install -e ".[redis,bot,dev]"
+      - name: Unit tests (fake embedder and LLM)
+        run: pytest
+      - name: Integration tests (real model, Redis; includes the cross-tenant canary)
+        run: pytest -m integration
+      - name: False-hit gate (guarded cache, held-out 95% upper bound must stay under 25%)
+        run: >
+          python -m pakka.bench --data data/bench_v1.jsonl --guard --budget 0.10 --fail-above 0.25
+          --embedder paraphrase-multilingual-MiniLM-L12-v2

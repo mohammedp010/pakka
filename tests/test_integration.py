@@ -60,3 +60,43 @@ def test_redisvl_returns_the_same_match_and_score_as_numpy(embed, redis_cache):
         a, b = in_memory.nearest(q), in_redis.nearest(q)
         assert b.meta["id"] == a.meta["id"]
         assert b.score == pytest.approx(a.score, abs=1e-3)
+
+
+# --- phase 3: the policy features behave the same on Redis
+
+def test_redisvl_filters_by_partition_and_version(redis_cache):
+    redis_cache.store("refund kab milega?", "ravi's answer", {"partition": "ravi", "kb_version": "v1"})
+    redis_cache.store("refund kab milega", "old global", {"partition": "global", "kb_version": "v0"})
+    redis_cache.store("How long does a refund take?", "global v1", {"partition": "global", "kb_version": "v1"})
+    allow = {"partition": {"global", "priya"}, "kb_version": {"v1"}}
+    assert redis_cache.nearest("refund kab milega?", allow=allow).answer == "global v1"
+    assert redis_cache.nearest("refund kab milega?", allow={"partition": {"ravi"}}).answer == "ravi's answer"
+
+
+def test_redisvl_forget_deletes_one_partition(redis_cache):
+    redis_cache.store("refund kab milega?", "for ravi", {"partition": "ravi"})
+    redis_cache.store("order kab aayega?", "for ravi too", {"partition": "ravi"})
+    redis_cache.store("COD hai kya?", "global", {"partition": "global"})
+    assert redis_cache.forget("partition", "ravi") == 2
+    assert redis_cache.nearest("refund kab milega?").answer == "global"
+
+
+def test_redisvl_entries_expire_after_their_ttl(redis_cache):
+    import time
+
+    redis_cache.store("COD charges kitne hain?", "Rs 20", {"partition": "global"}, ttl=1)
+    assert redis_cache.nearest("COD charges kitne hain?").answer == "Rs 20"
+    time.sleep(2)
+    assert redis_cache.nearest("COD charges kitne hain?") is None
+
+
+def test_redisvl_canary_one_customers_answer_never_reaches_another(embed, redis_cache):
+    from conftest import FakeLLM
+
+    from pakka.flow import CachedAnswerer
+    from pakka.policy import Policy
+
+    bot = CachedAnswerer(redis_cache, FakeLLM(), threshold=0.9, policy=Policy(kb_version="v1"))
+    bot.ask("mera wallet balance kitna hai", partition="ravi")
+    assert bot.ask("mera wallet balance kitna hai", partition="ravi").hit
+    assert not bot.ask("mera wallet balance kitna hai", partition="priya").hit

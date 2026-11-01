@@ -61,7 +61,7 @@ def test_every_request_is_logged_as_one_json_line(tmp_path):
     answerer.ask("refund kab milega")
     lines = [json.loads(line) for line in log.read_text().splitlines()]
     assert [line["hit"] for line in lines] == [False, True]
-    assert set(lines[0]) == {"ts", "question", "hit", "reason", "score", "matched_id", "latency_ms", "tokens"}
+    assert set(lines[0]) == {"ts", "question", "hit", "reason", "score", "matched_id", "latency_ms", "tokens", "stored"}
     assert lines[1]["latency_ms"] >= 0 and lines[1]["tokens"] == 0
 
 

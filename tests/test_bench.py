@@ -141,3 +141,20 @@ def test_score_rows_keeps_the_matched_question_for_verifiers():
             return Match("How long does a refund take?", "5-7 days", 0.9, {"id": "faq_01"})
 
     assert score_rows(OneEntry(), [{"q": "refund?", "label": "faq_01"}])[0]["matched_q"] == "How long does a refund take?"
+
+
+def test_fail_above_exits_nonzero_when_the_false_hit_bound_is_too_high(tmp_path):
+    import json as _json
+
+    from pakka.bench import main
+
+    faqs, data = tmp_path / "faqs.json", tmp_path / "data.jsonl"
+    faqs.write_text(_json.dumps([{"id": "faq_01", "question": "How long does a refund take?", "answer": "5-7 days"}]))
+    rows = [{"q": "How long does a refund take?", "label": label, "split": split, "kind": "paraphrase", "lang": "en"}
+            for split in ("dev", "test") for label in ["faq_01"] * 20 + [None]]  # 1 wrong in 21 served
+    data.write_text("".join(_json.dumps(r) + "\n" for r in rows))
+    args = ["--faqs", str(faqs), "--data", str(data), "--embedder", "exact", "--budget", "0.5"]
+    main(args + ["--fail-above", "0.5"])  # upper bound about 23%: passes
+    with pytest.raises(SystemExit) as exit_info:
+        main(args + ["--fail-above", "0.1"])
+    assert exit_info.value.code == 1

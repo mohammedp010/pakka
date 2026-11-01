@@ -2,9 +2,11 @@
 
 Tests, guards and safety rules for semantic caches, so a cache can prove its answers are right.
 
-**Status: phase 2 (guard).** A semantic cache with rule guards that veto wrong hits, a reference FAQ
-bot ("Dukaan Bot"), a 1,059-question English/Hinglish/Hindi test set and a bench that reports false
-hits with confidence intervals. Safety rules (privacy, expiry, poisoning) come in phase 3.
+**Status: phase 3 (protect).** A semantic cache with rule guards that veto wrong hits and a policy
+layer that keeps it safe: India-aware PII filtering, per-user partitions, FAQ-version tags, expiry
+and an approval queue. Plus a reference FAQ bot ("Dukaan Bot"), a 1,059-question
+English/Hinglish/Hindi test set, a bench that reports false hits with confidence intervals, and CI
+that fails when the false-hit rate regresses.
 
 > **Pilot result:** Cache hit rate 32% on 100 test questions at threshold 0.70 with 2 false hits;
 > LLM calls down 32%; average latency down from 1258 ms to 899 ms.
@@ -30,8 +32,10 @@ python3.12 -m venv .venv && .venv/bin/pip install -e ".[redis,bot,dev]"
 The bot needs an OpenRouter key in `.env` (`OPENROUTER_API_KEY=...`, gitignored):
 
 ```bash
-.venv/bin/python -m examples.dukaan_bot.chat                          # chat in the terminal
-.venv/bin/uvicorn examples.dukaan_bot.app:create_app --factory         # POST /chat {"question": "..."}
+.venv/bin/python -m examples.dukaan_bot.chat --user ravi              # chat in the terminal as one user
+.venv/bin/uvicorn examples.dukaan_bot.app:create_app --factory         # POST /chat {"question": "...", "user_id": "ravi"}
+.venv/bin/python -m pakka.approve data/pending.jsonl                   # approve shared answers waiting in the queue
+.venv/bin/python scripts/stale_demo.py                                 # stale answers after an FAQ edit, with and without version tags
 .venv/bin/python -m examples.dukaan_bot.replay --no-cache && .venv/bin/python -m examples.dukaan_bot.replay
 .venv/bin/python -m pytest -m e2e                                      # real LLM, costs about $0.001
 ```
@@ -172,3 +176,37 @@ doubles Hinglish hits but serves almost three times as many wrong answers, so no
 
 No setup fits a 5% budget yet. The limit is recall: even with guards, the best setup catches 20 of 200
 Hinglish paraphrases.
+
+## Phase 3: protect (`pakka/pii.py`, `pakka/policy.py`)
+
+A cache that stores LLM answers can leak one customer's data to another, be poisoned with a planted
+answer, and keep serving yesterday's prices. Each rule below has a test:
+
+| Rule | What it does | Test |
+|---|---|---|
+| PII gate | Never stores a question or answer containing an Aadhaar (Verhoeff-checked), PAN, UPI ID, email, +91 mobile, IFSC, card (Luhn-checked) or order ID | `test_an_exchange_containing_pii_is_never_stored` |
+| Masked logs | Logs keep `refund <UPI> pe bhej do`, never the identifier | `test_logs_never_contain_raw_identifiers` |
+| Partitions | An LLM answer written for one `user_id` is only served back to that user; curated FAQs are shared | `test_canary_one_customers_llm_answer_never_reaches_another_customer` (in memory and on Redis) |
+| Poisoning | A planted answer stays inside the attacker's own partition | `test_poisoned_answer_stays_inside_the_attackers_own_partition` |
+| Approval queue | New shared answers wait in `data/pending.jsonl` until `pakka.approve` accepts them | `test_with_a_queue_new_global_answers_wait_for_approval_but_private_ones_store` |
+| Version tags | Every entry carries a hash of `faqs.json`; editing the FAQ retires older answers, approved ones included | `test_answers_from_an_old_faq_version_are_not_served` |
+| Expiry | Stored LLM answers expire (default 7 days, `PAKKA_TTL_DAYS`) | `test_stored_llm_answers_expire_after_the_policy_ttl` |
+| Erasure | `POST /forget {"user_id": ...}` deletes one user's entries (DPDP Act and GDPR erasure duty) | `test_forget_erases_one_users_entries` |
+
+**Stale answers after an FAQ edit** (`scripts/stale_demo.py`, a persistent cache that outlives the edit):
+
+| | Hits after the edit | From before the edit |
+|---|---|---|
+| Without version tags | 1,022 | 1,022 (100%) |
+| With version tags | 130 | 0 (0%) |
+
+Without tags, every repeated question gets its old stored answer back, so an FAQ edit never reaches
+returning customers.
+
+**CI** (`.github/workflows/ci.yml`) runs the unit tests, the integration tests against a Redis 8
+service (including the cross-tenant canary), and a false-hit gate: the guarded cache's held-out 95%
+upper bound must stay under 25% (it is 18.8% today).
+
+Limits: PII detection is regex plus checksums and doesn't catch personal names; `/forget` has no
+authentication in the demo; partitions isolate answers but not timing (a hit is still faster than a
+miss, which the timing side channel research exploits).

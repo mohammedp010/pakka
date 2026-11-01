@@ -5,6 +5,8 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 
+from pakka.pii import mask
+
 
 @dataclass
 class Result:
@@ -15,36 +17,46 @@ class Result:
     matched_id: str | None
     latency_ms: float
     tokens: int
+    stored: str | None = None  # on a miss: "stored", "queued", "skipped:<why>", or None if not storing
 
 
 class CachedAnswerer:
     """`llm(question) -> (answer, tokens)`. Hit when similarity is at or above `threshold` and the
-    optional `guard(question, cached_question, cached_answer)` returns no veto reason."""
+    optional `guard(question, cached_question, cached_answer)` returns no veto reason. With a
+    `policy` (pakka.policy.Policy), lookups and stores respect partitions, versions, expiry and PII."""
 
-    def __init__(self, cache, llm, threshold, log_path=None, store_misses=True, guard=None):
+    def __init__(self, cache, llm, threshold, log_path=None, store_misses=True, guard=None, policy=None):
         self.cache, self.llm, self.threshold = cache, llm, threshold
-        self.log_path, self.store_misses, self.guard = log_path, store_misses, guard
+        self.log_path, self.store_misses, self.guard, self.policy = log_path, store_misses, guard, policy
 
-    def ask(self, question):
+    def ask(self, question, partition=None):
         start = time.perf_counter()
-        match = self.cache.nearest(question)
+        if self.policy:
+            match = self.cache.nearest(question, allow=self.policy.allow(partition))
+        else:
+            match = self.cache.nearest(question)
         veto = None
         if match and match.score >= self.threshold and self.guard:
             veto = self.guard(question, match.question, match.answer)
+        stored = None
         if match and match.score >= self.threshold and not veto:
             answer, hit, reason, tokens = match.answer, True, "hit", 0
         else:
             answer, tokens = self.llm(question)
             hit = False
             reason = f"blocked:{veto}" if veto else "empty_cache" if match is None else "below_threshold"
-            if self.store_misses:
+            if self.store_misses and self.policy:
+                stored = self.policy.admit(self.cache, question, answer, partition)
+            elif self.store_misses:
                 self.cache.store(question, answer)
+                stored = "stored"
         result = Result(
             answer, hit, reason,
             score=None if match is None else match.score,
             matched_id=match.meta.get("id") if match and hit else None,
             latency_ms=(time.perf_counter() - start) * 1000,
             tokens=tokens,
+            stored=stored,
         )
         self._log(question, result)
         return result
@@ -52,8 +64,8 @@ class CachedAnswerer:
     def _log(self, question, result):
         if not self.log_path:
             return
-        # shortcut: logs the raw question; mask PII before logging in phase 3 (policy).
-        row = {"ts": datetime.now(timezone.utc).isoformat(), "question": question, **asdict(result)}
+        # Identifiers are masked so logs can be kept for audits without holding customers' data.
+        row = {"ts": datetime.now(timezone.utc).isoformat(), "question": mask(question), **asdict(result)}
         del row["answer"]
         with open(self.log_path, "a") as f:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")

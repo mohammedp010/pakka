@@ -6,6 +6,7 @@ needs only one lookup per question.
 """
 
 import re
+import time
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -25,23 +26,35 @@ class NumpyCache:
     shortcut: O(n) scan per lookup, fine to ~100k entries; use RedisVLCache beyond that.
     """
 
-    def __init__(self, embed):
-        self.embed = embed
+    def __init__(self, embed, clock=time.time):
+        self.embed, self.clock = embed, clock
         self._vectors = None
-        self._entries = []
+        self._entries = []  # (question, answer, meta, expires_at or None)
 
-    def store(self, question, answer, meta=None):
+    def store(self, question, answer, meta=None, ttl=None):
         vector = self.embed([question])
         self._vectors = vector if self._vectors is None else np.vstack([self._vectors, vector])
-        self._entries.append((question, answer, meta or {}))
+        self._entries.append((question, answer, meta or {}, None if ttl is None else self.clock() + ttl))
 
-    def nearest(self, question):
-        if not self._entries:
+    def nearest(self, question, allow=None):
+        """Nearest live entry. `allow` maps meta fields to the values a match may have."""
+        now = self.clock()
+        live = np.array([(expires is None or expires > now) and all(meta.get(k) in v for k, v in (allow or {}).items())
+                         for _, _, meta, expires in self._entries], dtype=bool)
+        if not live.any():
             return None
-        scores = self._vectors @ self.embed([question])[0]
+        scores = np.where(live, self._vectors @ self.embed([question])[0], -np.inf)
         i = int(np.argmax(scores))
-        stored_question, answer, meta = self._entries[i]
+        stored_question, answer, meta, _ = self._entries[i]
         return Match(stored_question, answer, float(scores[i]), meta)
+
+    def forget(self, field, value):
+        """Delete every entry whose meta[field] == value (e.g. one user's data). Returns how many."""
+        keep = [i for i, (_, _, meta, _) in enumerate(self._entries) if meta.get(field) != value]
+        removed = len(self._entries) - len(keep)
+        self._entries = [self._entries[i] for i in keep]
+        self._vectors = self._vectors[keep] if keep else None
+        return removed
 
 
 def normalize(text):

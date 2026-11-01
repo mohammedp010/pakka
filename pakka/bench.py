@@ -193,7 +193,7 @@ def main(argv=None):
     p.add_argument("--budget", type=float, default=0.05, help="max false-hit rate (95%% upper bound)")
     p.add_argument("--thresholds", help="also print a sweep over these thresholds, e.g. 0.6,0.7,0.8")
     p.add_argument("--llm-ms", type=float, default=1260, help="LLM latency charged to each miss in a sweep")
-    p.add_argument("--fail-above", type=float, help="exit 1 if any encoder's false-hit upper bound exceeds this")
+    p.add_argument("--fail-above", type=float, help="exit 1 if any encoder's false-hit upper bound (with --guard: guarded setup) exceeds this")
     p.add_argument("--guard", action="store_true", help="also report each encoder with pakka.guard rules on")
     p.add_argument("--verify", action="append", default=[], help="cross-encoder to re-score grey-band hits (repeatable)")
     p.add_argument("--floor", type=float, default=0.6, help="lowest similarity a verifier looks at")
@@ -222,7 +222,9 @@ def main(argv=None):
     print(format_report(lines, args.budget, sum(r.get("split") == "test" for r in data) or len(data)))
 
     if args.fail_above is not None:
-        failing = [x["encoder"] for x in lines if x.get("false_hit_upper", 1.0) > args.fail_above]
+        # With --guard, judge the setup you would deploy (guards on), not the unguarded comparison line.
+        gated = [x for x in lines if x["encoder"].endswith(" + guards")] if args.guard else lines
+        failing = [x["encoder"] for x in gated if x.get("false_hit_upper", 1.0) > args.fail_above]
         if failing:
             print(f"\nFAIL: false-hit upper bound above {args.fail_above:.1%} for {', '.join(failing)}")
             sys.exit(1)
