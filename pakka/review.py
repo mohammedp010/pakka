@@ -31,11 +31,11 @@ def decide(item, answer, faq_ids):
     return {**item, "label": label, "needs_review": False, "reviewed": True}
 
 
-def main():
+def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("data", type=Path)
     p.add_argument("--faqs", type=Path, default=Path("data/faqs.json"))
-    args = p.parse_args()
+    args = p.parse_args(argv)
 
     faqs = {f["id"]: f for f in json.loads(args.faqs.read_text())}
     items = [json.loads(line) for line in args.data.read_text().splitlines() if line.strip()]

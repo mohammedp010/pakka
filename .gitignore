@@ -5,3 +5,5 @@ __pycache__/
 logs/
 data/pending.jsonl
 models/
+dist/
+build/
