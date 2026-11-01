@@ -1,0 +1,212 @@
+[
+ {
+  "q": "I forgot my password, how do I change it?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "can't login, password bhool gaya. reset kaise karu?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "how to recover my account password",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "password reset karna h, kya karna padega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "login nhi ho raha, forgot password wala option kaha hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "new password set karna hai, OTP se kaise hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "password change krna h mera account ka",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "i dont remember my password, what do i do",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "password bhul gayi hu, kese reset hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "forgot password pe click kya karun phir",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "reset password ka process kya h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "how can i set a new password for my login",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "mera password change karna h, login screen pe kya karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "password reset link nahi aa raha, OTP se kaise karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "password भूल गया हूँ, उसे कैसे रीसेट करूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "लॉगिन नहीं हो रहा, नया पासवर्ड कैसे बनाऊँ",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "पासवर्ड बदलना है, ओटीपी से कैसे होगा",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "locked out of my acc, need to reset pass",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "pwd reset kese hota h bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "forgot pw, need to change it asap",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_22",
+  "intended": "faq_22"
+ },
+ {
+  "q": "I don't want to reset my password, I want to delete my account",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "password reset mat karo, bas mera email badalna h",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "bina password ke login kaise karu",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "can I reset my password from the Amazon app on my laptop without OTP",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "Flipkart ka password kaise change karun",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "how many times can I reset my password in a month",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "OTP kitni der tak valid rehta h, 2 minute ya 10 minute?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "how do I change my registered mobile number to a new one",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "mera account verify kaise hoga, email confirm nahi hua",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_22",
+  "intended": null
+ },
+ {
+  "q": "mera password kya h, mujhe yaad dilao",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_22",
+  "intended": null
+ }
+]

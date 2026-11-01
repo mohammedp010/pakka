@@ -1,0 +1,205 @@
+[
+ {
+  "q": "how do i start selling on ur site?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "I want to become a seller on your platform, what are the steps",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "Can my shop list products on your marketplace? How do I sign up?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "registration for vendors, where do I do it",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "what documents do i need to sell here, gst pan bank?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "how long does seller approval take after I apply",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "mai apna product bechna chahta hu, seller kaise bane?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "aapke platform pe sell kaise karu, kya process h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "seller portal kaha h, register kaise karna h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "mera business h, GSTIN aur PAN se seller account banana h, kese",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "kya mai aapki site pe apna shop khol sakta hu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "seller bnne ke liye kya kya chahiye, bank details dena padega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "approval kitne din me milta h seller ka, register krne ke baad",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "mujhe apne handmade items sell krne h, kaise join karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "sellr account kese bnau, plz bataiye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "kaise register karu as a seller, GST number h mere pass",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "aapke marketplace pe bechne ka tareeka kya hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "मैं आपके प्लेटफॉर्म पर सामान कैसे बेच सकता हूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "विक्रेता बनने के लिए रजिस्टर कैसे करें",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "सेलर अकाउंट की मंज़ूरी में कितने दिन लगते हैं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_29",
+  "intended": "faq_29"
+ },
+ {
+  "q": "I want to buy from sellers in China, do you ship from there?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "Mujhe Amazon pe seller account chahiye, aap kaise help kroge?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "I don't want to sell anymore, how do I deactivate my seller account?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "mai seller nhi bnna chahta, bas shopping krna h, kya seller wala option hata sakte ho?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "Can I sell without GST registration or PAN card?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "How many products can I list in my seller account in one day?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "seller payout kitne din me aata h, 7 din ya 15 din?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "How do I sell my used phone on the resale or buy-back program?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_29",
+  "intended": null
+ },
+ {
+  "q": "mera seller account approve hua ya nahi, kya status h mera",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_29",
+  "intended": null
+ }
+]

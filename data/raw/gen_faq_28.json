@@ -1,0 +1,212 @@
+[
+ {
+  "q": "Can I place an order without signing up?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "do i need to make an account to order or can i just checkout as guest",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "Is guest checkout available or do I have to log in first?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "need to register before buying something?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "How do I log in to order, is it OTP based?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "Do I have to make account for ordering or no?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "bina account ke order kar sakta hu kya?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "account banaye bina order ho jayega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "kya bina login kiye order kar sakte hain",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "order karne ke liye login karna zaroori hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "mobile number se login hoga order ke liye?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "guest ki tarah order kese karu, account nhi h mera",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "bina signup kiye shopping ho sakti hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "account nahin hai, phir bhi order kar sakta hoon?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "OTP lene se pehle order hoga ya baad me?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "login kese karu order krne k liye, otp aata h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "kya new user ko direct order krne dete ho",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "बिना अकाउंट बनाए ऑर्डर कर सकता हूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "ऑर्डर देने के लिए लॉगिन करना पड़ता है क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "मोबाइल नंबर और OTP से लॉगिन होता है ऑर्डर के लिए?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_28",
+  "intended": "faq_28"
+ },
+ {
+  "q": "Can I order without an account if I pay cash on delivery?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Can I shop without logging in and add items to the cart?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Can I order from your site to an address in Nepal or Bangladesh?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "mere account ko delete kaise karun bina order history khoe?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Can I order a gift card for someone without any login?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Kya main bina OTP ke password se login karke order kar sakta hoon?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Mera order kab tak deliver hoga jo maine kal bina login ke diya tha?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Can I place orders for 50 units without an account for a bulk discount?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Ek account se kitne orders ek din me kar sakte hain?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_28",
+  "intended": null
+ },
+ {
+  "q": "Do I need an account to cancel an order I already placed?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_28",
+  "intended": null
+ }
+]

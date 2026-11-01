@@ -1,0 +1,191 @@
+[
+ {
+  "q": "how long will delivery take?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "when will my order reach me",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "delivery time kitna lagta hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "order kab tak pahunchega usually",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "kitne din mein delivery hoti hai metro mein",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "dilvery kitne din mein hogi",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "delivery mein kitna time lagega bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "shipping kitne din ki hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "kitne din mein aayega order mere pin pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "orders ko pahunchne mein kitna time lagta h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "ek order kitne days mein deliver hota hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "mera order kab tak aayega approx",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "kitne din lagte hai delivery ke liye kese pata chale",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "delivery kitne din mein hoti hai delhi mein",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "डिलीवरी में कितने दिन लगते हैं",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "ऑर्डर कब तक पहुंचेगा",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "मेट्रो शहरों में डिलीवरी कितने दिन में होती है",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_07",
+  "intended": "faq_07"
+ },
+ {
+  "q": "delivery free hai kya",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "do you deliver to Nepal?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "mera order 10 din se nahi aaya, kab aayega",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "delivery nahi chahiye, order cancel kar do",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "can I get delivery on Sunday?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "order 2 din mein pahuncha dena please, urgent hai",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "delivery nahi chahiye, store pickup possible hai?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "do you ship to Dubai?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "mujhe delivery ka time change karna hai, 5 baje ka slot chahiye",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_07",
+  "intended": null
+ },
+ {
+  "q": "kya delivery boy cash lega nahi lega",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_07",
+  "intended": null
+ }
+]

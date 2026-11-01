@@ -1,0 +1,226 @@
+[
+ {
+  "q": "Is cash on delivery available?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "Can I pay when the order arrives?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "do u have COD",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "Does the delivery guy accept cash?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "Is pay on delivery option there for orders?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "Can I pay cash at my doorstep when the item comes?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "COD available hai kya?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "cod milega ya nhi order pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "delivery pe cash de sakte hain kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "kya aap COD accept karte ho",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "order aane pe paise de sakta hu kya, cod h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "cash on delivery ka option kese milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "upi se delivery boy ko pay kar sakte h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "COD kitne tak ka order ho sakta hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "bina online payment ke order kar sakte hain kya, cash chalega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "kya mere pincode pe cod kaam karta hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "cod wala option dikh nahi raha, available hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "क्या कैश ऑन डिलीवरी उपलब्ध है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "डिलीवरी के समय कैश या UPI से पेमेंट कर सकते हैं क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "सामान आने पर पैसे दे सकते हैं, COD है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_05",
+  "intended": "faq_05"
+ },
+ {
+  "q": "Cash on delivery nahi chahiye, card se pay karna hai, kaise karun?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "I don't want to pay in cash at delivery, is there any way to avoid it?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Mujhe COD ka paisa wapas kaise milega, order cancel kiya tha?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Do you deliver cash on delivery to Nepal or Bhutan?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Can I pay cash on delivery for a Plus membership purchase?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Kya gift card ko COD se buy kar sakte hain?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "COD ka order 60000 ka ho sakta hai kya?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Is COD available for an order of Rs 5 with the handling fee of Rs 500?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Mere order pe COD ki handling fee kitni lagegi, aur ye 1 lakh tak chalega?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Where is my COD payment of Rs 1,200 for order placed yesterday?",
+  "lang": "en",
+  "kind": "personal",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "How do I track my order, I placed it with COD last week?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_05",
+  "intended": null
+ },
+ {
+  "q": "Delivery boy ne cash liya but order nahi aaya, kya karun?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_05",
+  "intended": null
+ }
+]

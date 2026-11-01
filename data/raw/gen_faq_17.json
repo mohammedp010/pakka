@@ -1,0 +1,212 @@
+[
+ {
+  "q": "Is delivery free or do I pay something?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "do u charge for delivery on small orders?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "Free shipping hai kya?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "delivery charges lagte hain kya",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "Will I get free delivery if I order above 499?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "Is there any delivery fee on the order I am placing?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "kya delivery free h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "499 se upar ka order karu toh delivery free milegi?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "delivery charge kitna lagega chhota order pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "free delivery kab milti hai bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "plus member ho to delivery free hogi na?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "Rs 300 ka order h, delivery fee lagegi kya?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "shipping free nhi h kya?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "delivery pe paisa lagta hai ya free hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "kitne ka order pe free delivery milti hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "mera order chhota hai, delivery ke liye extra dena padega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "kya aapki delivery charge free hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "क्या डिलीवरी फ्री है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "499 से ऊपर के ऑर्डर पर डिलीवरी चार्ज लगता है क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "छोटे ऑर्डर पर डिलीवरी फीस कितनी है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_17",
+  "intended": "faq_17"
+ },
+ {
+  "q": "Is delivery free outside India?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Do you deliver to Nepal or Bangladesh?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Is express delivery free too?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "mera order 300 ka hai, delivery charge kab tak refund hoga?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Order 499 pe exactly ho to delivery free hogi nhi?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Rs 200 ke order pe delivery fee kitni hai, Rs 40 ya zyada?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Delivery free nahi karni, mujhe COD charge hata do",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Plus membership cancel karun to delivery fee lagegi nhi?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Do not charge delivery on my order, i don't want to pay any shipping",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_17",
+  "intended": null
+ },
+ {
+  "q": "Delivery nahi chahiye, order cancel nahi karna, bas charge mat lo",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_17",
+  "intended": null
+ }
+]

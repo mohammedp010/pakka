@@ -1,0 +1,226 @@
+[
+ {
+  "q": "what is plus membership",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "Plus membership me kya milta hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "How much does the Plus subscription cost per year and what are the benefits?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "plus membership ka paisa kitna lagta h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "is it worth getting plus, what do u get?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "free delivery ke liye koi membership hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "plus lene pe kya fayda hai bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "plus ka yearly price kitna h aur kya kya milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "membership wala plan kya h, early sale access milta h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "plus mem kese lu, kitne ka h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "sabhi orders pe free delivery wali membership ki details batao",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "plus mai kya kya benefits h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "Kya plus lene se shipping fast hogi aur sale me pehle access milega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "plus membership ka matlab kya hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "Plus kitne saal ke liye hota h, price kya h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "plus membership kya hai, rs 999 ka h na?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "what does plus include, delivery free hogi?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "Plus subscription ke fayde kya hain?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "प्लस मेंबरशिप क्या है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "प्लस मेंबरशिप में कितने पैसे लगते हैं और क्या फायदे मिलते हैं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "क्या प्लस लेने से डिलीवरी फ्री हो जाएगी?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_20",
+  "intended": "faq_20"
+ },
+ {
+  "q": "How do I cancel my Plus membership?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "Plus membership nahi chahiye, normal delivery charge kitna h?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "bina plus liye free delivery milti hai kya?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "Do you offer Plus membership in Nepal or Bangladesh?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "gift card ke saath plus membership milta h kya?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "Plus membership ka 3 mahine ka plan kitne ka h?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "Plus ka refund kitne din me milega?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "How much is the Rs 499 Plus plan for students?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "Plus membership ke fayde kab tak active rahenge, mera plan kab expire hoga?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "How can I sell my products on your platform as a seller?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_20",
+  "intended": null
+ },
+ {
+  "q": "Plus membership ka payment failed ho gaya, paisa cut gaya, kya karun?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_20",
+  "intended": null
+ }
+]

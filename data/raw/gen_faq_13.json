@@ -1,0 +1,198 @@
+[
+ {
+  "q": "where do i enter coupon code while checkout",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "how can i use a discount code on my order",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "is there a box for promo code at checkout page?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "can i add 2 coupons together on one order",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "coupon kaise apply karun checkout pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "checkout page pe coupon code daalne ka option kahan h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "coupon code lagana h, kya karna padega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "ek order me multiple coupon use ho sakte h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "promo code dalne ka button kidhar hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "discount code kese lagau bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "coupon apply karne ka tareeka batao plz",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "checkout me coupon ka option nhi dikh raha, kese karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "mere code se discount kaise milega order pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "ek order me 2 coupon chalenge kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "code dene ka jagah kaha milega payment se pehle",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "चेकआउट पेज पर कूपन कोड कैसे लगाएं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "एक ऑर्डर में एक से ज़्यादा कूपन लग सकते हैं क्या",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "डिस्काउंट कोड डालने का ऑप्शन कहाँ है",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_13",
+  "intended": "faq_13"
+ },
+ {
+  "q": "can i use coupon after the order is already placed?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "coupon nhi lag raha, kyun nahi chal raha?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "mujhe coupon ka paisa refund hoga kya agar order cancel kiya",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "can i apply coupon on gift card purchase in Nepal?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "kya Amazon wala coupon yahan chalega?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "mere 3 coupons ek saath lagane hain, 5 wale bhi chalenge kya",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "coupon 30 din tak valid rehta hai kya?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "Plus membership ka discount coupon kaise milega?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "mera coupon already use ho gaya, phir se kaise use karu?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_13",
+  "intended": null
+ },
+ {
+  "q": "coupon code se mera paisa kaat gaya par discount nahi mila",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_13",
+  "intended": null
+ }
+]

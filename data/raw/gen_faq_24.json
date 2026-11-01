@@ -1,0 +1,205 @@
+[
+ {
+  "q": "How do I contact customer care?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "whats the customer care number",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "Can I talk to a real person on chat?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "how to reach support team",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "Is there a toll free number I can call for help?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "Where do I find the help option to chat with your team",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "customer care ka number kya hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "kaise contact karu customer care se",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "support se baat karni h, kahan click karun app me?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "helpline no. bataiye please",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "app me chat support kaha milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "kya 24x7 chat hota h? kaise karu?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "customer care se call kaise karu, kitne baje tak",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "mujhe koi human se baat karni h, number do",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "help center ka contact kese mile",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "toll free no kya h aapka",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "support team ko message kaise bhejun",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "ग्राहक सेवा से कैसे संपर्क करें?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "कस्टमर केयर का नंबर क्या है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "ऐप में सहायता चैट कहाँ मिलेगी?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_24",
+  "intended": "faq_24"
+ },
+ {
+  "q": "Can I contact the seller directly for my order?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "customer care ka number nahi chal raha, refund kab milega?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "Do you have customer care in Nepal or Bangladesh?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "Is there a helpline for Amazon Pay wallet issues?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "customer care raat 11 baje tak call karne ka koi option h?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "Can I call customer care on Sunday at 9 pm?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "customer care se call karne ka number nahi chahiye, email bhej sakta hu?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "Mujhe call nahi karna, bina call ke chat kar sakta hu kya?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_24",
+  "intended": null
+ },
+ {
+  "q": "Why did my account get blocked, can you check it for me?",
+  "lang": "en",
+  "kind": "personal",
+  "near": "faq_24",
+  "intended": null
+ }
+]

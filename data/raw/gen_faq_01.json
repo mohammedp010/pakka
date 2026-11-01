@@ -1,0 +1,191 @@
+[
+ {
+  "q": "how long does refund take",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "When will I get my money back after returning the item?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "refund kitne din me aata hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "return kiya product warehouse pahuncha, refund kab milega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "UPI pe refund kitne time me aayega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "card refund mein kitne din lagte hain",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "refund kab tk milega bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "paise wapas kab aayenge return ke baad",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "wallet refund kitna time lagta h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "kitne business days me refund process hota hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "netbanking refund kab tak credit hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "refund kaise aur kitne time mein milta hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "return drop karne ke baad refund kb aayega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "paisa kitne din me wapas milega kyaa",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "रिफंड कितने दिनों में मिलेगा?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "वापसी के बाद पैसे कब वापस आएंगे",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "UPI से रिफंड में कितना समय लगता है",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_01",
+  "intended": "faq_01"
+ },
+ {
+  "q": "I have not got my refund yet, what do I do?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "I did not return the item, when will I get refund?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "refund nahi aaya abhi tak, kya karun",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "refund US dollar card pe kitne din me aayega",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "how long does refund take for Amazon Pay later on your app",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "refund ke liye 30 din se zyada kyun lag rahe hain",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "exchange ka paisa kab milega, 3 din ho gaye",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "How do I return a product?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "Can I get a refund as store credit instead of money?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_01",
+  "intended": null
+ },
+ {
+  "q": "mera refund kab aayega, order cancel kiya tha",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_01",
+  "intended": null
+ }
+]

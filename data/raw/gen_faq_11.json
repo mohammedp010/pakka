@@ -1,0 +1,198 @@
+[
+ {
+  "q": "Do you have EMI option?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "can i pay in installments for my order",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "Is EMI available on credit cards?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "what emi plans do u give",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "No cost EMI milega kya?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "EMI pe le sakte hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "kya aap EMI dete ho",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "3000 se upar wale order pe no cost emi hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "emi option h kya checkout pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "credit card se EMI kaise milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "installment mein payment ho sakta hai kese",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "kya EMI ka option nhi hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "mere bank card pe EMI chalega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "EMI wala option kahan dikhega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "kisi bhi card se EMI milti hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "ईएमआई की सुविधा है क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "क्रेडिट कार्ड से ईएमआई पर खरीद सकते हैं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "नो कॉस्ट ईएमआई कब मिलेगी?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_11",
+  "intended": "faq_11"
+ },
+ {
+  "q": "Do you offer EMI on cash on delivery orders?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "EMI nahi chahiye, bina EMI ke order kaise karun?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "Can I get EMI on my order without any bank card?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "Do you offer EMI in Nepal or Bhutan?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "Is EMI available for gift card purchases?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "Is EMI available on orders below Rs 500?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "Can I pay in 24 monthly installments on my Rs 20,000 order?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "EMI ki due date kab hai mere order ki?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "How do I cancel my EMI plan after ordering?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_11",
+  "intended": null
+ },
+ {
+  "q": "Do you offer buy now pay later or Simpl?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_11",
+  "intended": null
+ }
+]

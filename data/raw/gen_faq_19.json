@@ -1,0 +1,212 @@
+[
+ {
+  "q": "How do I get a GST invoice for my order?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "where can i download GST invoice",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "I need a tax invoice with GST number for my company. how?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "Can I get GST bill for business purchase",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "how to add GSTIN to my order",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "GST invoice kaise milega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "mujhe GST invoice chahiye, kaha se download karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "GSTIN kaha dalna hai checkout pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "business ke liye GST bill kese lu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "invoice me GST number kaise daale",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "gst invoice download kaha hoga bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "payment se pehle GSTIN dalna h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "mera GST invoice nhi mil raha, kaha dekhu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "company name aur GST no. kaha bharu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "GST wala invoice chahiye office ke liye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "invoice me GST details kese aayegi",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "kya aap GST invoice dete ho? kaise milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "जीएसटी इनवॉइस कैसे मिलेगा?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "चेकआउट पर GSTIN और बिज़नेस नाम कहाँ डालूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "मेरे ऑर्डर का GST इनवॉइस कहाँ से डाउनलोड होगा?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_19",
+  "intended": "faq_19"
+ },
+ {
+  "q": "Can I skip entering GSTIN at checkout and still get a GST invoice later?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "I don't have a business, do I still need to add GSTIN to get invoice?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "GSTIN daale bina bhi GST invoice mil jayega na?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "Do you give GST invoice for purchases in Dubai or Singapore?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "Can I get a VAT invoice for my order in UAE?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "Mere Samsung phone ka warranty bill kaha milega?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "Can I change the GST rate charged on a product from 18% to 5%?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "How long after delivery does the GST invoice get emailed to me?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "Can I edit the business name on an invoice after my order is already delivered?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_19",
+  "intended": null
+ },
+ {
+  "q": "mera GST invoice se mera order status kaise check karu?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_19",
+  "intended": null
+ }
+]

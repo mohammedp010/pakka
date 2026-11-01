@@ -1,0 +1,205 @@
+[
+ {
+  "q": "Is it safe to save my card details?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "does saving card on your app risk my card info",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "are my saved cards secure? do you store full card number",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "Is saving card safe or can someone misuse it",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "what happens to my card data if i save it, is it stored fully",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "safe hai card save karna?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "card save krne se kya risk hai, safe h na",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "kya aap mera full card number store karte ho save karne pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "cvv bhi save hota hai kya card save krne pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "card details save karna secure h ya nhi",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "saved card kaise store hota h, safe rahega na mera data",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "mera card save karun? koi misuse to nhi karega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "rbi rules ke hisaab se card save karna safe h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "card save krna sahi h kya, data leak ka dar h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "kya saved card tokenise hota h ya poora number rakhte ho",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "card save karu ya nahi, secure rahega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "कार्ड डिटेल्स सेव करना सुरक्षित है क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "क्या आप मेरा पूरा कार्ड नंबर और CVV सेव करते हो?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "सेव्ड कार्ड RBI नियम के अनुसार सुरक्षित है ना?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_30",
+  "intended": "faq_30"
+ },
+ {
+  "q": "Can I save my card details without giving CVV every time?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Do you store my card number in plain text in your database?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Is it safe to save my debit card in the app for international payments in the US?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Mera card save nhi karna, phir bhi aap uska CVV rakhte ho kya?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Saved card ka cashback kab milega, 30 din ya 60 din mein?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Card save karne ke baad kitne din tak data rakhte ho?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Mere saved card ka last 4 digits aur expiry dikhao, kaun sa card save hai",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Can I delete my saved cards from my account?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Card save karne pe Amazon Pay balance bhi safe rehta hai kya?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_30",
+  "intended": null
+ },
+ {
+  "q": "Mera card save nahi hua, kyun? Payment fail ho raha hai",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_30",
+  "intended": null
+ }
+]

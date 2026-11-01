@@ -1,0 +1,184 @@
+[
+ {
+  "q": "Do products come with a warranty?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "is there any warranty on the items i buy here",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "Does the TV I'm buying have warranty or not?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "warranty milti hai kya products pe?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "Electronics pe warranty hoti h na?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "warranty card box me aata hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "agar washing machine kharab ho jaye toh warranty claim kaise karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "product ke saath warrenty card milega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "brand warranty kahan claim karni hogi",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "kya appliances pe bhi warranty milti hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "mixer grinder ki warrenty kitni hai aur kaha claim hoti hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "warranty nhi hai kya is product pe?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "electronics ka warranty kaun deta h, aap ya brand?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "सामान के साथ वारंटी मिलती है क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "इलेक्ट्रॉनिक्स पर वारंटी कार्ड बॉक्स में होता है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "वारंटी क्लेम के लिए कहाँ जाना होगा?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_25",
+  "intended": "faq_25"
+ },
+ {
+  "q": "Do products come with a warranty? Does that cover water damage too?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "Do you give me a refund if the product has no warranty?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "Do the clothes I buy here come with a warranty?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "Is there no warranty on Apple products bought from you?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "warranty nahi chahiye, product return kar sakta hoon kya?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "mera laptop ki warranty kab tak valid hai, order number ye raha",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "Mera phone 3 mahine pehle kharida tha, warranty abhi bhi chalegi?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "Kya warranty 5 saal ki milti hai har product pe?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "Do you sell warranty extension plans for ACs?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_25",
+  "intended": null
+ },
+ {
+  "q": "Can I get warranty if I buy the item without creating an account?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_25",
+  "intended": null
+ }
+]

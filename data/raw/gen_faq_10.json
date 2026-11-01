@@ -1,0 +1,212 @@
+[
+ {
+  "q": "What payment options do you have?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "can i pay with upi",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "do you take credit cards?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "is net banking available for payment",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "Which wallets can I use to pay?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "is cod or emi possible on your site",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "kya aap UPI se payment lete ho?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "payment ke kitne option h aapke paas",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "debit card se pay kar sakte h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "credit card accept karte ho na",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "net banking se payment hota h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "paytm ya phonepe wallet chalega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "COD aur EMI dono milta hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "kese pay karu order ka, kon kon se methods h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "cash on delivery nhi h kya aapke yahan",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "emi pe lena ho to option hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "payment modes batao bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "आप कौन-कौन से पेमेंट तरीके स्वीकार करते हैं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "क्या UPI और कार्ड से पेमेंट कर सकते हैं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "कैश ऑन डिलीवरी और EMI उपलब्ध है क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_10",
+  "intended": "faq_10"
+ },
+ {
+  "q": "Do you accept payment in US dollars or PayPal?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "Can I pay without any card or UPI at all, bina kuch bhi diye?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "cash on delivery nahi chahiye, mujhe online hi pay karna h, kaun sa option bachta h?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "Can I pay with crypto or Bitcoin?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "Can I get a loan of 50000 rupees to pay for my order?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "Is EMI available on orders below 3000 rupees?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "Payment ke liye 30 din ka credit mil sakta h kya?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "Mera payment fail hua par paisa kat gaya, ab kya karu?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "Which payment method did I use for my last order?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_10",
+  "intended": null
+ },
+ {
+  "q": "How do I apply a UPI cashback offer on my order?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_10",
+  "intended": null
+ }
+]

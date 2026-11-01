@@ -1,0 +1,212 @@
+[
+ {
+  "q": "Can I pick a delivery date for my order?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "is it possible to schedule delivery for a specific day",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "I want the furniture delivered on saturday, can I choose the date?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "Do you have scheduled delivery slots at checkout?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "can u deliver on a day i select",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "Can I fix a date for the appliance delivery?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "kya main delivery date choose kar sakta hoon?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "delivery ka date select kr skte h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "furniture ka delivery slot kaise chunu checkout pe?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "mujhe sofa ek specific din pe chahiye, kya ye possible hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "Kya appliance ki delivery ke liye time slot milta hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "bhai delivery ki date fix karne ka option hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "schedule delivery ka option kahan milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "mere fridge ko kal ke bajaye parso deliver kar sakte ho kya, date choose karke",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "kisi din ke liye delivery book kr skte h bade item ki",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "date select krne ka koi option h kya order me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "kya mai delivery ka din khud decide kar sakta hu? washing machine ke liye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "क्या मैं डिलीवरी की तारीख चुन सकता हूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "फर्नीचर के लिए डिलीवरी स्लॉट कैसे चुनूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "क्या बड़े सामान की डिलीवरी किसी खास दिन पर हो सकती है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_26",
+  "intended": "faq_26"
+ },
+ {
+  "q": "Can I cancel delivery and get it refunded?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "Can I not have delivery on a fixed date and just get it whenever?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "mujhe date choose nahi karni, bas jab bhi aaye chalega, kaise karun",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "Can I get my laptop delivered on a chosen date?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "Do you deliver to Nepal on a scheduled date?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "Can I schedule a delivery on Sunday for my kurta?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "Kya main 15 din baad ki delivery book kar sakta hoon?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "Can I track my furniture delivery in real time?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "Can I change my delivery address after placing a furniture order?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_26",
+  "intended": null
+ },
+ {
+  "q": "mere order ki delivery kab hogi, date batao",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_26",
+  "intended": null
+ }
+]

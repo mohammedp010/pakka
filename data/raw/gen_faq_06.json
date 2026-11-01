@@ -1,0 +1,219 @@
+[
+ {
+  "q": "How can I track my order?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "where can i see the tracking of my order",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "Is there a way to check where my package is?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "how do i know when my order ships and where it is",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "Can you tell me how to follow my order status?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "Tracking kaha milegi order ki?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "order track kaise karun?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "mera order kaha tak pahuncha, kese pata chalega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "order ka tracking link kaha se milega bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "kese check karu ki order kaha h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "tracking ka option kaha hai app me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "Order ka status kaise dekhu, track button kaha h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "shipping ke baad tracking SMS aata hai kya, kaha dekhu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "mera parcel kaha h kese pata karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "order tracking kese hoti hai yaar",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "kya mein apna order track kar sakta hu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "trackng kaise kare apna order ka",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "ऑर्डर ट्रैक कैसे करें?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "मेरा ऑर्डर कहाँ तक पहुँचा, कैसे पता करूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "ऑर्डर का ट्रैकिंग लिंक कहाँ मिलेगा?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_06",
+  "intended": "faq_06"
+ },
+ {
+  "q": "Can I track my order without logging in?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "mera order track nahi ho raha, kuch galat hai kya",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "Do you stop sending tracking SMS if I unsubscribe?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "Can I track international shipments from Nepal or Bangladesh?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "Kya Amazon wala order bhi yaha track hoga?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "Where is my order placed 3 weeks ago, it still shows processing?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "delivery kab tak hogi, 5 din me aayega kya",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "How do I track a refund amount of 2000 rupees?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "Can I change the delivery address after I see the tracking?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "mera order cancel kaise karu, tracking page pe option hai kya",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_06",
+  "intended": null
+ },
+ {
+  "q": "Show me my current order status and expected delivery date",
+  "lang": "en",
+  "kind": "personal",
+  "near": "faq_06",
+  "intended": null
+ }
+]

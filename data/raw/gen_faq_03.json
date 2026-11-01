@@ -1,0 +1,212 @@
+[
+ {
+  "q": "How do I return a product?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "i want to send this item back, where do i start",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "How can I return something I ordered?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "steps for returning an order pls",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "I need to return the shoes, what's the process",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "Can you walk me through returning a product I bought?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "product return kaise karna h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "mujhe ye item return karna h, kese karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "return kaise kare app pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "order return karne ka process kya h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "ye saman wapas karna h, kaha se start karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "return ki request kese dalu, My Orders me kya karu?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "kya main product return kar sakta hu? kaise?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "item wapas bhejna hai, pickup kaise schedule hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "return karna nhi aata, koi bataye kaise hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "product return krna h jldi batao kese",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "return option kaha milega app me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "उत्पाद वापस कैसे करें?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "मुझे ऑर्डर वापस करना है, प्रक्रिया क्या है",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "सामान रिटर्न करने का तरीका बताइए",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_03",
+  "intended": "faq_03"
+ },
+ {
+  "q": "I don't want to return this, I want to keep it but get a refund",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "mujhe return nahi karna, bas cancel karna h",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "product wapas nahi lena, exchange kar do",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "Can I return a product bought from a seller outside India?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "Gift card ko return kaise karun?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "I returned it 20 days after delivery, can I still send it back?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "delivery ke 10 din baad return ho sakta hai kya?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "How long does a refund take after the item is picked up?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "Mera item damage aaya hai, kya karu?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_03",
+  "intended": null
+ },
+ {
+  "q": "Where is my return pickup? The courier hasn't come yet.",
+  "lang": "en",
+  "kind": "personal",
+  "near": "faq_03",
+  "intended": null
+ }
+]

@@ -1,0 +1,212 @@
+[
+ {
+  "q": "gift card kaise kaam karta hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "how do i use a gift card on my order",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card ka balance use kaise karun checkout pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "checkout pe gift card code kahan dalna h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card valid kitne time tak rehta h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "can gift card be converted to cash",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card ka paisa cash me milega kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card lagane ka tarika batao",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "how does the gift card work, do i enter code while paying",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card ka expiry kab hota h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "mere pass gift card code h, kaha use karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card se shopping kaise kare",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card ka balance kaise apply hota h cart me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card exchange karke cash mil sakta h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card kitne saal valid rehta h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "where do i enter gift card code",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card ka use kaise karna h, kya step h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "गिफ्ट कार्ड कैसे काम करता है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "चेकआउट पर गिफ्ट कार्ड का कोड कहाँ डालें",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "गिफ्ट कार्ड की वैधता कितने समय तक है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_27",
+  "intended": "faq_27"
+ },
+ {
+  "q": "gift card ka paisa wapas bank account me nahi milega kya",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "I don't want a gift card, can I pay cash instead",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "gift card nahi chahiye, bina code ke order kar sakta hu?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "can I buy a gift card for my friend in Dubai",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "Amazon ka gift card Flipkart pe chalega kya",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "gift card ki validity 3 mahine ki hai kya",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "gift card ka balance 500 se kam ho to kya hota h",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "how do I track my gift card order delivery",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "gift card kaise khareedu, kitna minimum amount h",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_27",
+  "intended": null
+ },
+ {
+  "q": "mera gift card code kaam nahi kar raha, kyun?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_27",
+  "intended": null
+ }
+]

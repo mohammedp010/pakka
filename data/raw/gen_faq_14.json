@@ -1,0 +1,184 @@
+[
+ {
+  "q": "my coupon is showing invalid, why?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "promo code not applying at checkout, what's wrong",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "coupon accept nahi ho raha, kyun?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "code dala but discount nhi mila",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "coupon kaam kyu nahin kar raha h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "offer code lagaya par price same hai, kya problem hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "coupon expire ho gaya kya ya kuch aur issue h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "cart me coupon apply nhi ho raha hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "discount code reject ho raha h bar bar",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "kyu nahi lag raha mera coupon, kya minimum order chahiye?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "coupon dene pe error aa rha, kese fix karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "promo code kaam nhi kiya, ye item offer me nahi h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "mera voucher code work nahi kar raha checkout pe",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "कूपन क्यों काम नहीं कर रहा है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "कूपन कोड डालने पर डिस्काउंट नहीं मिल रहा",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "ऑफर कोड एक्सेप्ट नहीं हो रहा, क्या वजह है?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_14",
+  "intended": "faq_14"
+ },
+ {
+  "q": "how do I apply a coupon code at checkout?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "coupon nahi chahiye, bina coupon ke order kaise karu?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "mera coupon kyu nahi chal raha, kya ye US ke liye valid hai?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "why is my coupon not working on Amazon Pay gift card purchases?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "coupon ki valid date 30 din baad ki h, extend ho sakti h?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "minimum order 999 se kam ka order kar sakta hu kya?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "I used the coupon but my refund is not coming, why?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "coupon lagane ke baad bhi paisa cut hua, mera order check karo",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "mera coupon nahi chal raha, mere account ka wallet balance check karo",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_14",
+  "intended": null
+ },
+ {
+  "q": "coupon code nahi dala, kya bina code ke discount milega?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_14",
+  "intended": null
+ }
+]

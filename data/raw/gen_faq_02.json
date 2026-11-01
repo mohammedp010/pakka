@@ -1,0 +1,191 @@
+[
+ {
+  "q": "I still haven't got my refund, what do I do?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "Refund not received yet. What are the next steps?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "My money hasn't come back after the refund was marked done, help?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "Refund abhi tak nahi aaya, kya karun?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "refund nhi aaya h abhi tak, kaise check karun",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "Mera refund kab tak aayega? Status completed dikha raha hai par paise nahi aaye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "refund complete dikha raha h but account me paisa nhi aaya, kya karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "7 din se zyada ho gaye refund ke, abhi bhi nahi mila",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "paise wapas nahi aaye, refund ka kya hua?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "refnd ka paisa abhi tk nai mila, kese pata karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "Refund kahan atka hua hai, koi batayega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "bank me refund nahi aaya, RRN kaha milega aur kya karna h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "Refund status complete h par mera paisa kyu nahi aaya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "mujhe abhi tak refund nahi mila, ab kya option hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "रिफंड अभी तक नहीं आया, अब मैं क्या करूं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "रिफंड कंप्लीट दिख रहा है लेकिन पैसे अकाउंट में नहीं आए",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "मेरा पैसा वापस नहीं आया, बैंक से कैसे पूछूं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_02",
+  "intended": "faq_02"
+ },
+ {
+  "q": "I did not request any refund, why was money credited?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Refund nahi chahiye, bas order cancel karna tha, kaise karu?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Mujhe refund nahi, exchange chahiye, kaise karu?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Refund for my card sent from US, how long does international refund take?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Plus membership ka paisa refund nahi hua, kya karu?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Refund hua 10 din pehle, abhi tak nahi aaya, 30 din ho gaye to kya?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Refund kitne din me aata hai, 2 din pehle cancel kiya tha?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "How do I track my order delivery status?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Mera refund ka amount galat aaya, kam kyu hai?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_02",
+  "intended": null
+ },
+ {
+  "q": "Mera refund status kya hai, mera order #12345 check karo",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_02",
+  "intended": null
+ }
+]

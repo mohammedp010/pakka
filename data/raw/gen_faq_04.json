@@ -1,0 +1,212 @@
+[
+ {
+  "q": "which items can't be returned?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "what products are non returnable",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "innerwear return ho sakta hai kya",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "can i return a customised product or digital code",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "tell me the list of non-returnable items pls",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "opened personal care items ka return milta hai?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "kaun se items return nhi hote h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "non returnable items konse hain bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "grocery perishable item return kr skte hain kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "innerwear wapas nhi hota na?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "customise karwaya tha product, return ho payega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "digital code ka refund/return possible h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "kya sab cheez return hoti h ya kuch nahi hoti",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "product page pe non-returnable kyu likha hota h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "kon sa item return nahin hota plz batao",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "open kiya hua personal care product wapas karna h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "return policy me kya kya exclude h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "कौन से आइटम वापस नहीं हो सकते?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "अंडरवियर या खुला हुआ पर्सनल केयर प्रोडक्ट रिटर्न होता है क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "कस्टमाइज़्ड प्रोडक्ट या डिजिटल कोड वापस कर सकते हैं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_04",
+  "intended": "faq_04"
+ },
+ {
+  "q": "can i return innerwear if it's the wrong size?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "mujhe return karna nahi hai, bas ye batao ki kaise cancel karun",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "I didn't open the personal care item, can I return it now?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "can I return a product bought from a seller in Nepal?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "Plus membership ka refund kaise milega?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "return window kitne din ka hota h?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "refund kitne din me aata hai, 7 din ke baad bhi mil sakta hai?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "how do I return a product I bought yesterday?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "mera wrong item aaya hai, kya karna chahiye?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_04",
+  "intended": null
+ },
+ {
+  "q": "mera order abhi tak nahi aaya, is ka return kaise karun?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_04",
+  "intended": null
+ }
+]

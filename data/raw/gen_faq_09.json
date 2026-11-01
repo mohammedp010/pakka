@@ -1,0 +1,198 @@
+[
+ {
+  "q": "Can I change the address on my order after I placed it?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "order place kar diya, address change ho sakta hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "wrong address daal diya tha, kya ab edit kar sakta hu?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "delivery address badalna h, order already placed hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "Is it possible to update where the package is going after checkout?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "can i modify the shipping address once i've ordered",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "order ka address chnge krna hai, kaise karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "ghar ka address galat tha, ab kaise fix karu order ka",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "kya order dene ke baad delivery address change kar sakte h?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "address change krne ka option kaha milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "mera address galat chala gaya order mai, change ho payega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "order placed, ab address ko edit karna possible hai kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "shipping address badal sakte hain after order?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "orders page pe address change ka button kaha hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "ordered already, need to change delivery location",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "kya main apna delivery pata badal sakta hu order karne ke baad",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "ऑर्डर देने के बाद पता बदल सकते हैं क्या?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "डिलीवरी एड्रेस गलत गया है, बदलने का तरीका बताइए",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_09",
+  "intended": "faq_09"
+ },
+ {
+  "q": "Can I cancel my order and not get charged after placing it?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "address change nahi karna, bas order track karna h",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "Can I change the delivery address to a different country after ordering?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "Can I change the delivery address for a gift card I bought?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "order ka delivery date 3 din baad ka kar sakte h kya",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "address change karne ke baad kitne din me delivery hogi",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "How do I change the phone number on my account?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "My order shipped to the wrong address, can I get a refund?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "mera order already ship ho gaya, address abhi change ho sakta hai?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_09",
+  "intended": null
+ },
+ {
+  "q": "mera order number 4821 ka address kab change hoga",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_09",
+  "intended": null
+ }
+]

@@ -1,0 +1,212 @@
+[
+ {
+  "q": "I got a broken product, what do I do now?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Wrong item aaya hai mujhe, kya karun?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Package khola toh saman toota hua tha, kaise complaint karu?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Ordered blue shirt but red wala aaya, what to do",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "damaged product mila h, return kaise karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Galat product deliver hua hai, kese report karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Item toota hua aaya delivery me, refund ya replacement milega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Received wrong product in the box, help please",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Saamaan damage hai, photo kaise bhejun complaint ke liye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Dabba pichka hua tha aur andar ka item kharab tha, kya option hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Delivered item is defective, how do I get it picked up",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Galat size/item aya h, mujhe kya karna chahiye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Mera order damage aaya hai, replacement mil sakta hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Product ka screen crack hai delivery pe, what now",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Kharab maal mila h, kaise claim kru 48 ghante me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Wrong item came, can I get a refund instead",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "Ye item damaged h, pickup free hoga kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "गलत सामान आया है, मैं क्या करूं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "पैकेट टूटा हुआ था और सामान खराब निकला, शिकायत कैसे करूं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "डिलीवरी में खराब प्रोडक्ट मिला, रिप्लेसमेंट या रिफंड मिलेगा?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_16",
+  "intended": "faq_16"
+ },
+ {
+  "q": "I received my item fine but I don't like the colour, can I return it?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "Item theek aaya hai, bas size nahi aaya, exchange kar sakta hu?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "Maine damaged item report nahi kiya, ab 5 din baad kya kar sakta hu?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "I haven't received my order at all, what should I do?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "Mera damaged product US me deliver hua hai, pickup hoga?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "Can I return a damaged laptop bought from a third-party seller on your site?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "Wrong item aaya, lekin maine 10 din pehle order kiya tha, kya abhi bhi claim hoga?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "Mujhe damaged product ka refund cancel karna hai, kaise karu?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "Kya mera damaged order ka status check kar sakte ho? Order ID 4521",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_16",
+  "intended": null
+ },
+ {
+  "q": "I never received the refund for my wrong item, can you check my account?",
+  "lang": "en",
+  "kind": "personal",
+  "near": "faq_16",
+  "intended": null
+ }
+]

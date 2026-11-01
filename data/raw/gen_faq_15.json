@@ -1,0 +1,212 @@
+[
+ {
+  "q": "Can I exchange my shirt for a bigger size?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "if the size doesnt fit can i swap it for another size",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "Do you allow size exchange for shoes?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "wrong size ordered, can I get a different size instead?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "can i change the size of a dress after delivery",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "exchange karna hai size chota hai, kaise karun?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "kya main size exchange kar sakta hu?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "jeans ka size galat aa gaya, dusra size mil sakta h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "size change ho sakta hai kya kapdo me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "shoe size bada chahiye, exchange kaise hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "kya different size ka item exchange hota hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "size nhi aa raha, exchange option hai kya?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "kapda chhota nikla, same item bada size me badal sakte hain?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "exchange ka option kahan milega size ke liye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "7 din ke andar size badal sakte h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "size badalne ki policy kya hai footwear ki",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "mujhe medium ki jagah large chahiye, possible hai?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "क्या मैं कपड़े का साइज़ बदल सकता हूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "जूते का साइज़ छोटा है, एक्सचेंज कैसे करूँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "दूसरा साइज़ मिल सकता है क्या डिलीवरी के बाद?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_15",
+  "intended": "faq_15"
+ },
+ {
+  "q": "Can I return my shirt for a full refund if the size is wrong?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "size chota hai but exchange nahi karna, bas cancel kar do",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "mat exchange karo, mujhe same size hi chahiye, bas batao kab tak deliver hoga",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "Can I exchange my phone for a different colour?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "Can I exchange a book for a different edition?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "Can I exchange my shirt for a size after 15 days of delivery?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "kya 30 din ke andar size exchange ho sakta hai?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "Can I change the size of an order that is already out of stock for exchange?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "mera order cancel karke naya order size ke sath kaise karun?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_15",
+  "intended": null
+ },
+ {
+  "q": "Mera exchange request kab approve hoga, order status batao",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_15",
+  "intended": null
+ }
+]

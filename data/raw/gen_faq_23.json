@@ -1,0 +1,212 @@
+[
+ {
+  "q": "how do i delete my account",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "I want to permanently close my account, where do I do that?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "can u remove my profile from ur site",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "where is the option to delete my account in the app",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "i dont want to use this platform anymore, how to delete my id",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "steps to erase my account completely?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "account delete kaise karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "mera account delete krna h, kese karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "kya main apna account band kar sakta hu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "account delete karne ka option kahan hai settings me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "plz delete my account, kaise hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "id delete krni h, process kya h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "account remove karna h permanently",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "mera profile hatana h site se, help karo",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "delete account ka button kaha milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "account kaise delete hota h, kitne din lagte h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "ab mujhe ye app use nahi karna, account delete kar do",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "मेरा अकाउंट डिलीट कैसे करें",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "अकाउंट को स्थायी रूप से बंद करने का तरीका बताइए",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "सेटिंग्स में अकाउंट डिलीट का ऑप्शन कहाँ है",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_23",
+  "intended": "faq_23"
+ },
+ {
+  "q": "I don't want to delete my account, how do I just deactivate it?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "mera account delete nahi karna, bas password change karna h",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "Can I undo my account deletion once I've started it without logging in?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "how do I delete my account on your Amazon store in the US?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "Delete karna h mera Flipkart Plus wala subscription, not account",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "how long does it take for my account to be deleted, I started it 20 days ago?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "mera account 7 din me delete ho jayega kya",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "how do I delete my saved payment cards from my account?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "account ka email address change kaise karu",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_23",
+  "intended": null
+ },
+ {
+  "q": "mera account delete kar diya tha, ab kaise login karu, mera order kahan hai",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_23",
+  "intended": null
+ }
+]

@@ -1,0 +1,191 @@
+[
+ {
+  "q": "How do I cancel my order?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "i want to cancel the order, where do i do it",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "can u tell me how to cancel an order I placed today",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "cancel karna hai order, kaise karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "order cancel kese krun, abhi tak shipped nhi hua h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "mera order cancel krna h, kaha se hoga?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "kya main free me order cancel kar sakta hu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "order cancel kar do plz, galti se order ho gaya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "cancellation kaise hota h app me",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "order cancel karne ka tareeka batao",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "ordr cancel krna h kya karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "after shipping cancel kaise karu, already dispatch ho gaya h",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "kya cancel krne pe paise lagenge order ka",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "My Orders me cancel ka button kaha milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "ऑर्डर कैंसिल कैसे करूं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "मुझे अपना ऑर्डर रद्द करना है, क्या करूं",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "ऑर्डर कैंसिल करने का तरीका बताइए",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_08",
+  "intended": "faq_08"
+ },
+ {
+  "q": "order cancel nahi karna, bas address change karna hai",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "Can I cancel without paying any charge after it has already been delivered?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "mera order cancel nhi ho raha, kyu nahi hota?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "Can I cancel my order from a different country's website?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "Plus membership cancel kaise karu?",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "Order cancel karne ke baad kitne din me paise wapas aayenge?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "I ordered 5 items, can I cancel only 2 of them?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "Mera order kab tak deliver hoga, abhi cancel nahi karna?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "How can I return a product that I already received?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_08",
+  "intended": null
+ },
+ {
+  "q": "mera order cancel hone ke baad status kaha dikhega, mera order abhi kaha h?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_08",
+  "intended": null
+ }
+]

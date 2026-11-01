@@ -1,0 +1,198 @@
+[
+ {
+  "q": "how do i stop my plus membership from renewing automatically",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "I don't want to pay for plus next year, how do I turn it off?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "where do I cancel plus subscription? will I get money back?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "auto renew band karna hai plus ka, kahan jaun",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "plus membership cancel kese karu bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "plus ki membership band krni h, paise wapas milenge kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "mera plus membership auto renew nhi chahiye, kaise off karun",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "plus cancel karna h, account me kya option hai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "membership ka auto renewal kaise band hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "plus wala subscription khatam karna h, kya steps hain",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "kya plus cancel karne se paisa refund hoga?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "plus membership ko cancel krne ka tarika batao",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "plus renewal off karna hai, membership benefits kab tak chalenge",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "how to stop plus auto renew, benifits kab tak rahenge",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "I want to end my plus membership, do I get refund for the fee I paid?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "प्लस मेंबरशिप ऑटो रिन्यू बंद कैसे करें?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "मेरी प्लस मेंबरशिप कैंसिल करनी है, कहाँ जाऊँ?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "प्लस मेंबरशिप बंद करने पर क्या पैसे वापस मिलेंगे?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_21",
+  "intended": "faq_21"
+ },
+ {
+  "q": "plus membership ka fee refund kab milega jab mai cancel karun?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "mujhe plus membership lena nahi hai, kaise join karna band karun?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "auto renew on rakhna h plus ka, kaise confirm karun?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "how do I cancel my Amazon Prime membership?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "how do I cancel my Flipkart Plus card or Swiggy One membership?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "plus membership ka fee kitne din me refund hoga cancel karne ke baad?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "mera plus membership kab tak valid hai, is saal ke 31 December tak?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "how do I cancel my plus membership and also get a discount coupon for next year?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "plus membership ke benefits kya kya hain aur kitna cost hai?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_21",
+  "intended": null
+ },
+ {
+  "q": "mera plus membership cancel hua ki nahi, status kaise check karun?",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_21",
+  "intended": null
+ }
+]

@@ -1,0 +1,219 @@
+[
+ {
+  "q": "Do you deliver to my pincode?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "Is delivery available in my area? I want to know my pin code",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "can u ship to my pin code or not",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "Do you deliver across India, like to my pincode?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "how do i check if delivery is possible to my area",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "Will my pincode get delivery from you?",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "kya aap mere pincode pe delivery karte ho?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "mera pincode serviceable h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "pincode check karna h, delivery hogi kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "kese pata chalega ki mere area me delivery hogi",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "delivery mere pin code pe possible hai kya bhai",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "kya mere area me order deliver hoga, pincode batao",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "pin code daal ke check kar sakta hu kya delivery ka",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "aapka delivery network mere pincode tak h kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "bhai mere pincode me delivery aati hai ya nhi",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "kya ye item mere pin code par deliver hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "delivery available h kya meri jagah pe, pincode se check kaise karu",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "mere pincode pe service hai kya aapki",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "क्या आप मेरे पिनकोड पर डिलीवरी करते हैं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "मेरे पिन कोड में डिलीवरी उपलब्ध है या नहीं",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "पिनकोड डालकर डिलीवरी कैसे चेक करूँ",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_18",
+  "intended": "faq_18"
+ },
+ {
+  "q": "Do you deliver to Nepal or Bangladesh?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "mera pincode galat h, kya ab bhi delivery hogi",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "Why can't I see delivery date on my product page?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "Is same day delivery available in Mumbai?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "kya aap mujhe 2 din me delivery de sakte ho",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "Do you deliver food or groceries in my area?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "mere pincode pe delivery nahi hui, order kab aayega",
+  "lang": "hinglish",
+  "kind": "personal",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "Can I change the pincode after placing an order?",
+  "lang": "en",
+  "kind": "near_intent",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "Do you not deliver to remote pincodes at all?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_18",
+  "intended": null
+ },
+ {
+  "q": "kya mere pincode pe COD bhi milega, nahi milega to refund kaise",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_18",
+  "intended": null
+ }
+]

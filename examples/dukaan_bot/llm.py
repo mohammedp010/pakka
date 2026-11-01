@@ -30,21 +30,21 @@ def api_key():
     return None
 
 
-def make_llm(faqs, model=None, max_tokens=300, transport=None):
+def make_chat(model=None, max_tokens=300, transport=None):
+    """Returns `chat(system, user) -> (text, tokens)` for one OpenRouter model."""
     key = api_key()
     if not key:
         raise SystemExit(f"Set OPENROUTER_API_KEY, or add OPENROUTER_API_KEY=... to {ENV_FILE}")
     model = model or os.environ.get("PAKKA_MODEL", DEFAULT_MODEL)
-    system = SYSTEM + "\n\nFAQ:\n" + "\n".join(f"Q: {f['question']}\nA: {f['answer']}" for f in faqs)
-    client = httpx.Client(timeout=60, headers={"Authorization": f"Bearer {key}"}, transport=transport)
+    client = httpx.Client(timeout=120, headers={"Authorization": f"Bearer {key}"}, transport=transport)
 
-    def llm(question):
+    def chat(system, user):
         response = client.post(URL, json={
             "model": model,
             "max_tokens": max_tokens,
-            # FAQ answers need no extended thinking; it can eat the whole token budget.
+            # These tasks need no extended thinking; it can eat the whole token budget.
             "reasoning": {"enabled": False},
-            "messages": [{"role": "system", "content": system}, {"role": "user", "content": question}],
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
         })
         response.raise_for_status()
         data = response.json()
@@ -53,4 +53,11 @@ def make_llm(faqs, model=None, max_tokens=300, transport=None):
             raise RuntimeError(f"LLM returned no text (finish_reason={choice.get('finish_reason')})")
         return choice["message"]["content"].strip(), data["usage"]["total_tokens"]
 
-    return llm
+    return chat
+
+
+def make_llm(faqs, model=None, max_tokens=300, transport=None):
+    """The bot's LLM: `llm(question) -> (answer, tokens)`, answering only from the FAQ."""
+    system = SYSTEM + "\n\nFAQ:\n" + "\n".join(f"Q: {f['question']}\nA: {f['answer']}" for f in faqs)
+    chat = make_chat(model, max_tokens, transport)
+    return lambda question: chat(system, question)

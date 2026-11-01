@@ -1,0 +1,219 @@
+[
+ {
+  "q": "payment fail ho gaya but paise kat gaye, ab kya hoga?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "order payment failed show ho raha hai par account se amount cut ho gaya",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "paisa kat gaya par payment fail dikha raha, kya karun",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "payment fail hua tha but bank se paise deduct ho gaye hain, refund milega?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "transaction failed bola but money debited ho gaya",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "failed payment ka amount wapas aayega kya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "payment fail hua tha lekin amount kat gaya, dobara order karu to double charge toh nahi hoga?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "pymnt fail hua par paisa kat gya h kya krna hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "upi se pay kiya tha fail ho gaya par account se 2 baar paise gaye",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "payment fail ho gayi, deducted ho gaya amount, kitne din mein wapas milega",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "card se payment kiya, error aaya but money cut ho gaya",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "money got deducted but my payment failed, what should i do",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "order fail hua aur paise kat gaye kese wapas milenge",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "payment fail ke baad dobara try karu toh double charge hoga kya?",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "amount debit ho gaya, order nahi bana",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "why did my payment fail but the amount is deducted from my account",
+  "lang": "en",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "payment fail hone ke baad bhi paise kat gaye h, reversal kab hoga",
+  "lang": "hinglish",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "पेमेंट फेल हो गया लेकिन पैसे कट गए हैं, अब क्या होगा?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "ऑर्डर का पेमेंट फेल हुआ पर अकाउंट से अमाउंट कट गया",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "पेमेंट फेल होने पर पैसे वापस आएंगे या नहीं?",
+  "lang": "hi",
+  "kind": "paraphrase",
+  "near": "faq_12",
+  "intended": "faq_12"
+ },
+ {
+  "q": "payment successful hua hai par order confirm nahi hua, kya karun?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "I didn't get a refund for my cancelled order, where is it?",
+  "lang": "en",
+  "kind": "negation",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "payment kar diya par paisa nahi kata, order kab confirm hoga?",
+  "lang": "hinglish",
+  "kind": "negation",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "Can I pay with a credit card from the US?",
+  "lang": "en",
+  "kind": "entity",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "Gift card ka balance paise se kat gaya par order nahi hua, kya karu",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "Plus membership ka fee double deduct ho gaya, kaise cancel karu",
+  "lang": "hinglish",
+  "kind": "entity",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "payment fail hua tha 3 din pehle, abhi tak paise kyun nahi aaye?",
+  "lang": "hinglish",
+  "kind": "number",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "I was charged Rs 4,999 twice for the same order, how do I get the extra amount back?",
+  "lang": "en",
+  "kind": "number",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "payment fail hua, kya mera order 10 din baad bhi cancel ho sakta hai?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "payment kaise karun, kaun se methods accept hote hain?",
+  "lang": "hinglish",
+  "kind": "near_intent",
+  "near": "faq_12",
+  "intended": null
+ },
+ {
+  "q": "My payment failed and my card got blocked, can you unblock it for me?",
+  "lang": "en",
+  "kind": "personal",
+  "near": "faq_12",
+  "intended": null
+ }
+]

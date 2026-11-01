@@ -1,0 +1,625 @@
+[
+ {
+  "q": "Do you have any discount for students?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can I get a bulk order discount for my office?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Is the blue kurta available in XL size?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Do you sell refurbished laptops?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can I pay for my order using a cheque?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Will the product color look the same as the photo?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "How do I change the name on my account?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can I get a price match if I find it cheaper elsewhere?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Do you have a physical store in Bangalore?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "How many reward points do I have right now?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can I add a personal note inside the gift wrap?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Is this phone compatible with a 5G SIM?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can you recommend a good moisturizer for dry skin?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Do you have a wishlist feature?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Why did the price of my cart item go up today?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can I split my payment between two cards?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Are the shoes true to size?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can I get a product sample before buying?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Do you offer installation for the washing machine?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "How do I unsubscribe from your marketing emails?",
+  "lang": "en",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya aap mujhe bulk order pe discount de sakte ho?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Ye jacket waterproof hai ya nahi?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Mera wishlist kahan dikhega?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya aap COD ke saath cheque accept karte ho?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Is saree ka color photo jaisa hi hoga?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Mere account ka email address kaise badlun?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya aap installation service dete ho AC ke liye?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Reward points kitne bache hain mere paas?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya ye phone 5G SIM ko support karta hai?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya aapke paas Delhi mein koi store hai?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Mujhe sasti price pe alternative product batao jo ye jaisa ho",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya mai apna order gift ke roop mein kisi aur ko bhej sakta hoon bina bill ke?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Ye laptop refurbished hai kya?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Dono cards se payment split kar sakte hain kya?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya aap mujhe skin ke liye achha moisturizer suggest kar sakte ho?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Shoes ka size chart kahan milega?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya aap price match karte ho agar kahin sasta mile?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Mere order mein gift note add kar sakte ho?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Marketing emails band kaise karun?",
+  "lang": "hinglish",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "क्या आपके पास छात्रों के लिए कोई छूट है?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "क्या इस फोन में 5G सपोर्ट है?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "मेरे अकाउंट का नाम कैसे बदलूं?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "क्या आप रिफर्बिश्ड लैपटॉप बेचते हैं?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "क्या इस कुर्ते का नीला रंग फोटो जैसा ही दिखेगा?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "मेरे कार्ट में कीमत आज अचानक क्यों बढ़ गई?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "क्या आप वॉशिंग मशीन का इंस्टॉलेशन करते हैं?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "मेरे रिवॉर्ड पॉइंट्स कितने हैं?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "क्या आप मुझे अच्छा फेस क्रीम सुझा सकते हैं?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "क्या मैं दो कार्ड से पेमेंट बांट सकता हूं?",
+  "lang": "hi",
+  "kind": "uncovered",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Who won the cricket world cup in 2011?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "What's the weather going to be like in Mumbai this weekend?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Can you help me write a Python function to reverse a string?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "How do I make a classic margherita pizza at home?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "What is the capital of Australia?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Tell me a joke about programmers.",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "How many planets are in the solar system?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Explain the rules of offside in football.",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "What's a good book to read on history?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "How do I solve a quadratic equation?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Who painted the Mona Lisa?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Are you a real person or a bot?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "How does photosynthesis work?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "What's the best way to learn guitar as a beginner?",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Write a short poem about the monsoon.",
+  "lang": "en",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Aaj India vs Pakistan ka match kab hai?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Mujhe ek achha biryani ka recipe batao.",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Python mein list ko sort kaise karte hain?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kal Delhi mein barish hogi kya?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Bharat ki rajdhani kya hai?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Tum kaisi ho, kya kar rahi ho?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Shaayari sunao pyaar pe.",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Pani ko boil karne mein kitna time lagta hai?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Sachin ne kitne test centuries banaye the?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Black hole kya hota hai?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Mujhe motivation ke liye ek quote do.",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Java mein loop kaise likhte hain?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Gym ke liye diet plan kaisa hona chahiye?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Kya tum mujhe ek joke suna sakte ho?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "Diwali kab hai is saal?",
+  "lang": "hinglish",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "भारत की राजधानी क्या है?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "आज का मौसम कैसा रहेगा?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "मुझे एक अच्छी कहानी सुनाओ।",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "पनीर की सब्ज़ी बनाने की विधि बताओ।",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "सचिन तेंदुलकर का जन्म कब हुआ था?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "जावास्क्रिप्ट में array कैसे बनाते हैं?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "सूरज पृथ्वी से कितना दूर है?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "योग के फायदे क्या हैं?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "तुम्हारा नाम क्या है?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ },
+ {
+  "q": "भारत में क्रिकेट की शुरुआत कब हुई?",
+  "lang": "hi",
+  "kind": "off_topic",
+  "near": null,
+  "intended": null
+ }
+]
