@@ -1,0 +1,100 @@
+{"q": "How many days does it take to get my refund?", "label": "faq_01", "lang": "en", "kind": "paraphrase"}
+{"q": "refund kab milega?", "label": "faq_01", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "It's been 10 days and I still haven't got my refund", "label": "faq_02", "lang": "en", "kind": "paraphrase"}
+{"q": "refund abhi tak nahi aaya, kya karun?", "label": "faq_02", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "What's the process to return something I bought?", "label": "faq_03", "lang": "en", "kind": "paraphrase"}
+{"q": "product wapas kaise karu?", "label": "faq_03", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Are there products I am not allowed to return?", "label": "faq_04", "lang": "en", "kind": "paraphrase"}
+{"q": "kaunse items return nahi hote?", "label": "faq_04", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Can I pay cash when the order arrives?", "label": "faq_05", "lang": "en", "kind": "paraphrase"}
+{"q": "COD available hai kya?", "label": "faq_05", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Where can I see my order status?", "label": "faq_06", "lang": "en", "kind": "paraphrase"}
+{"q": "mera order track kaise karun?", "label": "faq_06", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "How long will delivery take?", "label": "faq_07", "lang": "en", "kind": "paraphrase"}
+{"q": "delivery mein kitne din lagte hain?", "label": "faq_07", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "How do I cancel an order I just placed?", "label": "faq_08", "lang": "en", "kind": "paraphrase"}
+{"q": "order cancel kaise kare?", "label": "faq_08", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Can I update the shipping address after ordering?", "label": "faq_09", "lang": "en", "kind": "paraphrase"}
+{"q": "order ke baad address change ho sakta hai?", "label": "faq_09", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Which ways can I pay?", "label": "faq_10", "lang": "en", "kind": "paraphrase"}
+{"q": "payment kis kis tarike se kar sakte hain?", "label": "faq_10", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Is EMI available?", "label": "faq_11", "lang": "en", "kind": "paraphrase"}
+{"q": "kya EMI pe le sakte hain?", "label": "faq_11", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Money got debited but the payment failed", "label": "faq_12", "lang": "en", "kind": "paraphrase"}
+{"q": "payment fail ho gaya par paise kat gaye", "label": "faq_12", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Where do I enter a promo code?", "label": "faq_13", "lang": "en", "kind": "paraphrase"}
+{"q": "coupon code kaise lagaye?", "label": "faq_13", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "My discount code isn't working, why?", "label": "faq_14", "lang": "en", "kind": "paraphrase"}
+{"q": "coupon apply kyun nahi ho raha?", "label": "faq_14", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Can I swap my shirt for a bigger size?", "label": "faq_15", "lang": "en", "kind": "paraphrase"}
+{"q": "size exchange kar sakte hain kya?", "label": "faq_15", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "The item I got is broken", "label": "faq_16", "lang": "en", "kind": "paraphrase"}
+{"q": "galat product aa gaya, ab kya karun?", "label": "faq_16", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Do I have to pay for shipping?", "label": "faq_17", "lang": "en", "kind": "paraphrase"}
+{"q": "free delivery milti hai kya?", "label": "faq_17", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Do you ship to my area?", "label": "faq_18", "lang": "en", "kind": "paraphrase"}
+{"q": "mere pincode pe delivery hoti hai?", "label": "faq_18", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "How can I get an invoice with my GST number?", "label": "faq_19", "lang": "en", "kind": "paraphrase"}
+{"q": "GST bill kaise milega?", "label": "faq_19", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "What do I get with Plus membership?", "label": "faq_20", "lang": "en", "kind": "paraphrase"}
+{"q": "Plus membership kya hai?", "label": "faq_20", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "How do I stop my Plus subscription?", "label": "faq_21", "lang": "en", "kind": "paraphrase"}
+{"q": "Plus membership band kaise karun?", "label": "faq_21", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "I forgot my password", "label": "faq_22", "lang": "en", "kind": "paraphrase"}
+{"q": "password bhool gaya, reset kaise karun?", "label": "faq_22", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "I want to close my account permanently", "label": "faq_23", "lang": "en", "kind": "paraphrase"}
+{"q": "account delete kaise kare?", "label": "faq_23", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "How can I talk to customer support?", "label": "faq_24", "lang": "en", "kind": "paraphrase"}
+{"q": "customer care ka number kya hai?", "label": "faq_24", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Is there a warranty on electronics?", "label": "faq_25", "lang": "en", "kind": "paraphrase"}
+{"q": "warranty milti hai kya?", "label": "faq_25", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Can I choose the delivery date?", "label": "faq_26", "lang": "en", "kind": "paraphrase"}
+{"q": "delivery ki date select kar sakte hain?", "label": "faq_26", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "How do I use a gift card?", "label": "faq_27", "lang": "en", "kind": "paraphrase"}
+{"q": "gift card kaise use kare?", "label": "faq_27", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Can I buy without signing up?", "label": "faq_28", "lang": "en", "kind": "paraphrase"}
+{"q": "bina account ke order kar sakte hain?", "label": "faq_28", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "I want to sell my products on your platform", "label": "faq_29", "lang": "en", "kind": "paraphrase"}
+{"q": "seller kaise bane?", "label": "faq_29", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "Is my saved card information secure?", "label": "faq_30", "lang": "en", "kind": "paraphrase"}
+{"q": "card details save karna safe hai?", "label": "faq_30", "lang": "hinglish", "kind": "paraphrase"}
+{"q": "I never placed this order but money was charged", "label": null, "lang": "en", "kind": "negation"}
+{"q": "membership nahi chahiye thi phir bhi paise kat gaye", "label": null, "lang": "hinglish", "kind": "negation"}
+{"q": "I didn't get the OTP to log in", "label": null, "lang": "en", "kind": "negation"}
+{"q": "order delivered dikha raha hai par mila nahi", "label": null, "lang": "hinglish", "kind": "negation"}
+{"q": "refund wallet mein nahi, bank account mein chahiye", "label": null, "lang": "hinglish", "kind": "negation"}
+{"q": "I don't have a GSTIN, can I still place an order?", "label": null, "lang": "en", "kind": "negation"}
+{"q": "mujhe COD nahi chahiye, prepaid pe koi discount hai?", "label": null, "lang": "hinglish", "kind": "negation"}
+{"q": "order cancel nahi karna, bas delivery late kar do", "label": null, "lang": "hinglish", "kind": "negation"}
+{"q": "Order 4521 kab aayega?", "label": null, "lang": "hinglish", "kind": "personal"}
+{"q": "Where is my order #88213?", "label": null, "lang": "en", "kind": "personal"}
+{"q": "mera order OD12345 cancel kar do", "label": null, "lang": "hinglish", "kind": "personal"}
+{"q": "Change the address on order 7781 to Pune", "label": null, "lang": "en", "kind": "personal"}
+{"q": "Has the refund for order 5512 been processed?", "label": null, "lang": "en", "kind": "personal"}
+{"q": "Rahul Sharma ke naam wale order ka status batao", "label": null, "lang": "hinglish", "kind": "personal"}
+{"q": "refund ravi@okicici pe bhej do", "label": null, "lang": "hinglish", "kind": "personal"}
+{"q": "How do I reset my UPI PIN?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "How do I delete a review I wrote?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "How do I change the mobile number on my account?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "gift wrap ka option hai kya?", "label": null, "lang": "hinglish", "kind": "near_intent"}
+{"q": "Do you have a student discount?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "Can I pick up my order from a store?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "What is the warranty on refurbished phones?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "purana phone exchange karke naya lena hai, offer hai?", "label": null, "lang": "hinglish", "kind": "near_intent"}
+{"q": "How do sellers receive their payments?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "payment successful hua par order place nahi hua", "label": null, "lang": "hinglish", "kind": "near_intent"}
+{"q": "How do I cancel my Netflix subscription?", "label": null, "lang": "en", "kind": "near_intent"}
+{"q": "return pickup wala aaya hi nahi, ab kya?", "label": null, "lang": "hinglish", "kind": "near_intent"}
+{"q": "Is Cash on Delivery available in Nepal?", "label": null, "lang": "en", "kind": "entity"}
+{"q": "Do you deliver to Dubai?", "label": null, "lang": "en", "kind": "entity"}
+{"q": "iPhone 17 stock mein hai?", "label": null, "lang": "hinglish", "kind": "entity"}
+{"q": "Is the Samsung 55 inch TV available?", "label": null, "lang": "en", "kind": "entity"}
+{"q": "What does Plus membership cost in the US?", "label": null, "lang": "en", "kind": "entity"}
+{"q": "What's the weather in Mumbai today?", "label": null, "lang": "en", "kind": "off_topic"}
+{"q": "Tell me a joke", "label": null, "lang": "en", "kind": "off_topic"}
+{"q": "IPL 2025 kisne jeeta?", "label": null, "lang": "hinglish", "kind": "off_topic"}
+{"q": "Python mein list sort kaise karte hain?", "label": null, "lang": "hinglish", "kind": "off_topic"}
+{"q": "aaj kaunsi date hai?", "label": null, "lang": "hinglish", "kind": "off_topic"}
+{"q": "Write a short poem about Diwali", "label": null, "lang": "en", "kind": "off_topic"}
+{"q": "Who is the Prime Minister of India?", "label": null, "lang": "en", "kind": "off_topic"}
+{"q": "paneer butter masala ki recipe batao", "label": null, "lang": "hinglish", "kind": "off_topic"}
