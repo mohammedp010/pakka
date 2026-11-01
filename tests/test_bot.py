@@ -30,3 +30,8 @@ def test_unknown_question_goes_to_the_llm(client, llm):
 def test_empty_or_huge_questions_are_rejected(client, llm, question):
     assert client.post("/chat", json={"question": question}).status_code == 422
     assert llm.calls == []
+
+
+def test_bot_guards_block_a_negated_faq_question_by_default(client, llm):
+    reply = client.post("/chat", json={"question": FAQS[0]["question"] + " nahi"}).json()
+    assert not reply["hit"] and reply["reason"] == "blocked:negation" and len(llm.calls) == 1

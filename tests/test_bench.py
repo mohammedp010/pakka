@@ -83,3 +83,61 @@ def test_exact_cache_ignores_case_and_punctuation_only():
     assert cache.nearest("cod available  hai").score == 1.0
     assert cache.nearest("COD milta hai?").score == 0.0
     assert ExactCache().nearest("anything") is None
+
+
+# --- phase 2: guards veto hits
+
+from pakka.bench import score_rows  # noqa: E402
+
+
+def test_a_blocked_hit_is_not_served_and_a_blocked_paraphrase_counts_as_missed():
+    rows = [{**ROWS[0], "blocked": "negation"}, {**ROWS[2], "blocked": "slot"}, ROWS[3]]
+    r = evaluate(rows, 0.75)
+    assert (r["hits"], r["false_hits"], r["missed"]) == (0, 0, 2)
+    assert r["blocked_by"] == {"negation": 1, "slot": 1}
+
+
+def test_guards_let_the_threshold_go_lower_within_the_same_budget():
+    trap = {"score": 0.97, "label": None, "matched_id": "a", "blocked": "negation"}
+    rows = [trap] + [{"score": 0.9 - i / 100, "label": "a", "matched_id": "a"} for i in range(40)]
+    assert pick_threshold(rows, budget=0.10) == pytest.approx(0.51)
+    assert pick_threshold([{**trap, "blocked": None}] + rows[1:], budget=0.10) is None  # 1 of 41 wrong: upper 12.6%
+
+
+def test_score_rows_records_the_guard_reason_against_the_matched_question():
+    from pakka.cache import Match
+
+    class OneEntry:
+        def nearest(self, q):
+            return Match("How long does a refund take?", "5-7 days", 0.9, {"id": "faq_01"})
+
+    rows = score_rows(OneEntry(), [{"q": "refund nahi mila", "label": None}, {"q": "refund kab milega", "label": "faq_01"}],
+                      guard=lambda q, c, a: "negation" if "nahi" in q else None)
+    assert [r["blocked"] for r in rows] == ["negation", None]
+    assert all(r["guard_ms"] >= 0 for r in rows)
+
+
+def test_verifier_rescores_only_unblocked_candidates_at_or_above_the_floor():
+    from pakka.bench import verify_rows
+
+    rows = [{"q": "a", "matched_q": "x", "score": 0.9}, {"q": "b", "matched_q": "y", "score": 0.6},
+            {"q": "c", "matched_q": "z", "score": 0.5}, {"q": "d", "matched_q": "w", "score": 0.95, "blocked": "slot"}]
+    seen = []
+
+    def verify(pairs):
+        seen.extend(pairs)
+        return [0.2, 0.8]
+
+    out = verify_rows(rows, verify, floor=0.6)
+    assert seen == [("a", "x"), ("b", "y")]
+    assert [r["score"] for r in out] == [0.2, 0.8, -1.0, -1.0]
+
+
+def test_score_rows_keeps_the_matched_question_for_verifiers():
+    from pakka.cache import Match
+
+    class OneEntry:
+        def nearest(self, q):
+            return Match("How long does a refund take?", "5-7 days", 0.9, {"id": "faq_01"})
+
+    assert score_rows(OneEntry(), [{"q": "refund?", "label": "faq_01"}])[0]["matched_q"] == "How long does a refund take?"

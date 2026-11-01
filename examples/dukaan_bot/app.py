@@ -2,7 +2,7 @@
 
     uvicorn examples.dukaan_bot.app:create_app --factory
 
-Settings (env vars): PAKKA_EMBEDDER, PAKKA_THRESHOLD, PAKKA_BACKEND (numpy or redis),
+Settings (env vars): PAKKA_EMBEDDER, PAKKA_THRESHOLD, PAKKA_GUARD (1 or 0), PAKKA_BACKEND (numpy or redis),
 PAKKA_REDIS_URL, PAKKA_MODEL, OPENROUTER_API_KEY.
 """
 
@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 
 from pakka.cache import NumpyCache
 from pakka.flow import CachedAnswerer
+from pakka.guard import check
 
 ROOT = Path(__file__).resolve().parents[2]
 FAQS = json.loads((ROOT / "data" / "faqs.json").read_text())
@@ -50,7 +51,8 @@ def build(embed=None, llm=None, threshold=None, log_path=None, store_misses=True
         cache = NumpyCache(embed)
     for faq in FAQS:
         cache.store(faq["question"], faq["answer"], {"id": faq["id"]})
-    return CachedAnswerer(cache, llm, threshold, log_path=log_path, store_misses=store_misses)
+    guard = check if os.environ.get("PAKKA_GUARD", "1") == "1" else None
+    return CachedAnswerer(cache, llm, threshold, log_path=log_path, store_misses=store_misses, guard=guard)
 
 
 def create_app(**kwargs):

@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 class Result:
     answer: str
     hit: bool
-    reason: str  # "hit", "below_threshold" or "empty_cache"
+    reason: str  # "hit", "below_threshold", "empty_cache" or "blocked:<guard reason>"
     score: float | None
     matched_id: str | None
     latency_ms: float
@@ -18,20 +18,25 @@ class Result:
 
 
 class CachedAnswerer:
-    """`llm(question) -> (answer, tokens)`. Hit when similarity is at or above `threshold`."""
+    """`llm(question) -> (answer, tokens)`. Hit when similarity is at or above `threshold` and the
+    optional `guard(question, cached_question, cached_answer)` returns no veto reason."""
 
-    def __init__(self, cache, llm, threshold, log_path=None, store_misses=True):
+    def __init__(self, cache, llm, threshold, log_path=None, store_misses=True, guard=None):
         self.cache, self.llm, self.threshold = cache, llm, threshold
-        self.log_path, self.store_misses = log_path, store_misses
+        self.log_path, self.store_misses, self.guard = log_path, store_misses, guard
 
     def ask(self, question):
         start = time.perf_counter()
         match = self.cache.nearest(question)
-        if match and match.score >= self.threshold:
+        veto = None
+        if match and match.score >= self.threshold and self.guard:
+            veto = self.guard(question, match.question, match.answer)
+        if match and match.score >= self.threshold and not veto:
             answer, hit, reason, tokens = match.answer, True, "hit", 0
         else:
             answer, tokens = self.llm(question)
-            hit, reason = False, "empty_cache" if match is None else "below_threshold"
+            hit = False
+            reason = f"blocked:{veto}" if veto else "empty_cache" if match is None else "below_threshold"
             if self.store_misses:
                 self.cache.store(question, answer)
         result = Result(

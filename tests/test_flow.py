@@ -63,3 +63,27 @@ def test_every_request_is_logged_as_one_json_line(tmp_path):
     assert [line["hit"] for line in lines] == [False, True]
     assert set(lines[0]) == {"ts", "question", "hit", "reason", "score", "matched_id", "latency_ms", "tokens"}
     assert lines[1]["latency_ms"] >= 0 and lines[1]["tokens"] == 0
+
+
+def test_a_guard_veto_turns_a_hit_into_a_logged_miss(tmp_path):
+    llm, log = FakeLLM(), tmp_path / "log.jsonl"
+    answerer = CachedAnswerer(FixedScoreCache(0.95), llm, threshold=0.85, log_path=log,
+                              guard=lambda q, cached_q, cached_a: "negation")
+    result = answerer.ask("refund nahi mila")
+    assert not result.hit and result.reason == "blocked:negation" and result.score == 0.95
+    assert llm.calls == ["refund nahi mila"]
+    assert json.loads(log.read_text())["reason"] == "blocked:negation"
+
+
+def test_guard_sees_the_cached_question_and_answer_and_can_allow_the_hit():
+    seen = []
+    answerer = CachedAnswerer(FixedScoreCache(0.95), FakeLLM(), threshold=0.85,
+                              guard=lambda q, cached_q, cached_a: seen.append((q, cached_q, cached_a)))
+    assert answerer.ask("refund kab milega").hit
+    assert seen == [("refund kab milega", "cached question", "cached answer")]
+
+
+def test_guard_is_not_consulted_below_the_threshold():
+    seen = []
+    CachedAnswerer(FixedScoreCache(0.5), FakeLLM(), threshold=0.85, guard=lambda *a: seen.append(a)).ask("q")
+    assert seen == []
