@@ -158,3 +158,37 @@ def test_fail_above_exits_nonzero_when_the_false_hit_bound_is_too_high(tmp_path)
     with pytest.raises(SystemExit) as exit_info:
         main(args + ["--fail-above", "0.1"])
     assert exit_info.value.code == 1
+
+
+# --- phase 4: extra keys and per-FAQ thresholds, cross-fitted on dev
+
+from pakka.bench import apply_floors, entry_floors, score_with_method  # noqa: E402
+
+
+def test_entry_floor_is_the_highest_score_an_faq_was_wrongly_served_at():
+    rows = [{"matched_id": "faq_01", "label": None, "score": 0.8}, {"matched_id": "faq_01", "label": "faq_02", "score": 0.7},
+            {"matched_id": "faq_01", "label": "faq_01", "score": 0.9}, {"matched_id": "faq_02", "label": "faq_02", "score": 0.6},
+            {"matched_id": "faq_03", "label": None, "score": 0.99, "blocked": "negation"}]  # a guard already stopped it
+    assert entry_floors(rows) == {"faq_01": 0.8}
+
+
+def test_hits_on_an_faq_must_beat_its_floor():
+    rows = [{"matched_id": "faq_01", "score": 0.85}, {"matched_id": "faq_01", "score": 0.8},
+            {"matched_id": "faq_02", "score": 0.5}, {"matched_id": "faq_01", "score": 0.7, "blocked": "slot"}]
+    assert [r["blocked"] for r in apply_floors(rows, {"faq_01": 0.8})] == [None, "entry_floor", None, "slot"]
+
+
+FAQ_ROWS = [{"id": "faq_01", "question": "How long does a refund take?", "answer": "5-7 days"},
+            {"id": "faq_02", "question": "Is COD available?", "answer": "Yes"}]
+
+
+def test_extra_keys_come_from_dev_and_a_dev_question_never_matches_itself():
+    data = [{"q": "refund kab milega", "label": "faq_01", "split": "dev"},
+            {"q": "cod hai kya", "label": "faq_02", "split": "dev"},
+            {"q": "refund kab milega", "label": "faq_01", "split": "test"}]
+    plain = score_with_method("exact", None, FAQ_ROWS, data)
+    keyed = score_with_method("exact", None, FAQ_ROWS, data, extra_keys=True)
+    assert [r["score"] for r in plain] == [0.0, 0.0, 0.0]
+    dev = {r["q"]: r["score"] for r in keyed if r["split"] == "dev"}
+    assert dev == {"refund kab milega": 0.0, "cod hai kya": 0.0}  # each dev half only sees the other half's keys
+    assert [r["score"] for r in keyed if r["split"] == "test"] == [1.0]  # held-out sees every dev key

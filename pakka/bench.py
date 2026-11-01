@@ -157,19 +157,51 @@ def format_report(lines, budget, n_test):
     return "\n".join(out)
 
 
-def load_cache(name, faqs):
+def seeded(name, embed, faqs, keys=()):
+    """A cache holding the FAQs, plus extra (question, faq_id) keys such as approved past questions."""
     from pakka.cache import ExactCache, NumpyCache
 
-    if name == "exact":
-        cache = ExactCache()
-    else:
-        from pakka.embed import load_embedder
-
-        cache = NumpyCache(load_embedder(name))
+    cache = ExactCache() if name == "exact" else NumpyCache(embed)
+    answer = {f["id"]: f["answer"] for f in faqs}
     for faq in faqs:
         cache.store(faq["question"], faq["answer"], {"id": faq["id"]})
-    cache.nearest("warm up")  # first call pays one-time model setup
+    for question, label in keys:
+        cache.store(question, answer[label], {"id": label})
     return cache
+
+
+def entry_floors(rows):
+    """Per-FAQ floor: the highest score at which that FAQ was served wrongly (guard vetoes excluded)."""
+    floors = {}
+    for r in rows:
+        if r["matched_id"] and not r.get("blocked") and not is_correct(r):
+            floors[r["matched_id"]] = max(floors.get(r["matched_id"], -1.0), r["score"])
+    return floors
+
+
+def apply_floors(rows, floors):
+    """A hit on an FAQ must score above that FAQ's floor."""
+    return [{**r, "blocked": r.get("blocked") or ("entry_floor" if r["score"] <= floors.get(r["matched_id"], -2.0) else None)}
+            for r in rows]
+
+
+def score_with_method(name, embed, faqs, data, guard=None, extra_keys=False, entry_thresholds=False):
+    """Score every row. Dev rows are cross-fitted: each half gets extra keys and floors learned from the
+    other half, so the dev-picked threshold isn't fooled by questions matching themselves."""
+    dev = [r for r in data if r.get("split") != "test"]
+    test = [r for r in data if r.get("split") == "test"]
+    halves = [dev[0::2], dev[1::2]]
+
+    def score(rows, key_rows):
+        keys = [(r["q"], r["label"]) for r in key_rows if r["label"]] if extra_keys else []
+        return score_rows(seeded(name, embed, faqs, keys), rows, guard) if rows else []
+
+    scored = [score(halves[0], halves[1]), score(halves[1], halves[0])]
+    held_out = score(test, dev)
+    if entry_thresholds:
+        held_out = apply_floors(held_out, entry_floors(scored[0] + scored[1]))
+        scored = [apply_floors(scored[0], entry_floors(scored[1])), apply_floors(scored[1], entry_floors(scored[0]))]
+    return scored[0] + scored[1] + held_out
 
 
 def load_verifier(name):
@@ -197,22 +229,30 @@ def main(argv=None):
     p.add_argument("--guard", action="store_true", help="also report each encoder with pakka.guard rules on")
     p.add_argument("--verify", action="append", default=[], help="cross-encoder to re-score grey-band hits (repeatable)")
     p.add_argument("--floor", type=float, default=0.6, help="lowest similarity a verifier looks at")
+    p.add_argument("--extra-keys", action="store_true", help="also store dev paraphrases as keys (approved questions)")
+    p.add_argument("--entry-thresholds", action="store_true", help="per-FAQ floors learned from dev false hits")
     args = p.parse_args(argv)
 
     faqs = json.loads(Path(args.faqs).read_text())
     data = [json.loads(line) for line in Path(args.data).read_text().splitlines() if line.strip()]
     lines = []
+    method = {"extra_keys": args.extra_keys, "entry_thresholds": args.entry_thresholds}
+    suffix = (" + keys" if args.extra_keys else "") + (" + entry thresholds" if args.entry_thresholds else "")
     for name in args.embedder or ["paraphrase-multilingual-MiniLM-L12-v2"]:
+        from pakka.embed import load_embedder
         from pakka.guard import check
 
-        rows = score_rows(load_cache(name, faqs), data, guard=check if args.guard else None)
-        lines.append(report_encoder(name, [{k: v for k, v in r.items() if k not in ("blocked", "guard_ms")}
-                                           for r in rows], args.budget))
+        embed = None if name == "exact" else load_embedder(name)
+        if embed is not None:
+            embed(["warm up"])  # first call pays one-time model setup
+        rows = score_with_method(name, embed, faqs, data, **method)
+        lines.append(report_encoder(name + suffix, rows, args.budget))
         if args.guard:
-            lines.append(report_encoder(f"{name} + guards", rows, args.budget))
+            rows = score_with_method(name, embed, faqs, data, guard=check, **method)
+            lines.append(report_encoder(f"{name}{suffix} + guards", rows, args.budget))
         for model in args.verify:
             verify, single_ms = load_verifier(model)
-            line = report_encoder(f"{name}{' + guards' if args.guard else ''} + {model}",
+            line = report_encoder(f"{name}{suffix}{' + guards' if args.guard else ''} + {model}",
                                   verify_rows(rows, verify, args.floor), args.budget)
             line["lookup_p50_ms"] += single_ms
             lines.append(line)

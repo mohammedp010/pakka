@@ -13,6 +13,7 @@ dependencies = ["numpy", "sentence-transformers>=3"]
 redis = ["redisvl>=0.4"]
 bot = ["fastapi", "uvicorn", "httpx"]
 dev = ["pytest"]
+train = ["sentence-transformers[train]>=3"]
 
 [tool.setuptools]
 packages = ["pakka"]

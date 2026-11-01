@@ -2,7 +2,7 @@
 
 Tests, guards and safety rules for semantic caches, so a cache can prove its answers are right.
 
-**Status: phase 3 (protect).** A semantic cache with rule guards that veto wrong hits and a policy
+**Status: phase 4 (optimize).** A semantic cache with rule guards that veto wrong hits and a policy
 layer that keeps it safe: India-aware PII filtering, per-user partitions, FAQ-version tags, expiry
 and an approval queue. Plus a reference FAQ bot ("Dukaan Bot"), a 1,059-question
 English/Hinglish/Hindi test set, a bench that reports false hits with confidence intervals, and CI
@@ -210,3 +210,53 @@ upper bound must stay under 25% (it is 18.8% today).
 Limits: PII detection is regex plus checksums and doesn't catch personal names; `/forget` has no
 authentication in the demo; partitions isolate answers but not timing (a hit is still faster than a
 miss, which the timing side channel research exploits).
+
+## Phase 4: optimize (`pakka/train.py`)
+
+Three ways to raise recall, each fitted on dev only and measured on held-out. To keep the dev-picked
+threshold honest, dev is cross-fitted: each half gets extra keys and per-FAQ thresholds learned from
+the other half, so no question ever matches itself.
+
+- **Fine-tune** (`scripts/finetune.py`): one epoch on 337 dev triplets (FAQ question, a paraphrase,
+  a trap written against that FAQ), with duplicate-free batches so two paraphrases of one FAQ are
+  never pushed apart. 15 seconds on a laptop CPU.
+- **Extra keys** (`--extra-keys`): dev paraphrases stored as additional keys for their FAQ, standing in
+  for past customer questions a team has approved (`scripts/approved_from_dev.py`).
+- **Per-FAQ thresholds** (`--entry-thresholds`): a hit on an FAQ must beat the highest score at which
+  that FAQ was wrongly served on dev.
+
+**Held-out results at a 10% false-hit budget, guards on:**
+
+| Setup | Threshold | Correct | False hits | False-hit rate (95% upper) | English | Hinglish | Hindi |
+|---|---|---|---|---|---|---|---|
+| Original encoder (phase 2) | 0.790 | 46 | 4 | 8.0% (18.8%) | 29/96 | 11/200 | 6/45 |
+| Fine-tuned | 0.762 | 64 | 3 | 4.5% (12.4%) | 32/96 | 24/200 | 8/45 |
+| **Fine-tuned + extra keys** | **0.855** | **67** | **2** | **2.9% (10.0%)** | 29/96 | **31/200** | 7/45 |
+| + per-FAQ thresholds | | same as without | | | | | |
+
+Per-FAQ thresholds changed nothing at 10% and, at a 20% budget, bought hits with precision, so they
+don't ship.
+
+**The same setup in the real bot** (`replay --split test`, 526 held-out questions, real LLM):
+
+> Cache hit rate 13% on 526 test questions at threshold 0.855 with 2 false hits; LLM calls down 13%;
+> average latency down from 1355 ms to 1196 ms.
+> Hits answer in 56 ms (p50, 96 ms p95) against 1331 ms (p50, 1846 ms p95) for an LLM call.
+> Guards vetoed 12 would-be hits (11 negation, 1 slot).
+
+The real bot's 69 hits and 2 false hits match the bench's prediction exactly. The hit rate is low
+because the held-out set is built to be hard: 35% of it must miss (traps, off-topic and personal
+questions) and 55% of it is Hinglish.
+
+**Caveat: part of the gain is style, not skill.** Both halves of the benchmark were written by the
+same LLM, so fine-tuning on dev also teaches that model's phrasing. On the 46 hand-written held-out
+questions alone, the gain nearly disappears: paraphrases caught go from 11 to 13 of 27, Hinglish from
+5 to 6 of 14, with no false hits either way. That sample is small, but fresh human-written questions
+are needed before claiming the fine-tune helps real customers.
+
+To use the fine-tuned setup in Dukaan Bot:
+
+```bash
+.venv/bin/python scripts/finetune.py
+PAKKA_EMBEDDER=models/pakka-minilm-hinglish PAKKA_THRESHOLD=0.855 .venv/bin/python -m examples.dukaan_bot.chat --user ravi
+```

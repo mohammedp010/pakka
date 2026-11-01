@@ -84,7 +84,7 @@ def build(embed=None, llm=None, threshold=None, log_path=None, store_misses=True
         for line in Path(approved_path).read_text().splitlines():
             row = json.loads(line)
             if row.get("kb_version") == version:  # approved under an older FAQ: retired
-                cache.store(row["question"], row["answer"], shared)
+                cache.store(row["question"], row["answer"], {**shared, **({"id": row["id"]} if row.get("id") else {})})
     policy = Policy(kb_version=version, ttl=float(os.environ.get("PAKKA_TTL_DAYS", "7")) * 86400,
                     pending_path=pending_path)
     guard = check if os.environ.get("PAKKA_GUARD", "1") == "1" else None

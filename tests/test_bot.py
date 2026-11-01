@@ -94,3 +94,10 @@ def test_bad_or_reserved_user_ids_are_rejected(llm, paths, tmp_path, user_id):
 def test_kb_version_changes_when_any_faq_changes():
     edited = [{**FAQS[0], "answer": "Refunds take 3-5 days."}] + FAQS[1:]
     assert kb_version(FAQS) == kb_version(list(FAQS)) != kb_version(edited)
+
+
+def test_an_approved_answer_keeps_its_faq_id_so_hits_can_be_checked(llm, paths, tmp_path):
+    paths["approved_path"].write_text(json.dumps(
+        {"question": "refund kitne din me", "answer": FAQS[0]["answer"], "kb_version": kb_version(FAQS), "id": "faq_01"}) + "\n")
+    reply = bot(llm, paths, tmp_path).post("/chat", json={"question": "refund kitne din me"}).json()
+    assert reply["hit"] and reply["matched_id"] == "faq_01"
