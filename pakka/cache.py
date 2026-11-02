@@ -30,20 +30,26 @@ class NumpyCache:
         self.embed, self.clock = embed, clock
         self._vectors = None
         self._entries = []  # (question, answer, meta, expires_at or None)
+        self._expiring = False  # any entry with a ttl; until then every entry is live
 
     def store(self, question, answer, meta=None, ttl=None):
         vector = self.embed([question])
         self._vectors = vector if self._vectors is None else np.vstack([self._vectors, vector])
         self._entries.append((question, answer, meta or {}, None if ttl is None else self.clock() + ttl))
+        self._expiring = self._expiring or ttl is not None
 
     def nearest(self, question, allow=None):
         """Nearest live entry. `allow` maps meta fields to the values a match may have."""
-        now = self.clock()
-        live = np.array([(expires is None or expires > now) and all(meta.get(k) in v for k, v in (allow or {}).items())
-                         for _, _, meta, expires in self._entries], dtype=bool)
-        if not live.any():
+        if not self._entries:
             return None
-        scores = np.where(live, self._vectors @ self.embed([question])[0], -np.inf)
+        scores = self._vectors @ self.embed([question])[0]
+        if allow or self._expiring:  # the per-entry check is a Python loop, so skip it when nothing can be filtered
+            now = self.clock()
+            live = np.array([(expires is None or expires > now) and all(meta.get(k) in v for k, v in (allow or {}).items())
+                             for _, _, meta, expires in self._entries], dtype=bool)
+            if not live.any():
+                return None
+            scores = np.where(live, scores, -np.inf)
         i = int(np.argmax(scores))
         stored_question, answer, meta, _ = self._entries[i]
         return Match(stored_question, answer, float(scores[i]), meta)

@@ -192,3 +192,81 @@ def test_extra_keys_come_from_dev_and_a_dev_question_never_matches_itself():
     dev = {r["q"]: r["score"] for r in keyed if r["split"] == "dev"}
     assert dev == {"refund kab milega": 0.0, "cod hai kya": 0.0}  # each dev half only sees the other half's keys
     assert [r["score"] for r in keyed if r["split"] == "test"] == [1.0]  # held-out sees every dev key
+
+
+# --- phase 6: public datasets: a disk cache for embeddings, and the stream and pairs protocols
+
+import numpy as np  # noqa: E402
+
+from pakka.bench import pair_rows, pick_stream_threshold, replay_stream  # noqa: E402
+from pakka.embed import disk_cached  # noqa: E402
+
+
+def test_pick_threshold_is_fast_on_tens_of_thousands_of_rows():
+    import time
+
+    rows = [{"score": i / 60000, "label": "a", "matched_id": "a" if i % 50 else "b"} for i in range(60000)]
+    start = time.perf_counter()
+    assert pick_threshold(rows, budget=0.03) == 0.0  # 2% wrong everywhere, upper bound about 2.1%
+    assert time.perf_counter() - start < 2
+
+
+def test_disk_cache_embeds_each_text_once_across_runs(tmp_path):
+    calls = []
+
+    def embed(texts):
+        calls.append(list(texts))
+        return np.array([[len(t), 1.0] for t in texts], dtype=np.float32)
+
+    first = disk_cached(embed, tmp_path / "m" / "set.npz")
+    assert first(["ab", "c", "ab"]).tolist() == [[2, 1], [1, 1], [2, 1]]
+    first.save()
+    again = disk_cached(embed, tmp_path / "m" / "set.npz")
+    assert again(["c", "ab"]).tolist() == [[1, 1], [2, 1]]
+    assert again(["new"]).tolist() == [[3, 1]]
+    assert calls == [["ab", "c"], ["new"]]
+
+
+def unit(*xy):
+    v = np.array(xy, dtype=np.float32)
+    return v / np.linalg.norm(v)
+
+
+# class 0 near [1, 0], class 1 near [0, 1]; the 3rd item sits close to class 0's question but is class 1
+STREAM = [{"q": q, "label": c, "split": "dev"} for q, c in [("a", 0), ("a2", 0), ("trap", 1), ("b", 1), ("b2", 1)]]
+VECS = np.stack([unit(1, 0), unit(0.99, 0.141), unit(0.945, 0.327), unit(0, 1), unit(0.1, 0.995)])
+
+
+def test_stream_hits_the_nearest_stored_question_and_stores_every_miss():
+    rows = replay_stream(VECS, STREAM, 0.9)
+    assert [(r["matched_id"], r["cache_size"]) for r in rows] == [(None, 0), (0, 1), (0, 1), (0, 1), (1, 2)]
+    r = evaluate(rows, 0.9)
+    assert (r["hits"], r["correct"], r["false_hits"]) == (3, 2, 1)
+    assert rows[2]["matched_q"] == "a" and rows[4]["matched_q"] == "b"
+
+
+def test_stream_gives_the_same_answer_for_any_block_size():
+    for t in (0.5, 0.9, 0.99):
+        assert replay_stream(VECS, STREAM, t, block=2) == replay_stream(VECS, STREAM, t)
+
+
+def test_a_guard_veto_in_a_stream_is_a_miss_so_that_question_is_stored():
+    rows = replay_stream(VECS, STREAM, 0.9, guard=lambda q, cached, answer: "slot" if q == "trap" else None)
+    assert rows[2]["blocked"] == "slot" and rows[3]["cache_size"] == 2
+    assert evaluate(rows, 0.9)["false_hits"] == 0
+
+
+def test_stream_threshold_is_the_lowest_grid_point_that_fits_the_budget_on_dev():
+    t, rows = pick_stream_threshold(VECS, STREAM, budget=0.7)
+    assert t == pytest.approx(0.95)  # at 0.94 the trap is served: 1 wrong of 3, upper bound 79%
+    assert evaluate(rows, t)["false_hits"] == 0
+    assert pick_stream_threshold(VECS, STREAM, budget=0.01) == (None, None)
+
+
+def test_pair_rows_count_a_high_score_on_a_different_pair_as_a_false_hit():
+    pairs = [{"q": "x", "q2": "x2", "label": 1, "source": "qqp"}, {"q": "y", "q2": "y2", "label": 0, "source": "paws"}]
+    rows = pair_rows(np.stack([unit(1, 0), unit(1, 0)]), np.stack([unit(1, 0.1), unit(1, 0.2)]), pairs,
+                     guard=lambda q, cached, answer: None)
+    r = evaluate(rows, 0.9)
+    assert (r["hits"], r["correct"], r["false_hits"], r["missed"]) == (2, 1, 1, 0)
+    assert [x["source"] for x in rows] == ["qqp", "paws"] and rows[0]["blocked"] is None

@@ -14,8 +14,12 @@ import math
 import statistics
 import sys
 import time
+from bisect import bisect_left
 from collections import Counter
+from itertools import accumulate
 from pathlib import Path
+
+import numpy as np
 
 
 def is_correct(row):
@@ -75,8 +79,12 @@ def pchr_auc(rows):
 
 def pick_threshold(rows, budget):
     """Lowest threshold (most hits) whose false-hit rate upper bound stays within `budget`."""
+    served = sorted((r["score"], not is_correct(r)) for r in rows if not r.get("blocked"))
+    scores = [s for s, _ in served]
+    wrong_from = list(accumulate(w for _, w in reversed(served)))[::-1] + [0]  # wrong among served[i:]
     for t in sorted({r["score"] for r in rows}):  # ascending, so the first fit serves the most
-        if evaluate(rows, t)["false_hit_upper"] <= budget:
+        i = bisect_left(scores, t)
+        if wilson(wrong_from[i], len(served) - i)[1] <= budget:
             return t
     return None
 
@@ -103,6 +111,62 @@ def verify_rows(rows, verify, floor):
     todo = [i for i, r in enumerate(rows) if r["score"] >= floor and not r.get("blocked")]
     scores = dict(zip(todo, verify([(rows[i]["q"], rows[i]["matched_q"]) for i in todo]) if todo else []))
     return [{**r, "score": float(scores[i]) if i in scores else -1.0} for i, r in enumerate(rows)]
+
+
+def replay_stream(vectors, rows, threshold, guard=None, block=256):
+    """Stream protocol: questions arrive in order. Each is served the answer of the most similar question
+    stored so far if it scores at or above `threshold` and no guard vetoes it; otherwise the LLM answers and
+    the question is stored, so the cache grows with every miss. A hit is correct when both questions share
+    an equivalence class (`label`). `vectors` are the rows' unit embeddings, in the same order."""
+    bank, ids, size, out = np.empty_like(vectors), np.empty(len(rows), dtype=int), 0, []
+    for start in range(0, len(rows), block):  # one matmul per block against everything stored before it
+        chunk = vectors[start:start + block]
+        before = size
+        prior = chunk @ bank[:before].T if before else None
+        best = prior.argmax(axis=1) if before else None
+        inner, fresh = chunk @ chunk.T, []  # questions stored inside this block
+        for k in range(len(chunk)):
+            i, j, score = start + k, None, -1.0
+            if before:
+                j, score = int(ids[best[k]]), float(prior[k, best[k]])
+            if fresh:
+                f = fresh[int(inner[k, fresh].argmax())]
+                if inner[k, f] > score:  # ties go to the older entry, as in NumpyCache
+                    j, score = start + f, float(inner[k, f])
+            blocked = guard(rows[i]["q"], rows[j]["q"], "") if guard and j is not None and score >= threshold else None
+            out.append({**rows[i], "matched_id": None if j is None else rows[j]["label"],
+                        "matched_q": None if j is None else rows[j]["q"], "score": score, "blocked": blocked,
+                        "cache_size": size})
+            if j is None or score < threshold or blocked:
+                bank[size], ids[size] = vectors[i], i
+                size += 1
+                fresh.append(k)
+    return out
+
+
+def pick_stream_threshold(vectors, rows, budget, guard=None):
+    """(threshold, replayed rows): the lowest of 0.50, 0.51 ... 0.99 whose false-hit upper bound on the dev rows
+    fits `budget`, or (None, None). Dev rows come first in a stream, so only that prefix is replayed per try:
+    every 0.05 first, then the 0.01 steps just below the first fit (the bound widens again near 1.0, where
+    hits are few, so it can't bisect). The whole stream is replayed once, at the chosen threshold."""
+    grid, end = [round(0.5 + i / 100, 2) for i in range(50)], 1 + max(i for i, r in enumerate(rows) if r["split"] == "dev")
+
+    def fits(i):
+        dev = [r for r in replay_stream(vectors[:end], rows[:end], grid[i], guard) if r["split"] == "dev"]
+        return evaluate(dev, grid[i])["false_hit_upper"] <= budget
+
+    coarse = next((i for i in range(0, 50, 5) if fits(i)), None)
+    fine = range(max(coarse - 4, 0), coarse) if coarse is not None else range(46, 50)
+    best = next((i for i in fine if fits(i)), coarse)
+    return (grid[best], replay_stream(vectors, rows, grid[best], guard)) if best is not None else (None, None)
+
+
+def pair_rows(vectors1, vectors2, pairs, guard=None):
+    """Pairs protocol: a pair scoring at or above the threshold is a hit, and a false hit when it is labelled
+    different (0). Rows fit `evaluate` and `pick_threshold`: label None means the cache must miss."""
+    scores = np.einsum("ij,ij->i", vectors1, vectors2)
+    return [{**p, "label": 1 if p["label"] else None, "matched_id": 1, "score": float(s),
+             "blocked": guard(p["q2"], p["q"], "") if guard else None} for p, s in zip(pairs, scores)]
 
 
 def caught(rows, threshold, lang):
@@ -231,6 +295,7 @@ def main(argv=None):
     p.add_argument("--floor", type=float, default=0.6, help="lowest similarity a verifier looks at")
     p.add_argument("--extra-keys", action="store_true", help="also store dev paraphrases as keys (approved questions)")
     p.add_argument("--entry-thresholds", action="store_true", help="per-FAQ floors learned from dev false hits")
+    p.add_argument("--embed-cache", help="directory that keeps each model's vectors, so reruns don't embed again")
     args = p.parse_args(argv)
 
     faqs = json.loads(Path(args.faqs).read_text())
@@ -239,10 +304,14 @@ def main(argv=None):
     method = {"extra_keys": args.extra_keys, "entry_thresholds": args.entry_thresholds}
     suffix = (" + keys" if args.extra_keys else "") + (" + entry thresholds" if args.entry_thresholds else "")
     for name in args.embedder or ["paraphrase-multilingual-MiniLM-L12-v2"]:
-        from pakka.embed import load_embedder
+        from pakka.embed import disk_cached, load_embedder
         from pakka.guard import check
 
         embed = None if name == "exact" else load_embedder(name)
+        if embed is not None and args.embed_cache:
+            embed = disk_cached(embed, Path(args.embed_cache) / name.replace("/", "__") / f"{Path(args.data).stem}.npz")
+            embed([f["question"] for f in faqs] + [r["q"] for r in data])  # one batch for every new text
+            embed.save()
         if embed is not None:
             embed(["warm up"])  # first call pays one-time model setup
         rows = score_with_method(name, embed, faqs, data, **method)
