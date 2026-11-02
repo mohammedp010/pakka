@@ -2,9 +2,9 @@
 
 Until now every pakka number came from our own 1,059 LLM-written questions on 30 FAQs. This page runs the same
 cache, with and without pakka's guards, on **nine public datasets that other people built and labelled**: about
-420,000 questions and sentence pairs in English, Hindi and Hinglish. It compares nine embedders on all of it
-(seven local, two through an API), including the one RedisVL uses by default at RedisVL's default threshold, and a
-tenth, the local Qwen3-Embedding-0.6B, on six of the datasets. Measured 2 Nov 2026 on a MacBook Air M2 with 8 GB.
+420,000 questions and sentence pairs in English, Hindi and Hinglish. It compares ten embedders on all of it
+(eight local, two through an API), including the one RedisVL uses by default at RedisVL's default threshold.
+Measured 2–3 Nov 2026 on a MacBook Air M2 with 8 GB.
 Phase 7 (same day) fixed the guards using dev splits only, re-ran everything, gave LangCache a stratified dev/test
 split, and had three LLMs audit 1,455 sampled hits to measure how often the labels themselves are wrong. The audit
 led to one label fix: MASSIVE Hindi questions whose slot value is only translated are now hits, not traps (see
@@ -20,12 +20,12 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
    where MiniLM's sit between 0.81 and 0.96.
 2. **Picking the threshold on a dev split works, when dev looks like the traffic.** On Banking77, CLINC150,
    Bitext and vCache Classification the dev-picked threshold held on test: 1.4% to 4.5% false hits with MiniLM,
-   and at worst 6.0% across all nine embedders (Qwen3-Embedding-8B on CLINC150). On LangCache it failed:
-   validation has no QQP, PAWS or APT pairs, and test false hits came out at 25–40% for eight embedders and 19% for
+   and at worst 6.0% across all ten embedders (Qwen3-Embedding-8B on CLINC150). On LangCache it failed:
+   validation has no QQP, PAWS or APT pairs, and test false hits came out at 25–40% for nine embedders and 19% for
    `langcache-embed-v1`. With a stratified dev split instead (a fifth of each source in LangCache test), **no
    threshold fits for any embedder**: even the 5% of pairs each one scores highest are 7–32% wrong (Qwen3-8B
    lowest). The method then says so up front, instead of picking a threshold that fails on test.
-3. **On half the datasets nothing fits a 5% budget at all,** for any of the nine embedders: our own set,
+3. **On half the datasets nothing fits a 5% budget at all,** for any of the ten embedders: our own set,
    Hinglish-TOP, MASSIVE, stratified LangCache, vCache LmArena and SearchQueries. Similarity alone can't separate
    "alarm 6 baje" from "alarm 7 baje", "switch on the lights" from "switch off the lights", or "convert jpg to pdf"
    from "convert pdf to jpg". For traffic like that, a semantic cache needs more than a threshold. (Part of this is label noise:
@@ -34,8 +34,8 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
    doesn't climb as the cache grows from 1k to 100k entries (it moves within 27–51% and settles near 35–38%),
    but the hit rate climbs from 1–2% to about 60%. So wrong answers per 100 questions go from 0.3–1 to 21–23.
 5. **A better embedder is the biggest lever, but it doesn't remove the traps.** Qwen3-Embedding-8B (through an
-   API) has the best AUC on six of the eight threshold-free rows: mean 0.699, against 0.619 for bge-m3, the best of
-   the original local models, and 0.571 for MiniLM, pakka's default. On our own set at a 10% budget with guards it
+   API) has the best AUC on six of the eight threshold-free rows: mean 0.699, against 0.647 for Qwen3-Embedding-0.6B,
+   the best local model, and 0.571 for MiniLM, pakka's default. On our own set at a 10% budget with guards it
    answers 188 of 526 held-out questions with 14 wrong, where MiniLM answers 48 with 5 wrong. But no embedder,
    Qwen3-8B included, fits a 5% budget on our set, Hinglish-TOP, MASSIVE, LmArena, SearchQueries or stratified
    LangCache. Through an API it is slow, too: one question took 1.5 s to embed at the median (p90 19 s), as long as
@@ -51,7 +51,7 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
 
 - **Guards still trade a few hits on intent-labelled data.** Phase 7 cut the good hits they throw away (MiniLM,
   held-out: vCache Classification 4,076 → 106, LangCache 740 → 312), but at the same 5% budget guards still lower
-  the hit rate in 35 of the 41 cases where a threshold fits (nine embedders) and raise it in 6. The drops are small
+  the hit rate in 39 of the 46 cases where a threshold fits (ten embedders) and raise it in 7. The drops are small
   now: a median of 0.3 points, the worst 4.2 (Qwen3-Embedding-8B on LangCache). In Phase 6 the average drop was 2.4
   points and the worst 10.9. Most of what's left are slot vetoes the labels call wrong
   ("set the timer for 10 minutes" served the answer to "a 4 minute timer"; bill #00108 vs #85632), and the audit's
@@ -82,7 +82,8 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
 That one command downloads the datasets from pinned Hugging Face revisions into `data/public/` (gitignored; we
 never commit them), embeds every text once per model (cached in `data/public/emb/`), runs every measurement
 (cached in `data/public/results/`), and rewrites the tables below. Six of the models took about 3 hours of
-compute on a MacBook Air M2 with 8 GB (MiniLM about 10 minutes, each base-size model about 40); bge-m3 took about 1¾ hours on the Mac (16 minutes on a Kaggle T4).
+compute on a MacBook Air M2 with 8 GB (MiniLM about 10 minutes, each base-size model about 40); bge-m3 took about 1¾ hours on the Mac (16 minutes on a Kaggle T4), and
+Qwen3-Embedding-0.6B about 3½ hours for LangCache and the three streams alone (about 40 texts a second).
 The two API embedders (`openrouter:qwen/qwen3-embedding-8b` and `openrouter:openai/text-embedding-3-small`) need
 `OPENROUTER_API_KEY` in `.env` and cost about $0.70 together for every dataset. After that a rerun takes seconds.
 `scripts/public_bench.py <model> ...` measures just those models and redraws the tables from everything measured
@@ -161,7 +162,7 @@ Held-out (test) split of each dataset. Each cell is **false-hit rate · hit rate
 | Dataset | Protocol | Held-out | RedisVL defaults | RedisVL defaults + pakka guards | MiniLM-L12 (pakka default), tuned | … + guards | Best measured embedder, tuned + guards |
 |---|---|---|---|---|---|---|---|
 | HinglishCacheBench v1 (ours) | faq | 526 | 0.0% · 2% | 0.0% · 2% | no threshold fits | no threshold fits | no threshold fits |
-| Banking77 | faq | 3,051 | 4.2% · 3% | 4.4% · 3% | 4.4% · 3% | 4.5% · 3% | OpenAI 3-small (API): 4.9% · 7% |
+| Banking77 | faq | 3,051 | 4.2% · 3% | 4.4% · 3% | 4.4% · 3% | 4.5% · 3% | Qwen3-Embedding-0.6B: 5.0% · 9% |
 | CLINC150 | faq | 5,494 | 1.0% · 4% | 1.0% · 4% | 4.1% · 9% | 4.5% · 8% | Qwen3-Embedding-8B (API): 6.1% · 25% |
 | Bitext | faq | 12,057 | 4.0% · 5% | 4.1% · 5% | 1.4% · 2% | 0.6% · 1% | Qwen3-Embedding-8B (API): 4.6% · 22% |
 | Hinglish-TOP | faq | 13,243 | 65.8% · 8% | 61.4% · 7% | no threshold fits | no threshold fits | no threshold fits |
@@ -172,9 +173,6 @@ Held-out (test) split of each dataset. Each cell is **false-hit rate · hit rate
 | vCache Classification | stream | 36,000 | 9.4% · 31% | 9.9% · 31% | 2.4% · 22% | 2.4% · 22% | OpenAI 3-small (API): 3.7% · 25% |
 | vCache SearchQueries | stream | 120,000 | 35.1% · 54% | 34.9% · 54% | no threshold fits | no threshold fits | no threshold fits |
 
-Not measured on every dataset yet: Qwen3-Embedding-0.6B, marked "not run yet" below (results for what has run are under "Better embedders").
-
-
 Label-noise floor of the streams: an exact-match cache (same text after lowercasing) replayed over the whole stream is already "wrong" on vCache LmArena 871 of 9,778 hits (8.9%); vCache Classification 6 of 6,356 hits (0.1%); vCache SearchQueries 102 of 680 hits (15.0%), because identical prompts sit in different equivalence classes. No embedder can beat that floor on these labels.
 
 
@@ -182,35 +180,35 @@ Label-noise floor of the streams: an exact-match cache (same text after lowercas
 
 Area under precision vs cache-hit ratio (higher is better), plain cache, held-out split. It doesn't depend on any threshold, so it compares embedders fairly. Streams have none: what a stream stores depends on the threshold.
 
-| Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) | Qwen3-Embedding-0.6B |
+| Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | Qwen3-Embedding-0.6B | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| HinglishCacheBench v1 (ours) | 0.650 | 0.600 | 0.639 | 0.641 | 0.690 | 0.657 | 0.705 | **0.844** | 0.646 | not run yet |
-| Banking77 | 0.643 | 0.663 | 0.572 | 0.597 | 0.532 | 0.506 | 0.727 | **0.790** | 0.705 | not run yet |
-| CLINC150 | 0.722 | 0.716 | 0.675 | 0.710 | 0.575 | 0.592 | 0.736 | **0.845** | 0.798 | not run yet |
-| Bitext | 0.721 | 0.856 | 0.678 | 0.725 | 0.670 | 0.676 | 0.843 | **0.900** | 0.827 | not run yet |
-| Hinglish-TOP | 0.183 | 0.200 | 0.199 | 0.187 | 0.316 | 0.218 | 0.237 | **0.374** | 0.218 | not run yet |
-| MASSIVE en+hi | 0.447 | 0.240 | 0.361 | 0.369 | 0.449 | 0.473 | 0.455 | **0.495** | 0.266 | not run yet |
-| LangCache pairs | 0.602 | **0.677** | 0.592 | 0.603 | 0.617 | 0.579 | 0.626 | 0.672 | 0.614 | not run yet |
-| LangCache pairs, stratified split | 0.601 | **0.677** | 0.591 | 0.602 | 0.616 | 0.578 | 0.625 | 0.671 | 0.613 | not run yet |
-| Mean | 0.571 | 0.579 | 0.538 | 0.554 | 0.558 | 0.535 | 0.619 | 0.699 | 0.586 | not run yet |
+| HinglishCacheBench v1 (ours) | 0.650 | 0.600 | 0.639 | 0.641 | 0.690 | 0.657 | 0.776 | 0.705 | **0.844** | 0.646 |
+| Banking77 | 0.643 | 0.663 | 0.572 | 0.597 | 0.532 | 0.506 | 0.731 | 0.727 | **0.790** | 0.705 |
+| CLINC150 | 0.722 | 0.716 | 0.675 | 0.710 | 0.575 | 0.592 | 0.796 | 0.736 | **0.845** | 0.798 |
+| Bitext | 0.721 | 0.856 | 0.678 | 0.725 | 0.670 | 0.676 | 0.862 | 0.843 | **0.900** | 0.827 |
+| Hinglish-TOP | 0.183 | 0.200 | 0.199 | 0.187 | 0.316 | 0.218 | 0.315 | 0.237 | **0.374** | 0.218 |
+| MASSIVE en+hi | 0.447 | 0.240 | 0.361 | 0.369 | 0.449 | 0.473 | 0.417 | 0.455 | **0.495** | 0.266 |
+| LangCache pairs | 0.602 | **0.677** | 0.592 | 0.603 | 0.617 | 0.579 | 0.640 | 0.626 | 0.672 | 0.614 |
+| LangCache pairs, stratified split | 0.601 | **0.677** | 0.591 | 0.602 | 0.616 | 0.578 | 0.639 | 0.625 | 0.671 | 0.613 |
+| Mean | 0.571 | 0.579 | 0.538 | 0.554 | 0.558 | 0.535 | 0.647 | 0.619 | 0.699 | 0.586 |
 
 ## Embedders at a 5% false-hit budget, with guards
 
 Hit rate on held-out at the dev-picked threshold, with the held-out false-hit rate in brackets: above 5% means the threshold picked on dev didn't hold.
 
-| Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) | Qwen3-Embedding-0.6B |
+| Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | Qwen3-Embedding-0.6B | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| HinglishCacheBench v1 (ours) | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | not run yet |
-| Banking77 | 3% (4.5%) | 3% (5.2%) | 3% (3.7%) | 2% (4.8%) | 1% (3.6%) | 1% (0.0%) | 3% (1.9%) | 3% (1.2%) | **7%** (4.9%) | not run yet |
-| CLINC150 | 8% (4.5%) | none fits | none fits | 3% (2.8%) | none fits | none fits | 5% (3.6%) | **25%** (6.1%) | 7% (3.1%) | not run yet |
-| Bitext | 1% (0.6%) | 19% (4.7%) | 1% (0.0%) | 7% (5.7%) | 5% (3.7%) | 4% (3.7%) | 18% (4.8%) | **22%** (4.6%) | 8% (4.3%) | not run yet |
-| Hinglish-TOP | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | not run yet |
-| MASSIVE en+hi | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | not run yet |
-| LangCache pairs | 22% (34.9%) | 17% (23.1%) | 26% (35.0%) | **28%** (33.4%) | 27% (32.9%) | 20% (39.1%) | 26% (31.4%) | 27% (23.6%) | 13% (31.2%) | not run yet |
-| LangCache pairs, stratified split | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | not run yet |
-| vCache LmArena | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | not run yet |
-| vCache Classification | 22% (2.4%) | 21% (2.6%) | 23% (2.7%) | 24% (3.0%) | 21% (2.0%) | 22% (2.4%) | 22% (1.8%) | 21% (2.1%) | **25%** (3.7%) | not run yet |
-| vCache SearchQueries | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | not run yet |
+| HinglishCacheBench v1 (ours) | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| Banking77 | 3% (4.5%) | 3% (5.2%) | 3% (3.7%) | 2% (4.8%) | 1% (3.6%) | 1% (0.0%) | **9%** (5.0%) | 3% (1.9%) | 3% (1.2%) | 7% (4.9%) |
+| CLINC150 | 8% (4.5%) | none fits | none fits | 3% (2.8%) | none fits | none fits | 10% (4.7%) | 5% (3.6%) | **25%** (6.1%) | 7% (3.1%) |
+| Bitext | 1% (0.6%) | 19% (4.7%) | 1% (0.0%) | 7% (5.7%) | 5% (3.7%) | 4% (3.7%) | 10% (3.7%) | 18% (4.8%) | **22%** (4.6%) | 8% (4.3%) |
+| Hinglish-TOP | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| MASSIVE en+hi | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| LangCache pairs | 22% (34.9%) | 17% (23.1%) | 26% (35.0%) | **28%** (33.4%) | 27% (32.9%) | 20% (39.1%) | 25% (29.4%) | 26% (31.4%) | 27% (23.6%) | 13% (31.2%) |
+| LangCache pairs, stratified split | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| vCache LmArena | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| vCache Classification | 22% (2.4%) | 21% (2.6%) | 23% (2.7%) | 24% (3.0%) | 21% (2.0%) | 22% (2.4%) | 23% (2.6%) | 22% (1.8%) | 21% (2.1%) | **25%** (3.7%) |
+| vCache SearchQueries | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
 
 ## Do guards help on data they weren't designed for? (MiniLM-L12 (pakka default))
 
@@ -230,7 +228,7 @@ Same budget, threshold picked on dev with and without guards. "Plain at the same
 | vCache Classification | 2.4% · 22% | 2.4% · 22% | - | 106 | entity 22, negation 12, slot 75 |
 | vCache SearchQueries | no threshold fits | no threshold fits | - | - | - |
 
-Across the 9 measured embedders and 11 datasets, guards raised the hit rate at the same budget in 6 cases and lowered it in 35.
+Across the 10 measured embedders and 11 datasets, guards raised the hit rate at the same budget in 7 cases and lowered it in 39.
 
 ## Threshold transfer (MiniLM-L12 (pakka default), plain)
 
@@ -252,7 +250,7 @@ Each row picks its threshold on one dataset's dev split (5% budget); each column
 
 ## LangCache pairs by source
 
-Redis's own sentence-pair benchmark, test split. Each cell is **false-hit rate · duplicates caught** (share of same-meaning pairs scored as hits). The tuned threshold comes from the validation split, which has no QQP, PAWS or APT pairs. On the stratified split, whose dev holds a fifth of every source, a threshold fits for none of the 9 embedders.
+Redis's own sentence-pair benchmark, test split. Each cell is **false-hit rate · duplicates caught** (share of same-meaning pairs scored as hits). The tuned threshold comes from the validation split, which has no QQP, PAWS or APT pairs. On the stratified split, whose dev holds a fifth of every source, a threshold fits for none of the 10 embedders.
 
 | Source | Pairs (same) | AUC MiniLM-L12 (pakka default) | AUC langcache-embed-v1 | MiniLM-L12 (pakka default) at 0.955 | RedisVL defaults (0.9) |
 |---|---|---|---|---|---|
@@ -297,10 +295,10 @@ No embedder has a threshold that meets the budget on Hinglish-TOP or MASSIVE, so
 | e5-base | 70.1% | 23% | 3% | 520 | 52.8% | 15% | 0% | 106 |
 | IndicSBERT | 41.8% | 13% | 22% | 328 | 31.8% | 10% | 9% | 54 |
 | LaBSE | 62.2% | 16% | 10% | 444 | 22.1% | 6% | 14% | 57 |
+| Qwen3-Embedding-0.6B | 43.4% | 24% | 16% | 357 | 43.3% | 16% | 2% | 67 |
 | bge-m3 | 63.1% | 28% | 3% | 483 | 33.2% | 11% | 8% | 57 |
 | Qwen3-Embedding-8B (API) | 36.7% | 23% | 19% | 285 | 32.6% | 14% | 6% | 50 |
 | OpenAI 3-small (API) | 64.7% | 23% | 5% | 518 | 52.0% | 16% | 0% | 128 |
-| Qwen3-Embedding-0.6B | not run yet | not run yet | not run yet | not run yet | not run yet | not run yet | not run yet | not run yet |
 <!-- generated by scripts/public_bench.py: end -->
 
 ## Better embedders
@@ -339,26 +337,14 @@ through OpenRouter from India, one question per call):
 The LLM call a cache saves took 1,331 ms at the median in the real bot, so an API embedder makes a cache hit as
 slow as a miss: it still saves money, not time. Qwen3-Embedding-8B would need its own GPU to be practical.
 
-**Qwen3-Embedding-0.6B on the six FAQ sets.** It ran at about 40 questions a second on the laptop, so it has not
-been through LangCache and the three streams yet and is missing from the generated tables above. Cells are
-**AUC · hit rate at a 5% budget with guards (held-out false-hit rate)**:
-
-| Dataset | MiniLM-L12 (pakka default) | IndicSBERT | bge-m3 | Qwen3-Embedding-0.6B | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
-|---|---|---|---|---|---|---|
-| HinglishCacheBench v1 (ours) | 0.650 · none fits | 0.690 · none fits | 0.705 · none fits | 0.776 · none fits | 0.844 · none fits | 0.646 · none fits |
-| Banking77 | 0.643 · 3% (4.5%) | 0.532 · 1% (3.6%) | 0.727 · 3% (1.9%) | 0.731 · 9% (5.0%) | 0.790 · 3% (1.2%) | 0.705 · 7% (4.9%) |
-| CLINC150 | 0.722 · 8% (4.5%) | 0.575 · none fits | 0.736 · 5% (3.6%) | 0.796 · 10% (4.7%) | 0.845 · 25% (6.1%) | 0.798 · 7% (3.1%) |
-| Bitext | 0.721 · 1% (0.6%) | 0.670 · 5% (3.7%) | 0.843 · 18% (4.8%) | 0.862 · 10% (3.7%) | 0.900 · 22% (4.6%) | 0.827 · 8% (4.3%) |
-| Hinglish-TOP | 0.183 · none fits | 0.316 · none fits | 0.237 · none fits | 0.315 · none fits | 0.374 · none fits | 0.218 · none fits |
-| MASSIVE en+hi | 0.447 · none fits | 0.449 · none fits | 0.455 · none fits | 0.417 · none fits | 0.495 · none fits | 0.266 · none fits |
-| Mean AUC | 0.561 | 0.539 | 0.617 | 0.650 | 0.708 | 0.577 |
-| Hinglish-TOP, top 10%: false-hit rate · Hinglish caught | 63.7% · 5% | 41.8% · 22% | 63.1% · 3% | 43.4% · 16% | 36.7% · 19% | 64.7% · 5% |
-| MASSIVE, top 10%: false-hit rate · Hindi caught | 26.5% · 11% | 31.8% · 9% | 33.2% · 8% | 43.3% · 2% | 32.6% · 6% | 52.0% · 0% |
-
-It is the best local model on mean AUC, and wherever a threshold fits it serves more than MiniLM at the same
-budget: three times as much on Banking77, ten times on Bitext. On Hinglish-TOP it catches 16% of the Hinglish
-questions at the same hit rate (MiniLM 5%). Its weak spot is Hindi in Devanagari: on MASSIVE it catches 2% of the
-Hindi questions, where MiniLM catches 11%, and its false-hit rate there is the second worst of the six.
+**Qwen3-Embedding-0.6B.** It runs at about 40 texts a second on the laptop; its numbers are in the generated
+tables above. It is the best local model on mean AUC (0.647 over the eight threshold-free rows; bge-m3 0.619,
+MiniLM 0.571), and wherever a threshold fits it serves more than MiniLM at the same budget: three times as much on
+Banking77 (9% against 3%), ten times on Bitext (10% against 1%), about the same on vCache Classification (23%
+against 22%). On LangCache's own split its test false hits are 29% (MiniLM 35%). On the stratified split nothing
+fits, but its top 5% of pairs are 13% wrong, second only to Qwen3-8B's 7%. On Hinglish-TOP it catches 16% of the
+Hinglish questions at the same hit rate (MiniLM 5%). Its weak spot is Hindi in Devanagari: on MASSIVE it catches 2%
+of the Hindi questions, where MiniLM catches 11%, and 43% of its hits there are wrong (MiniLM 27%).
 
 ## Phase 7: fixing the guards on dev splits
 
@@ -431,8 +417,8 @@ Where no threshold fits, the false-hit rate at the same share of questions serve
 
 On the same seven embedders and ten datasets as Phase 6, guards now raise the hit rate at the same budget in 6
 cases and lower it in 25 (Phase 6: 4 and 26), but the losses shrank: the average change went from −2.4 points to
-+0.1, the worst from −10.9 to −2.1, and drops of more than a point from 12 to 3. With the two API embedders and the
-stratified split added: 6 up, 35 down, a median change of −0.3 points, the worst −4.2. On our own set the Phase 7 guards are about where
++0.1, the worst from −10.9 to −2.1, and drops of more than a point from 12 to 3. With all ten embedders and the
+stratified split: 7 up, 39 down, a median change of −0.3 points, the worst −4.2. On our own set the Phase 7 guards are about where
 Phase 6 left them: one more false hit in the top tenth (5 of 52 instead of 4), and the CI gate (10% budget,
 held-out) gives 48 right and 5 wrong, a 9.4% false-hit rate with a 95% upper bound of 20.3% (Phase 6 guards: 46
 right, 4 wrong, 8.0%, 18.8%). The gate fails above 25%. The best setup on our set, the fine-tuned encoder with
@@ -514,7 +500,7 @@ cell, each share carries about ±11 points of sampling error, on top of the judg
   its FAQ, not a written canonical question. A real FAQ cache usually holds a cleaner question, sometimes several.
 - **Truncation.** Every model sees at most 128 tokens per text. That only affects long LmArena and Classification
   prompts.
-- **bge-m3 uses float16 weights** (`HALF` in the script), the others float32; float16 can move scores in the
+- **bge-m3 and Qwen3-Embedding-0.6B use float16 weights** (`HALF` in the script), the others float32; float16 can move scores in the
   third or fourth decimal. Phase 6 measured it on a Kaggle T4; Phase 7 re-embedded it on the Mac so its guarded
   numbers and the stratified LangCache split use the same guards as everything else. That moved its AUCs by at most
   0.0003; one dev-picked threshold moved a step (Banking77: 2.8% · 4% on Kaggle, 1.9% · 3% on the Mac).
