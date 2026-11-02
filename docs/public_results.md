@@ -2,9 +2,9 @@
 
 Until now every pakka number came from our own 1,059 LLM-written questions on 30 FAQs. This page runs the same
 cache, with and without pakka's guards, on **nine public datasets that other people built and labelled**: about
-420,000 questions and sentence pairs in English, Hindi and Hinglish. It compares six embedders, including the
-one RedisVL uses by default at RedisVL's default threshold; a seventh, bge-m3, is still pending (see Caveats).
-Measured 2 Nov 2026 on a MacBook Air M2 with 8 GB.
+420,000 questions and sentence pairs in English, Hindi and Hinglish. It compares seven embedders, including the
+one RedisVL uses by default at RedisVL's default threshold. Measured 2 Nov 2026: six embedders on a MacBook Air M2
+with 8 GB, bge-m3 on a Kaggle T4 GPU (same code and data; see Caveats).
 
 ## What we found
 
@@ -16,9 +16,9 @@ Measured 2 Nov 2026 on a MacBook Air M2 with 8 GB.
    where MiniLM's sit between 0.81 and 0.96.
 2. **Picking the threshold on a dev split works, when dev looks like the traffic.** On Banking77, CLINC150,
    Bitext and vCache Classification the dev-picked threshold held on test: 1.4% to 4.5% false hits with MiniLM,
-   and at worst 5.5% across all six embedders. On LangCache it failed: validation has no QQP, PAWS or APT pairs,
-   and test false hits came out at 33–40% for five embedders and 19–24% for `langcache-embed-v1`.
-3. **On half the datasets nothing fits a 5% budget at all,** for any of the six embedders: our own set,
+   and at worst 5.7% across all seven embedders. On LangCache it failed: validation has no QQP, PAWS or APT pairs,
+   and test false hits came out at 31–40% for six embedders and 19–24% for `langcache-embed-v1`.
+3. **On half the datasets nothing fits a 5% budget at all,** for any of the seven embedders: our own set,
    Hinglish-TOP, MASSIVE, vCache LmArena and SearchQueries. Similarity alone can't separate "alarm 6 baje" from
    "alarm 7 baje", "switch on the lights" from "switch off the lights", or "convert jpg to pdf" from "convert pdf
    to jpg". For traffic like that, a semantic cache needs more than a threshold. (Part of this is label noise; see
@@ -26,23 +26,25 @@ Measured 2 Nov 2026 on a MacBook Air M2 with 8 GB.
 4. **The cache-size curve is about volume, not ratio.** On SearchQueries at 0.90 the share of hits that are wrong
    doesn't climb as the cache grows from 1k to 100k entries (it moves within 27–51% and settles near 35–38%),
    but the hit rate climbs from 1–2% to about 60%. So wrong answers per 100 questions go from 0.3–1 to 21–23.
-5. **No embedder wins everywhere.** Mean P-CHR AUC is a tie between MiniLM (pakka's default) and
-   `langcache-embed-v1` (0.564). `langcache-embed-v1` is best on English (Bitext 0.856, LangCache 0.677) but
-   catches 0% of Hindi questions on MASSIVE. IndicSBERT is the clear pick for Hinglish: best AUC on our set
-   (0.690) and Hinglish-TOP (0.316), and at the same hit rate it catches 21% of Hinglish questions where the
-   others catch 2–10%.
+5. **No embedder wins everywhere.** bge-m3 has the best mean P-CHR AUC (0.615, against 0.564 for both MiniLM,
+   pakka's default, and `langcache-embed-v1`), with the best AUC on our set (0.705), Banking77 and CLINC150.
+   `langcache-embed-v1` is best on Bitext (0.856) and LangCache (0.677) but catches 0% of Hindi questions on
+   MASSIVE. For Hinglish written by people, IndicSBERT is still the pick: best AUC on Hinglish-TOP (0.316, bge-m3
+   0.237), and at the same hit rate it catches 21% of Hinglish questions where the others, bge-m3 included,
+   catch 2–10%.
 
 ### Where pakka loses
 
 - **Guards cost more than they save on other people's data.** At the same 5% budget, guards lowered the hit rate
-  in 21 cases and raised it in 4. The entity rule (capitalised words) misfires on general text: on vCache
+  in 26 cases and raised it in 4. The entity rule (capitalised words) misfires on general text: on vCache
   Classification the guards vetoed 4,321 hits, 4,076 of which were correct, and 3,167 of the vetoes came from
   that rule. The hit rate halved (22% to 12%) for a 1-point drop in false hits. At an equal hit rate the guarded
   cache was no better than the plain one on Banking77, CLINC150 and Bitext.
 - **The guards miss the traps these datasets are full of:** on/off, am/pm, from/to direction, buy/sell. These
   are rule gaps for Phase 7, to be fixed on dev splits only.
-- **pakka's default embedder isn't the best choice for Hinglish.** IndicSBERT beats it on our own set and on
-  Hinglish-TOP; `langcache-embed-v1` beats it on English.
+- **pakka's default embedder isn't the best choice.** bge-m3 beats it on mean AUC and on our own set (but is
+  4–5x bigger and slow without a GPU); IndicSBERT beats it on our own set and on Hinglish-TOP;
+  `langcache-embed-v1` beats it on English.
 - **On our own HinglishCacheBench nothing fits a 5% budget** with any embedder (v1 needed 10–20%).
 - **Where pakka helps:** guards cut RedisVL-default false hits on Bitext from 4.0% to 0.8% and on vCache
   Classification from 9.4% to 5.0% (at a cost in hits), and `pakka bench`'s dev-split method finds a threshold
@@ -56,9 +58,10 @@ Measured 2 Nov 2026 on a MacBook Air M2 with 8 GB.
 
 That one command downloads the datasets from pinned Hugging Face revisions into `data/public/` (gitignored; we
 never commit them), embeds every text once per model (cached in `data/public/emb/`), runs every measurement
-(cached in `data/public/results/`), and rewrites the tables below. The six models measured here took about 3
-hours of compute on a MacBook Air M2 with 8 GB (MiniLM about 10 minutes, each base-size model about 40); after
-that a rerun takes seconds. With no arguments it runs all seven models, bge-m3 included, which wants a GPU;
+(cached in `data/public/results/`), and rewrites the tables below. Six of the models took about 3 hours of
+compute on a MacBook Air M2 with 8 GB (MiniLM about 10 minutes, each base-size model about 40); bge-m3 took 16
+minutes on a Kaggle T4. After that a rerun takes seconds. With no arguments it runs all seven models, bge-m3
+included, which wants a GPU;
 `scripts/public_bench.py <model> ...` measures just those and redraws the tables from everything measured so far.
 Delete `data/public/results/` to measure again after changing pakka.
 
@@ -116,18 +119,15 @@ Held-out (test) split of each dataset. Each cell is **false-hit rate · hit rate
 | Dataset | Protocol | Held-out | RedisVL defaults | RedisVL defaults + pakka guards | MiniLM-L12 (pakka default), tuned | … + guards | Best measured embedder, tuned + guards |
 |---|---|---|---|---|---|---|---|
 | HinglishCacheBench v1 (ours) | faq | 526 | 0.0% · 2% | 0.0% · 2% | no threshold fits | no threshold fits | no threshold fits |
-| Banking77 | faq | 3,051 | 4.2% · 3% | 3.4% · 3% | 4.4% · 3% | 4.7% · 3% | langcache-embed-v1: 5.2% · 3% |
+| Banking77 | faq | 3,051 | 4.2% · 3% | 3.4% · 3% | 4.4% · 3% | 4.7% · 3% | bge-m3: 1.9% · 3% |
 | CLINC150 | faq | 5,494 | 1.0% · 4% | 1.0% · 4% | 4.1% · 9% | 4.5% · 8% | MiniLM-L12 (pakka default): 4.5% · 8% |
 | Bitext | faq | 12,057 | 4.0% · 5% | 0.8% · 4% | 1.4% · 2% | 0.6% · 1% | langcache-embed-v1: 4.4% · 20% |
 | Hinglish-TOP | faq | 13,243 | 65.8% · 8% | 63.9% · 7% | no threshold fits | no threshold fits | no threshold fits |
 | MASSIVE en+hi | faq | 13,769 | 46.0% · 8% | 45.9% · 7% | no threshold fits | no threshold fits | no threshold fits |
 | LangCache pairs | pairs | 62,021 | 24.3% · 42% | 24.8% · 35% | 35.6% · 22% | 34.8% · 22% | IndicSBERT: 33.1% · 26% |
 | vCache LmArena | stream | 51,037 | 7.4% · 90% | 6.6% · 68% | no threshold fits | no threshold fits | no threshold fits |
-| vCache Classification | stream | 36,000 | 9.4% · 31% | 5.0% · 14% | 2.4% · 22% | 1.4% · 12% | e5-base: 2.4% · 13% |
+| vCache Classification | stream | 36,000 | 9.4% · 31% | 5.0% · 14% | 2.4% · 22% | 1.4% · 12% | bge-m3: 2.3% · 13% |
 | vCache SearchQueries | stream | 120,000 | 35.1% · 54% | 34.9% · 54% | no threshold fits | no threshold fits | no threshold fits |
-
-Not measured yet: bge-m3, marked pending (Kaggle) below (see Caveats).
-
 
 Label-noise floor of the streams: an exact-match cache (same text after lowercasing) replayed over the whole stream is already "wrong" on vCache LmArena 871 of 9,778 hits (8.9%); vCache Classification 6 of 6,356 hits (0.1%); vCache SearchQueries 102 of 680 hits (15.0%), because identical prompts sit in different equivalence classes. No embedder can beat that floor on these labels.
 
@@ -138,14 +138,14 @@ Area under precision vs cache-hit ratio (higher is better), plain cache, held-ou
 
 | Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | bge-m3 |
 |---|---|---|---|---|---|---|---|
-| HinglishCacheBench v1 (ours) | 0.650 | 0.600 | 0.639 | 0.641 | **0.690** | 0.657 | pending (Kaggle) |
-| Banking77 | 0.643 | **0.663** | 0.572 | 0.597 | 0.532 | 0.506 | pending (Kaggle) |
-| CLINC150 | **0.722** | 0.716 | 0.675 | 0.710 | 0.575 | 0.592 | pending (Kaggle) |
-| Bitext | 0.721 | **0.856** | 0.678 | 0.725 | 0.670 | 0.676 | pending (Kaggle) |
-| Hinglish-TOP | 0.183 | 0.200 | 0.199 | 0.187 | **0.316** | 0.218 | pending (Kaggle) |
-| MASSIVE en+hi | 0.427 | 0.238 | 0.347 | 0.357 | 0.429 | **0.450** | pending (Kaggle) |
-| LangCache pairs | 0.602 | **0.677** | 0.592 | 0.603 | 0.617 | 0.579 | pending (Kaggle) |
-| Mean | 0.564 | 0.564 | 0.529 | 0.546 | 0.547 | 0.525 | pending (Kaggle) |
+| HinglishCacheBench v1 (ours) | 0.650 | 0.600 | 0.639 | 0.641 | 0.690 | 0.657 | **0.705** |
+| Banking77 | 0.643 | 0.663 | 0.572 | 0.597 | 0.532 | 0.506 | **0.727** |
+| CLINC150 | 0.722 | 0.716 | 0.675 | 0.710 | 0.575 | 0.592 | **0.736** |
+| Bitext | 0.721 | **0.856** | 0.678 | 0.725 | 0.670 | 0.676 | 0.843 |
+| Hinglish-TOP | 0.183 | 0.200 | 0.199 | 0.187 | **0.316** | 0.218 | 0.237 |
+| MASSIVE en+hi | 0.427 | 0.238 | 0.347 | 0.357 | 0.429 | **0.450** | 0.435 |
+| LangCache pairs | 0.602 | **0.677** | 0.592 | 0.603 | 0.617 | 0.579 | 0.626 |
+| Mean | 0.564 | 0.564 | 0.529 | 0.546 | 0.547 | 0.525 | 0.615 |
 
 ## Embedders at a 5% false-hit budget, with guards
 
@@ -153,16 +153,16 @@ Hit rate on held-out at the dev-picked threshold, with the held-out false-hit ra
 
 | Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | bge-m3 |
 |---|---|---|---|---|---|---|---|
-| HinglishCacheBench v1 (ours) | none fits | none fits | none fits | none fits | none fits | none fits | pending (Kaggle) |
-| Banking77 | 3% (4.7%) | **3%** (5.2%) | 3% (2.4%) | 2% (3.3%) | 1% (3.6%) | 1% (0.0%) | pending (Kaggle) |
-| CLINC150 | **8%** (4.5%) | none fits | none fits | 3% (2.8%) | none fits | none fits | pending (Kaggle) |
-| Bitext | 1% (0.6%) | **20%** (4.4%) | none fits | 6% (4.5%) | 5% (3.7%) | 4% (3.3%) | pending (Kaggle) |
-| Hinglish-TOP | none fits | none fits | none fits | none fits | none fits | none fits | pending (Kaggle) |
-| MASSIVE en+hi | none fits | none fits | none fits | none fits | none fits | none fits | pending (Kaggle) |
-| LangCache pairs | 22% (34.8%) | 19% (23.7%) | 25% (35.0%) | 26% (33.6%) | **26%** (33.1%) | 19% (39.3%) | pending (Kaggle) |
-| vCache LmArena | none fits | none fits | none fits | none fits | none fits | none fits | pending (Kaggle) |
-| vCache Classification | 12% (1.4%) | 12% (1.5%) | 12% (1.0%) | **13%** (2.4%) | 13% (2.8%) | 12% (2.2%) | pending (Kaggle) |
-| vCache SearchQueries | none fits | none fits | none fits | none fits | none fits | none fits | pending (Kaggle) |
+| HinglishCacheBench v1 (ours) | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| Banking77 | 3% (4.7%) | 3% (5.2%) | 3% (2.4%) | 2% (3.3%) | 1% (3.6%) | 1% (0.0%) | **3%** (1.9%) |
+| CLINC150 | **8%** (4.5%) | none fits | none fits | 3% (2.8%) | none fits | none fits | 4% (3.6%) |
+| Bitext | 1% (0.6%) | **20%** (4.4%) | none fits | 6% (4.5%) | 5% (3.7%) | 4% (3.3%) | 15% (4.6%) |
+| Hinglish-TOP | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| MASSIVE en+hi | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| LangCache pairs | 22% (34.8%) | 19% (23.7%) | 25% (35.0%) | 26% (33.6%) | **26%** (33.1%) | 19% (39.3%) | 25% (31.6%) |
+| vCache LmArena | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
+| vCache Classification | 12% (1.4%) | 12% (1.5%) | 12% (1.0%) | 13% (2.4%) | 13% (2.8%) | 12% (2.2%) | **13%** (2.3%) |
+| vCache SearchQueries | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
 
 ## Do guards help on data they weren't designed for? (MiniLM-L12 (pakka default))
 
@@ -181,7 +181,7 @@ Same budget, threshold picked on dev with and without guards. "Plain at the same
 | vCache Classification | 2.4% · 22% | 1.4% · 12% | - | 4076 | entity 3167, negation 383, slot 771 |
 | vCache SearchQueries | no threshold fits | no threshold fits | - | - | - |
 
-Across the 6 measured embedders and 10 datasets, guards raised the hit rate at the same budget in 4 cases and lowered it in 21.
+Across the 7 measured embedders and 10 datasets, guards raised the hit rate at the same budget in 4 cases and lowered it in 26.
 
 ## Threshold transfer (MiniLM-L12 (pakka default), plain)
 
@@ -247,7 +247,7 @@ No embedder has a threshold that meets the budget on Hinglish-TOP or MASSIVE, so
 | e5-base | 72.1% | 22% | 2% | 571 | 54.6% | 15% | 0% | 128 |
 | IndicSBERT | 43.7% | 13% | 21% | 351 | 35.5% | 10% | 9% | 101 |
 | LaBSE | 64.5% | 16% | 10% | 471 | 27.2% | 6% | 14% | 115 |
-| bge-m3 | pending (Kaggle) | pending (Kaggle) | pending (Kaggle) | pending (Kaggle) | pending (Kaggle) | pending (Kaggle) | pending (Kaggle) | pending (Kaggle) |
+| bge-m3 | 64.9% | 27% | 3% | 525 | 37.1% | 11% | 7% | 108 |
 <!-- generated by scripts/public_bench.py: end -->
 
 ## Caveats
@@ -265,17 +265,10 @@ No embedder has a threshold that meets the budget on Hinglish-TOP or MASSIVE, so
   its FAQ, not a written canonical question. A real FAQ cache usually holds a cleaner question, sometimes several.
 - **Truncation.** Every model sees at most 128 tokens per text. That only affects long LmArena and Classification
   prompts.
-- **bge-m3 is not measured yet.** On this 8 GB laptop it would take hours and push swap past its limit. Its columns
-  say "pending (Kaggle)" rather than show numbers from a trimmed dataset. bge-m3 is loaded with float16 weights
-  (`HALF` in the script) so it fits in memory; other models run in float32. To fill those columns on a free Kaggle
-  GPU (the Phase 6 code must be on GitHub first):
-
-  ```bash
-  git clone https://github.com/mohammedp010/pakka && cd pakka && pip install -e .
-  python scripts/public_bench.py BAAI/bge-m3
-  ```
-
-  Then copy Kaggle's `data/public/results/BAAI__bge-m3/` into the same folder here and run
-  `.venv/bin/python scripts/public_bench.py` again: with every model measured it only rewrites the tables.
+- **bge-m3 ran on a Kaggle T4 GPU, the others on the Mac.** Same commit, same converted data files (uploaded
+  from `data/public/`, not re-fetched), same 128-token cap. bge-m3 used float16 weights (`HALF` in the script),
+  the others float32; on Kaggle it was run per dataset with `public_bench.result("BAAI/bge-m3", name)`, and its
+  `data/public/results/BAAI__bge-m3/` was copied back here before redrawing the tables. Float16 can move scores
+  in the third or fourth decimal.
 - **Not compared yet:** vCache's own reported numbers. Its paper reports error rate per request (false hits ÷ all
   questions), not per served hit as here, so the two don't line up without care.
