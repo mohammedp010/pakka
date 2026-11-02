@@ -25,7 +25,7 @@ causes, and keeps the cache from leaking or going stale.
 |---|---|
 | `pakka bench` | Replays a labelled question set through a cache. Reports hit rate and false hits with 95% Wilson intervals, picks the threshold on a dev split and reports on held-out, breaks errors down by trap type and language, and fails CI when the false-hit bound regresses |
 | HinglishCacheBench (`data/bench_v1.jsonl`) | 1,059 support questions in English, Hinglish and Hindi with labelled trap questions (negation, entity, number, near intent, personal), written by one LLM, labelled blind by a second, with disagreements settled by a human ([dataset card](data/README.md)) |
-| `pakka.guard` | Microsecond rule guards that veto a hit: negation (incl. nahi/nhi/nahin, नहीं), numbers and IDs, opposite actions, and out-of-scope names |
+| `pakka.guard` | Microsecond rule guards that veto a hit: negation (incl. nahi/nhi/nahin, नहीं), numbers and IDs, days and times (today/kal/आज, am/pm), opposite actions (on/off, buy/sell), swapped direction ("pdf to jpg"), and out-of-scope names. Tested on nine public datasets ([results](docs/public_results.md)) |
 | `pakka.policy` + `pakka.pii` | Never stores Indian PII (Aadhaar with checksum, PAN, UPI, +91 mobiles, IFSC, cards, order IDs), keeps each user's answers in their own partition, retires answers when the FAQ changes, expires stored answers, queues shared answers for approval, and supports erasure requests |
 | `pakka.testset`, `pakka.train` | Generate a stress-test set for your own FAQ with two LLMs, and fine-tune an embedder on it |
 | Dukaan Bot (`examples/dukaan_bot`) | A small FAQ support bot for a fictional Indian store, used as the end-to-end test |
@@ -35,8 +35,8 @@ causes, and keeps the cache from leaking or going stale.
 | Setup | Right answers | Wrong answers | False-hit rate (95% upper bound) | Hinglish caught |
 |---|---|---|---|---|
 | Plain cache, spec's model, 20% budget | 55 | 12 | 17.9% (28.7%) | 12/200 |
-| + pakka guards, 10% budget | 46 | 4 | 8.0% (18.8%) | 11/200 |
-| + fine-tuned encoder and approved keys, 10% budget | **67** | **2** | **2.9% (10.0%)** | **31/200** |
+| + pakka guards, 10% budget | 48 | 5 | 9.4% (20.3%) | 11/200 |
+| + fine-tuned encoder and approved keys, 10% budget | **69** | **2** | **2.8% (9.7%)** | **31/200** |
 
 In the real bot with a real LLM on the same 526 questions: **13% of questions answered from cache with
 2 wrong answers, in 56 ms instead of 1,331 ms.** The set is built to be hard: 35% of it must miss and
@@ -104,7 +104,7 @@ flowchart TD
     Q[Question + user_id] --> E[Embed and find the nearest entry<br/>in this user's partition or the shared FAQs,<br/>current FAQ version, not expired]
     E --> T{Similarity at or above threshold?}
     T -- no --> L[Call the LLM]
-    T -- yes --> G{Guards: negation, numbers and IDs,<br/>opposite actions, out-of-scope names}
+    T -- yes --> G{Guards: negation, numbers, days and times,<br/>opposite actions, direction, out-of-scope names}
     G -- veto --> L
     G -- pass --> H[Serve the cached answer, ~56 ms]
     L --> P{Contains PII?}

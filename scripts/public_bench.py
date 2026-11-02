@@ -5,10 +5,12 @@
 Downloads and converts the datasets (scripts/fetch_public.py), embeds every text once per model
 (data/public/emb/), runs the FAQ, stream and pairs protocols plain and with pakka guards, and writes the doc.
 Every measurement is kept in data/public/results/, so a rerun resumes where it stopped; delete that folder
-to measure again after changing pakka.
+to measure again after changing pakka. After changing only the guards, drop the "guards" key from each
+result file (and the `+guards` files) and just those get measured again.
 """
 
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -24,22 +26,25 @@ from scripts import fetch_public  # noqa: E402
 
 PUBLIC, DOC = ROOT / "data/public", ROOT / "docs/public_results.md"
 EMB, RESULTS = PUBLIC / "emb", PUBLIC / "results"
-MODELS = {  # model: short name, slowest last
+MODELS = {  # model: short name; local models slowest last, then API models (they cost money, about $0.70 together)
     "paraphrase-multilingual-MiniLM-L12-v2": "MiniLM-L12 (pakka default)",
     "redis/langcache-embed-v1": "langcache-embed-v1",
     "intfloat/multilingual-e5-small": "e5-small",
     "intfloat/multilingual-e5-base": "e5-base",
     "l3cube-pune/indic-sentence-similarity-sbert": "IndicSBERT",
     "sentence-transformers/LaBSE": "LaBSE",
+    "Qwen/Qwen3-Embedding-0.6B": "Qwen3-Embedding-0.6B",
     "BAAI/bge-m3": "bge-m3",
+    "openrouter:qwen/qwen3-embedding-8b": "Qwen3-Embedding-8B (API)",
+    "openrouter:openai/text-embedding-3-small": "OpenAI 3-small (API)",
 }
 DEFAULT, REDIS, REDIS_T = "paraphrase-multilingual-MiniLM-L12-v2", "redis/langcache-embed-v1", 0.90  # RedisVL 0.29 defaults
 BUDGET = 0.05  # false-hit budget (95% upper bound) the dev split picks thresholds for
 MAX_TOKENS = 128  # MiniLM's own limit: every model sees about the same text, and long chat prompts embed faster
-HALF = {"BAAI/bge-m3"}  # float16 weights, so the 2.3 GB model fits next to everything else in 8 GB
+HALF = {"BAAI/bge-m3", "Qwen/Qwen3-Embedding-0.6B"}  # float16 weights: big models fit next to everything else in 8 GB
 FAQ = ["ours", "banking77", "clinc150", "bitext", "hinglish_top", "massive"]
 STREAM = ["vcache_lmarena", "vcache_classification", "vcache_searchqueries"]
-PAIRS = ["langcache"]
+PAIRS = ["langcache", "langcache_strat"]
 SETUPS = (("plain", None), ("guards", check))
 CURVE_BINS = [0, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 150000]
 
@@ -49,7 +54,7 @@ def log(msg):
 
 
 def slug(model):
-    return model.replace("/", "__")
+    return model.replace("/", "__").replace(":", "_")
 
 
 def memo(path, fn):
@@ -63,6 +68,8 @@ def memo(path, fn):
 
 
 def load(name):
+    if name == "langcache_strat":
+        return None, fetch_public.stratified(load("langcache")[1])
     faqs, data = ((ROOT / "data/faqs.json", ROOT / "data/bench_v1.jsonl") if name == "ours"
                   else (PUBLIC / f"{name}.faqs.json", PUBLIC / f"{name}.jsonl"))
     rows = [json.loads(line) for line in data.read_text().splitlines() if line.strip()]
@@ -78,13 +85,16 @@ def embedder(model, name, texts):
     def embed(batch):
         if model not in _loaded:
             _loaded.clear()  # one model in memory at a time: the Mac has 8 GB
+            if model.startswith("openrouter:") and not os.environ.get("OPENROUTER_API_KEY"):
+                from examples.dukaan_bot.llm import api_key  # reads pakka/.env
+                os.environ["OPENROUTER_API_KEY"] = api_key() or ""
             _loaded[model] = load_embedder(model, max_length=MAX_TOKENS, half=model in HALF)
         start = time.time()
         out = _loaded[model](batch)
         log(f"  {MODELS[model]}: embedded {len(batch)} {name} texts in {time.time() - start:.0f}s")
         return out
 
-    cached = disk_cached(embed, EMB / slug(model) / f"{name}.npz")
+    cached = disk_cached(embed, EMB / slug(model) / f"{name.removesuffix('_strat')}.npz")  # same texts, same file
     cached(texts)
     cached.save()
     return cached
@@ -111,21 +121,21 @@ def test_eval(rows, t):
     return out
 
 
-def faq_result(model, name):
+def faq_result(model, name, setups):
     faqs, data = load(name)
     embed = embedder(model, name, [f["question"] for f in faqs] + [r["q"] for r in data])
     out = {}
-    for setup, guard in SETUPS:
+    for setup, guard in setups:
         rows = score_with_method(model, embed, faqs, data, guard=guard)
         out[setup] = {**report_encoder(model, rows, BUDGET), "fixed": test_eval(rows, REDIS_T), "test": compact(rows)}
     return out
 
 
-def stream_result(model, name):
+def stream_result(model, name, setups):
     _, rows = load(name)
     vectors = embedder(model, name, [r["q"] for r in rows])([r["q"] for r in rows])
     out = {}
-    for setup, guard in SETUPS:
+    for setup, guard in setups:
         t, replayed = pick_stream_threshold(vectors, rows, BUDGET, guard)
         out[setup] = {"threshold": t, **(test_eval(replayed, t) if t else {})}
         if model == REDIS:
@@ -134,12 +144,12 @@ def stream_result(model, name):
     return out
 
 
-def pairs_result(model, name):
+def pairs_result(model, name, setups):
     _, pairs = load(name)
     embed = embedder(model, name, [p["q"] for p in pairs] + [p["q2"] for p in pairs])
     v1, v2 = embed([p["q"] for p in pairs]), embed([p["q2"] for p in pairs])
     out = {}
-    for setup, guard in SETUPS:
+    for setup, guard in setups:
         rows = pair_rows(v1, v2, pairs, guard)
         dev, test = [r for r in rows if r["split"] == "dev"], [r for r in rows if r["split"] == "test"]
         t = pick_threshold(dev, BUDGET)
@@ -154,8 +164,16 @@ def pairs_result(model, name):
 
 
 def result(model, name):
-    fn = faq_result if name in FAQ else stream_result if name in STREAM else pairs_result
-    return memo(RESULTS / slug(model) / f"{name}.json", lambda: fn(model, name))
+    """Plain and guarded results of one model on one dataset, measuring only the setups the file lacks."""
+    path = RESULTS / slug(model) / f"{name}.json"
+    out = json.loads(path.read_text()) if path.exists() else {}
+    todo = [s for s in SETUPS if s[0] not in out]
+    if todo:
+        fn = faq_result if name in FAQ else stream_result if name in STREAM else pairs_result
+        out.update(fn(model, name, todo))
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(out))
+    return out
 
 
 def stream_at(model, name, t, guard=False):
@@ -217,7 +235,7 @@ def curves():
 START, END = "<!-- generated by scripts/public_bench.py: start -->", "<!-- generated by scripts/public_bench.py: end -->"
 NAMES = {
     "ours": "HinglishCacheBench v1 (ours)", "banking77": "Banking77", "clinc150": "CLINC150", "bitext": "Bitext",
-    "hinglish_top": "Hinglish-TOP", "massive": "MASSIVE en+hi", "langcache": "LangCache pairs",
+    "hinglish_top": "Hinglish-TOP", "massive": "MASSIVE en+hi", "langcache": "LangCache pairs", "langcache_strat": "LangCache pairs, stratified split",
     "vcache_lmarena": "vCache LmArena", "vcache_classification": "vCache Classification",
     "vcache_searchqueries": "vCache SearchQueries",
 }
@@ -275,11 +293,11 @@ def language_cells(rows, langs):
 
 
 def measured():
-    """Models with every dataset measured. The rest show as pending: too slow for an 8 GB laptop, left for a GPU."""
+    """Models with every dataset measured. The rest show as not run yet (a slow model can be finished later)."""
     return [m for m in MODELS if all((RESULTS / slug(m) / f"{n}.json").exists() for n in FAQ + PAIRS + STREAM)]
 
 
-PENDING = "pending (Kaggle)"
+PENDING = "not run yet"
 
 
 def render():
@@ -308,7 +326,8 @@ def render():
     out += [table(["Dataset", "Protocol", "Held-out", "RedisVL defaults", "RedisVL defaults + pakka guards",
                    f"{MODELS[DEFAULT]}, tuned", "… + guards", "Best measured embedder, tuned + guards"], rows)]
     if pending:
-        out += [f"\nNot measured yet: {', '.join(MODELS[m] for m in pending)}, marked {PENDING} below (see Caveats).\n"]
+        out += [f"\nNot measured on every dataset yet: {', '.join(MODELS[m] for m in pending)}, marked \"{PENDING}\" below "
+                "(results for what has run are under \"Better embedders\").\n"]
     floors = {n: exact_floor(n) for n in STREAM}
     out += ["\nLabel-noise floor of the streams: an exact-match cache (same text after lowercasing) replayed over the whole "
             "stream is already \"wrong\" on " + "; ".join(f"{NAMES[n]} {w:,} of {h:,} hits ({pct(w / h)})" for n, (h, w) in floors.items())
@@ -377,10 +396,12 @@ def render():
         rows.append([f"{NAMES[a]} ({t:.3f})"] + cells)
     out += [table(["Picked on ↓ / applied to →"] + [NAMES[n] for n in names], rows)]
 
+    fits = [m for m in models if res[m, "langcache_strat"]["plain"]["threshold"]]
     out += ["\n## LangCache pairs by source\n",
             "Redis's own sentence-pair benchmark, test split. Each cell is **false-hit rate · duplicates caught** "
             "(share of same-meaning pairs scored as hits). The tuned threshold comes from the validation split, which has "
-            "no QQP, PAWS or APT pairs.\n"]
+            "no QQP, PAWS or APT pairs. On the stratified split, whose dev holds a fifth of every source, a threshold "
+            + (f"fits for {', '.join(MODELS[m] for m in fits)} only.\n" if fits else f"fits for none of the {len(models)} embedders.\n")]
     rows = []
     lc = {m: res[m, "langcache"]["plain"] for m in (DEFAULT, REDIS)}
     for source, s in lc[DEFAULT]["by_source"].items():

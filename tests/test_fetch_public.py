@@ -1,7 +1,10 @@
 """Adapters that turn public datasets into pakka's formats, checked on tiny hand-made fixtures."""
 
-from scripts.fetch_public import (from_banking77, from_bitext, from_clinc150, from_hinglish_top, from_langcache,
-                                  from_massive, from_stream, jsonl, massive_meaning, top_meaning)
+import re
+
+from scripts.fetch_public import (consonants, from_banking77, from_bitext, from_clinc150, from_hinglish_top,
+                                  from_langcache, from_massive, from_stream, jsonl, massive_meaning,
+                                  massive_translations, stratified, top_meaning)
 
 
 def by_q(rows):
@@ -112,6 +115,47 @@ def test_massive_hindi_rows_with_localized_slots_are_traps_not_hits():
     assert (rows["मुंबई का मौसम"]["label"], rows["मुंबई का मौसम"]["kind"]) == (None, "slot")
 
 
+def test_consonants_match_a_name_written_in_latin_or_devanagari():
+    for en, hi in (("boston", "बोस्टन"), ("new delhi", "नई दिल्ली"), ("mumbai", "मुंबई"), ("pizza", "पिज़्ज़ा"),
+                   ("mahatma gandhi", "महात्मा गांधी"), ("mary's", "मैरी का"), ("taxi", "टैक्सी")):
+        assert consonants(en) == consonants(hi), (en, hi)
+    assert consonants("boston") != consonants("मुंबई")
+
+
+def test_massive_translations_are_used_twice_and_mostly_for_that_value():
+    pairs = [("time", "five am", "सुबह पांच बजे")] * 2 + [("time", "six am", "सुबह छह बजे")]  # once is not enough
+    pairs += [("person", "john", "राम")] * 2 + [("person", "bob", "राम")] * 2  # राम replaces any name: localized
+    english = {str(i): {"annot_utt": f"[{slot} : {x}]"} for i, (slot, x, _) in enumerate(pairs)}
+    hindi = [{"id": str(i), "annot_utt": f"[{slot} : {y}]", "slot_method": {"slot": [slot], "method": ["translation"]}}
+             for i, (slot, _, y) in enumerate(pairs)]
+    assert massive_translations(hindi, english) == {("time", "fiveam", "सुबहपांचबजे")}
+
+
+def test_massive_localized_slots_that_only_translate_or_transliterate_still_hit():
+    def row(i, part, annot, methods=()):
+        utt = re.sub(r"\[\w+ : ([^\]]+)\]", r"\1", annot)
+        slots = list(dict.fromkeys(re.findall(r"\[(\w+) :", annot)))  # MASSIVE lists each slot once, in English order
+        return {"id": i, "partition": part, "intent": 7, "utt": utt, "annot_utt": annot,
+                "slot_method": {"slot": slots if methods else [], "method": list(methods)}}
+
+    en = [row("1", "train", "wake me at [time : five am] in [place_name : boston]"),
+          row("2", "train", "alarm at [time : five am]"), row("3", "train", "set an alarm for [time : five am]"),
+          row("4", "dev", "in [place_name : boston] wake me at [time : five am]"),
+          row("5", "dev", "wake me in [place_name : boston] at [time : five am]")]
+    hi = [row("1", "train", "[place_name : बोस्टन] में [time : सुबह पांच बजे] जगाओ", ["translation", "translation"]),
+          row("2", "train", "[time : सुबह पांच बजे] का अलार्म", ["translation"]),
+          row("3", "train", "[time : सुबह पांच बजे] का अलार्म लगाओ", ["translation"]),
+          # transliterated and translated, though flagged as localized
+          row("4", "dev", "[place_name : बोस्टन] में मुझे [time : सुबह पांच बजे] जगाओ", ["localization"] * 2),
+          # the flag sits on the wrong slot: the time is translated, Boston became Mumbai
+          row("5", "dev", "[place_name : मुंबई] में मुझे [time : सुबह पांच बजे] उठाओ", ["unchanged", "localization"])]
+    faqs, rows = from_massive({"en": en, "hi": hi})
+    rows = by_q(rows)
+    assert rows["बोस्टन में मुझे सुबह पांच बजे जगाओ"]["label"] == faqs[0]["id"]
+    assert (rows["मुंबई में मुझे सुबह पांच बजे उठाओ"]["label"], rows["मुंबई में मुझे सुबह पांच बजे उठाओ"]["kind"]) == \
+        (None, "slot")
+
+
 def test_stream_keeps_arrival_order_and_tunes_on_the_first_fifth():
     rows = from_stream([{"prompt": f"p{i}", "set": i % 3} for i in range(10)], "prompt", "set", "vcache_x")
     assert [r["q"] for r in rows] == [f"p{i}" for i in range(10)]
@@ -125,6 +169,17 @@ def test_langcache_pairs_keep_their_source_and_split():
     assert from_langcache(splits) == [
         {"q": "a", "q2": "b", "label": 1, "kind": "pair", "lang": "en", "split": "dev", "source": "mrpc"},
         {"q": "c", "q2": "d", "label": 0, "kind": "pair", "lang": "en", "split": "test", "source": "paws"}]
+
+
+def test_stratified_split_reuses_only_test_rows_with_every_source_in_the_same_share():
+    rows = [{"q": "v", "q2": "w", "label": 1, "source": "mrpc", "split": "dev"}]
+    rows += [{"q": f"{s}{i}", "q2": "x", "label": i % 2, "source": s, "split": "test"}
+             for s, n in (("qqp", 50), ("paws", 10)) for i in range(n)]
+    out = stratified(rows)
+    assert len(out) == 60 and "v" not in by_q(out)
+    dev = [r for r in out if r["split"] == "dev"]
+    assert sorted(r["source"] for r in dev) == ["paws"] * 2 + ["qqp"] * 10  # a fifth of each source
+    assert {r["q"]: r["split"] for r in stratified(rows[::-1])} == {r["q"]: r["split"] for r in out}  # order-free
 
 
 def test_catch_all_intents_only_match_their_own_translation():

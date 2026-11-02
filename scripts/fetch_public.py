@@ -16,6 +16,8 @@ import hashlib
 import json
 import re
 import sys
+import unicodedata
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,7 +91,7 @@ def from_bitext(data):
 
 
 def _value(text):
-    return "".join(re.findall(r"\w+", text.lower()))  # "6 am" and "6am" are the same slot value
+    return "".join(re.findall(r"[\w\u0900-\u097f]+", text.lower()))  # "6 am" is "6am"; \w alone drops Hindi vowel signs
 
 
 def top_meaning(parse, values=True):
@@ -111,9 +113,11 @@ def top_meaning(parse, values=True):
     return node()
 
 
+_SLOT = re.compile(r"\[(\w+) : ([^\]]+)\]")  # MASSIVE's annotation: "wake me at [time : five am]"
+
+
 def massive_meaning(intent, annot, values=True):
-    slots = re.findall(r"\[(\w+) : ([^\]]+)\]", annot)
-    return intent, tuple(sorted((name, _value(v) if values else "") for name, v in slots))
+    return intent, tuple(sorted((name, _value(v) if values else "") for name, v in _SLOT.findall(annot)))
 
 
 def from_parses(records, source):
@@ -161,12 +165,69 @@ def from_hinglish_top(splits):
 
 _LOCALIZED = {"localization", "unchanged_localization"}  # MASSIVE: the slot value was swapped for a local one
 _OPEN_ENDED = {"general_quirky", "qa_factoid", "qa_maths", "social_post"}  # MASSIVE intents whose slots miss the question
+_SOUNDS = str.maketrans(dict(zip("कखगघङचछजझञटठडढणतथदधनपफबभमरलशषसंँ", "kkggnččjjnttddnttddnpfbbmrlsssnn")))
+
+
+def consonants(text):
+    """A name's consonants, the same in Latin and Devanagari: "boston" and "बोस्टन" are both "bstn". Vowels, h, w,
+    y and v are left out (scripts and spellings disagree on them), and so are "'s" and a trailing का/की/के."""
+    text = unicodedata.normalize("NFD", re.sub(r"'s\b| (?:का|की|के)$", "", text.lower()))  # NFD splits ज़ into ज + ़
+    text = text.replace("ph", "f").replace("ch", "č").replace("x", "ks").replace("q", "k").replace("z", "j")
+    text = re.sub(r"c(?=[eiy])", "s", text).replace("c", "k").translate(_SOUNDS)
+    text = re.sub(r"m(?=[bp])", "n", re.sub(r"[^bdfgjklmnprstč]", "", text))  # "mumbai" is said "मुंबई"
+    return re.sub(r"(.)\1+", r"\1", text)
+
+
+def _slot_values(name, annot):
+    return [v for n, v in _SLOT.findall(annot) if n == name]
+
+
+def massive_translations(hindi, english):
+    """{(slot, English value, Hindi value)} that MASSIVE's translators gave as a translation at least twice, and for at
+    least two thirds of that Hindi value's translated uses: "सुबह पांच बजे" is five am, but "राम" stands in for
+    john, bob and sam alike, so it is a localization. `english` maps ids to en-US rows."""
+    used = Counter()
+    for r in hindi:
+        for name, method in zip(r["slot_method"]["slot"], r["slot_method"]["method"]):
+            x, y = _slot_values(name, english[r["id"]]["annot_utt"]), _slot_values(name, r["annot_utt"])
+            if method == "translation" and len(x) == len(y) == 1:
+                used[(name, _value(x[0]), _value(y[0]))] += 1
+    per_hindi = Counter()
+    for (name, _, y), n in used.items():
+        per_hindi[(name, y)] += n
+    return {k for k, n in used.items() if n >= 2 and 3 * n >= 2 * per_hindi[(k[0], k[2])]}
+
+
+def _same_value(name, x, y, translations):
+    sounds = consonants(x)  # one consonant can't tell names apart: "amy" and "उमा" are both "m"
+    return (_value(x) == _value(y) or (name, _value(x), _value(y)) in translations
+            or len(sounds) > 1 and sounds in (consonants(y), consonants(y) + "s"))  # "appointments", "अपॉइंटमेंट"
+
+
+def same_slots(hi, en, translations):
+    """Whether a Hindi row's slot values are the English row's, kept, transliterated or translated. MASSIVE's flags
+    often sit on the wrong slot of a row (taxi became टैक्सी, flagged localized; Manchester became Pune, flagged
+    unchanged), so every slot not flagged as a translation is compared."""
+    for name, method in zip(hi["slot_method"]["slot"], hi["slot_method"]["method"]):
+        if method == "translation":
+            continue
+        xs, ys = _slot_values(name, en["annot_utt"]), _slot_values(name, hi["annot_utt"])
+        if len(xs) != len(ys):
+            return False
+        for x in xs:
+            y = next((y for y in ys if _same_value(name, x, y, translations)), None)
+            if y is None:
+                return False
+            ys.remove(y)
+    return True
 
 
 def from_massive(locales, names=None):
     """`locales`: {"en": en-US rows, "hi": hi-IN rows}. Keys come from the English annotation; a Hindi row
-    whose slots were localized (Boston became Mumbai) asks something else, so it gets its own key."""
+    whose slots were localized (Boston became Mumbai) asks something else, so it gets its own key. A value flagged
+    as localized that is only translated or transliterated (बोस्टन, सुबह पांच बजे) keeps the English key."""
     english = {r["id"]: r for r in locales["en"]}
+    translations = massive_translations(locales["hi"], english)
     records = []
     for lang in ("en", "hi"):
         for r in locales[lang]:
@@ -176,7 +237,7 @@ def from_massive(locales, names=None):
                        "skeleton": massive_meaning(intent, en["annot_utt"], values=False)}
             if intent in _OPEN_ENDED:
                 meaning = own_question(r["id"])
-            elif lang == "hi" and _LOCALIZED & set(r["slot_method"]["method"]):
+            elif lang == "hi" and _LOCALIZED & set(r["slot_method"]["method"]) and not same_slots(r, en, translations):
                 meaning["key"] = ("localized", r["id"])
             records.append({"split": r["partition"], "lang": lang, "text": r["utt"], "intent": intent, **meaning})
     return from_parses(records, "massive")
@@ -197,6 +258,19 @@ def from_langcache(splits):
     return [{"q": r["sentence1"], "q2": r["sentence2"], "label": int(r["label"]), "kind": "pair", "lang": "en",
              "split": "dev" if name == "validation" else "test", "source": r["source"]}
             for name in ("validation", "test") for r in splits[name]]
+
+
+def stratified(pairs, dev_share=0.2):
+    """A new dev/test split of LangCache's test pairs, because its validation split has no QQP, PAWS or APT
+    pairs. Within each source, pairs are ordered by an md5 hash of their text (stable, whatever the file
+    order) and the first `dev_share` becomes dev, so dev and test hold every source in the same share."""
+    out = []
+    for source in sorted({p["source"] for p in pairs}):
+        part = sorted((p for p in pairs if p["source"] == source and p["split"] == "test"),
+                      key=lambda p: hashlib.md5(f"{p['q']}\t{p['q2']}".encode()).hexdigest())
+        cut = round(len(part) * dev_share)
+        out += [{**p, "split": "dev" if i < cut else "test"} for i, p in enumerate(part)]
+    return out
 
 
 def jsonl(rows):

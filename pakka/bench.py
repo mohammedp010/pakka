@@ -212,12 +212,13 @@ def format_report(lines, budget, n_test):
                 out.append(f"| {x['encoder']} | " + " | ".join(str(x["false_by_kind"].get(k, 0)) for k in kinds) + " |")
     guarded = [x for x in lines if x.get("guard_p50_us") is not None and x["threshold"] is not None]
     if guarded:
+        reasons = sorted({r for x in guarded for r in x["blocked_by"]})
         out += ["\nGuard vetoes on held-out at the chosen threshold:\n",
-                "| Encoder | negation | slot | action | Good hits lost | Guard p50 |", "|---|---|---|---|---|---|"]
+                "| Encoder | " + "".join(f"{r} | " for r in reasons) + "Good hits lost | Guard p50 |",
+                "|---|" + "---|" * (len(reasons) + 2)]
         for x in guarded:
-            b = x["blocked_by"]
-            out.append(f"| {x['encoder']} | {b.get('negation', 0)} | {b.get('slot', 0)} | {b.get('action', 0)} "
-                       f"| {x['blocked_correct']} | {x['guard_p50_us']:.0f} µs |")
+            out.append(f"| {x['encoder']} | " + "".join(f"{x['blocked_by'].get(r, 0)} | " for r in reasons)
+                       + f"{x['blocked_correct']} | {x['guard_p50_us']:.0f} µs |")
     return "\n".join(out)
 
 

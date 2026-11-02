@@ -90,3 +90,100 @@ def test_names_and_scope_words_the_cached_faq_never_mentions_block(query, cached
 ])
 def test_names_the_cached_faq_does_mention_pass(query, cached, answer):
     assert check(query, cached, answer) is None
+
+
+# --- refinements from public datasets (dev splits only): rules that fired on good hits, and traps they missed
+
+@pytest.mark.parametrize("query, cached", [
+    ("I don't know how to download my invoice", "How do I download my invoice?"),
+    ("pata nahi order kaise cancel kare", "How do I cancel my order?"),
+    ("I can't make a payment, where do I report it?", "How do I report a payment error?"),
+    ("My card won't activate", "How do I activate my card?"),
+    ("Why isn't my virtual card working?", "virtual card stopped, help"),
+    ("I have not been able to use this card", "My card is blocked"),
+])
+def test_hedges_and_failure_reports_are_not_a_flip(query, cached):
+    assert check(query, cached) is None
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("Give me 5 title ideas for my essay", "Give me five title ideas for my essay"),
+    ("set an alarm for 8 hours from now", "set an alarm for eight hours from now"),
+    ("cost of 2nd class stamp", "cost of second class stamp"),
+    ("६ बजे का अलार्म लगाओ", "set an alarm at 6"),
+])
+def test_a_number_written_as_a_word_or_in_devanagari_still_counts(query, cached):
+    assert check(query, cached) is None
+
+
+def test_a_number_word_in_the_query_is_a_slot_too():
+    assert check("wake me up at seven am", "wake me up at six am") == "slot"
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("will it snow today", "will it snow tomorrow"),
+    ("Set an alarm for 6 PM Saturday", "set an alarm for 6 AM on Saturday"),
+    ("Show me my alarms for next Wednesday", "Show me my alarms for next Saturday"),
+    ("aaj ka mausam kaisa hai", "what's the weather tomorrow"),
+    ("शनिवार का अलार्म हटाओ", "delete my sunday alarm"),
+    ("alarm subah 7 baje", "alarm for 7 pm"),
+])
+def test_a_different_day_or_time_of_day_blocks(query, cached):
+    assert check(query, cached) == "slot"
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("kal ka mausam batao", "what's the weather tomorrow"),  # kal: tomorrow or yesterday
+    ("मैं आज रात शहर में क्या कर सकता हूँ", "what can i do tonight in the city"),
+    ("kal tak delivery ho jayegi?", "How long does delivery take?"),  # a time the FAQ doesn't name is no clash
+])
+def test_the_same_day_in_other_words_passes(query, cached):
+    assert check(query, cached) is None
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("turn off the bedroom lights", "turn on the bedroom lights"),
+    ("light band karo", "light on karo"),
+    ("how do I sell my old phone", "where can I buy an old phone"),
+    ("purana phone bechna hai", "purana phone kharidna hai"),
+    ("how do I close my savings account", "how do I open a savings account"),
+])
+def test_opposite_actions_from_public_data_block(query, cached):
+    assert check(query, cached) == "action"
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("convert jpg to pdf", "convert pdf to jpg"),
+    ("converting pdf into word document", "convert word file to pdf"),
+    ("Delhi se Mumbai ki flight", "flights from Mumbai to Delhi"),
+    ("दिल्ली से मुंबई की फ्लाइट", "मुंबई से दिल्ली फ्लाइट"),
+    ("use baking soda instead of baking powder", "use baking powder instead of baking soda"),
+])
+def test_swapped_direction_blocks(query, cached):
+    assert check(query, cached) == "direction"
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("Delhi se Mumbai ki flight", "flights from Delhi to Mumbai"),
+    ("how to transfer money to my account", "how do I transfer money to my account"),
+])
+def test_the_same_direction_passes(query, cached):
+    assert check(query, cached) is None
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("What is your favourite anime? And why?", "What's your favourite anime?"),  # sentence start, not a name
+    ("Pakistan's Musharraf Charged In Bhutto Death", "Pakistan's Musharraf charged over Bhutto murder"),  # title case
+    ("Rudolf Kempe was born in Zurich", "Rudolf Kempe was born in Zürich"),
+    ("new {{Account Category}} account for wife", "new {{Account Type}} account for wife"),  # template slot
+])
+def test_capitals_that_are_not_new_names_pass(query, cached):
+    assert check(query, cached) is None
+
+
+def test_long_prompts_are_left_to_the_score():
+    """One different word means little in a long prompt: the rules only judge FAQ-length questions."""
+    prompt = "Write a short story about a dragon who learns to cook, in the style of a fairy tale, for children " \
+             "aged {} to eight, with a happy ending and a moral about patience"
+    assert check(prompt.format(5) + " in London", prompt.format("five")) is None
+    assert check("Write 5 titles in London", "Write five titles") == "entity"

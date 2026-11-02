@@ -270,3 +270,40 @@ def test_pair_rows_count_a_high_score_on_a_different_pair_as_a_false_hit():
     r = evaluate(rows, 0.9)
     assert (r["hits"], r["correct"], r["false_hits"], r["missed"]) == (2, 1, 1, 0)
     assert [x["source"] for x in rows] == ["qqp", "paws"] and rows[0]["blocked"] is None
+
+from pakka.bench import format_report  # noqa: E402
+
+
+def test_report_shows_every_guard_reason_that_vetoed_something():
+    line = {"encoder": "m + guards", "auc": 0.7, "threshold": 0.8, "hit_rate": 0.1, "correct": 9, "false_hits": 1,
+            "false_hit_rate": 0.1, "false_hit_upper": 0.3, "en": "-", "hinglish": "-", "hi": "-", "lookup_p50_ms": 1,
+            "false_by_kind": {}, "blocked_by": {"direction": 2, "entity": 1}, "blocked_correct": 1, "guard_p50_us": 60}
+    report = format_report([line], 0.1, 10)
+    assert "| Encoder | direction | entity | Good hits lost | Guard p50 |" in report
+    assert "| m + guards | 2 | 1 | 1 | 60 µs |" in report
+
+
+import json  # noqa: E402
+
+from pakka.embed import load_embedder  # noqa: E402
+
+
+def test_api_embedder_batches_in_order_cuts_long_text_adds_the_model_prefix_and_returns_unit_vectors(monkeypatch):
+    import httpx
+
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+    seen = []
+
+    def reply(request):
+        body = json.loads(request.content)
+        seen.append(body)
+        data = [{"index": i, "embedding": [len(t), 1.0]} for i, t in enumerate(body["input"])][::-1]  # any order
+        return httpx.Response(200, json={"data": data})
+
+    embed = load_embedder("openrouter:qwen/qwen3-embedding-8b", max_length=4, transport=httpx.MockTransport(reply), batch=2)
+    out = embed(["a", "bb", "x" * 50])
+    assert [b["model"] for b in seen] == ["qwen/qwen3-embedding-8b"] * 2 and seen[0]["dimensions"] == 1024
+    prefix = "Instruct: Retrieve semantically similar text.\nQuery: "
+    assert seen[0]["input"] == [prefix + "a", prefix + "bb"] and seen[1]["input"] == [prefix + "x" * 16]  # 4 tokens ~ 16 chars
+    assert out.shape == (3, 2) and np.allclose(np.linalg.norm(out, axis=1), 1)
+    assert out[0][0] < out[1][0] < out[2][0]  # rows stay in input order

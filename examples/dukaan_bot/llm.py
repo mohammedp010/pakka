@@ -30,8 +30,9 @@ def api_key():
     return None
 
 
-def make_chat(model=None, max_tokens=300, transport=None):
-    """Returns `chat(system, user) -> (text, tokens)` for one OpenRouter model."""
+def make_chat(model=None, max_tokens=300, transport=None, reasoning=None):
+    """Returns `chat(system, user) -> (text, tokens)` for one OpenRouter model. Reasoning is off unless
+    `reasoning` asks for some, e.g. {"effort": "low"}."""
     key = api_key()
     if not key:
         raise SystemExit(f"Set OPENROUTER_API_KEY, or add OPENROUTER_API_KEY=... to {ENV_FILE}")
@@ -43,7 +44,7 @@ def make_chat(model=None, max_tokens=300, transport=None):
             "model": model,
             "max_tokens": max_tokens,
             # These tasks need no extended thinking; it can eat the whole token budget.
-            "reasoning": {"enabled": False},
+            "reasoning": reasoning or {"enabled": False},
             "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
         })
         response.raise_for_status()
