@@ -53,7 +53,8 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
 8. **Fine-tuning MiniLM helps only with a verifier (Phase 9).** Trained on public dev and train splits and
    measured on data it never saw, it is no better free (human test AUC 0.603 → 0.589) and worse on CLINC150. With
    Jev it answers 54 of 258 real messages with 1 wrong, against 19 for base MiniLM and 80 for Qwen3-0.6B, at MiniLM's
-   CPU speed. See "Phase 9: fine-tuning MiniLM-L12" below.
+   CPU speed. The same recipe on Qwen3-0.6B didn't help on real messages, so it isn't shipped. See "Phase 9:
+   fine-tuning MiniLM-L12" below.
 
 ### Where pakka loses
 
@@ -719,9 +720,30 @@ flat elsewhere. The verifier was not run on the public sets with the tuned model
 base model on the human test it never saw, with Jev (19 → 54 answers, 0 → 1 wrong). Without a verifier it doesn't
 help, and MiniLM-L12 stays the default.
 
-**Not done:** Qwen3-0.6B fine-tune. The Kaggle script hit two library-version errors on the T4 (gradient
-checkpointing, bf16 weights), now fixed, but no Qwen run was measured. Verifier spend this phase: under $0.01
-(about 300 new Jev calls and as many cheap-LLM calls; the rest came from cache).
+**Qwen3-Embedding-0.6B, same recipe** (lr 1e-5, batch 32, 64 tokens, gradient checkpointing; 30 minutes per run on a
+T4; runs `all` and `no_ours` only): **it doesn't help, and it isn't shipped.** On human test, guards on, thresholds
+picked on dev (v1 dev for base and `no_ours`, the other half of v1 dev for `all` and its base row):
+
+| Setup | Base Qwen3 | Tuned, never saw v1 (`no_ours`) | Base Qwen3, half-dev threshold | Tuned (`all`) |
+|---|---|---|---|---|
+| Free, 10% budget | 11 / 0 (0.0%, 25.9%) | none fits | 25 / 2 (7.4%, 23.4%) | 22 / 0 (0.0%, 14.9%) |
+| + Jev, 10% | 106 / 14 (11.7%, 18.6%) | 92 / 8 (8.0%, 15.0%) | 109 / 18 (14.2%, 21.3%) | 106 / 7 (6.2%, 12.2%) |
+| + Jev, 5% | 80 / 1 (1.2%, 6.7%) | 77 / 2 (2.5%, 8.8%) | 90 / 2 (2.2%, 7.6%) | 87 / 3 (3.3%, 9.3%) |
+| + cheap LLM | 113 / 9 (7.4%, 13.4%) | 98 / 9 (8.4%, 15.2%) | 114 / 10 (8.1%, 14.2%) | 111 / 11 (9.0%, 15.4%) |
+| Human AUC, guards | 0.763 | 0.713 | 0.763 | 0.762 |
+
+- The model that never saw v1 is **worse** on real messages (AUC 0.763 → 0.713, fewer answers with every verifier),
+  so whatever `all` gains on v1 test (free 143 / 16 → 124 / 5; with Jev at 5%, 202 / 5 → 202 / 3) is mostly v1's own
+  style, the v1 lesson again. `all` ties base on human test.
+- Unlike MiniLM, Qwen3 already lifts most real messages above the verifier's 0.6 floor, so tuning has no such lever.
+- Never-trained public sets (free, 5% budget): Bitext better (AUC 0.858 → 0.892, 1,219 / 47 → 3,019 / 142), CLINC150
+  safer but fewer answers (508 / 25 → 420 / 6, AUC 0.767 → 0.711), Banking77 worse (AUC 0.707 → 0.695, top tenth
+  5.2% → 8.9%). The vCache streams were skipped (about 3 hours with Qwen3, and nothing moved for MiniLM).
+- The Kaggle script needed two fixes for the T4's library versions (gradient checkpointing on the inner model, float32
+  master weights); both are in `scripts/phase9_kaggle.py`.
+
+Verifier spend this phase: under $0.02 (about 300 new Jev and cheap-LLM calls for each embedder; the rest came from
+cache).
 
 Reproduce (training on Kaggle: `reports/` has the steps; the rest on the Mac):
 

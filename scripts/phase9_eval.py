@@ -81,6 +81,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--base", default=pb.DEFAULT)
     p.add_argument("--models", default="models/phase9")
+    p.add_argument("--skip", default="", help="datasets to leave out, comma-separated (the vCache streams take hours with Qwen3)")
     args = p.parse_args()
     stem = args.base.split("/")[-1].lower()
     tuned = sorted(str(d.relative_to(ROOT)) for d in (ROOT / args.models).glob(f"{stem}-pakka-*") if d.is_dir())
@@ -95,6 +96,7 @@ def main():
     for m in tuned:
         run = m.rsplit("-pakka-", 1)[1]
         names = UNSEEN + ["ours_calib@", "human_calib@"] if run == "all" else HELD_OUT[run.removeprefix("no_")]
+        names = [n for n in names if n not in args.skip.split(",")]
         print(f"\n### {Path(m).name} vs {args.base} (5% budget unless noted)\n")
         print(pb.table(header, compare(args.base, m, names)))
 
