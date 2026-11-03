@@ -15,9 +15,9 @@ def test_pairs_sample_caps_each_source_and_never_changes():
 
 def test_leave_one_out_run_trains_on_no_part_of_that_dataset():
     data = datasets_for("no_massive", TRIPLETS, PAIRS)
-    assert "massive para" not in data["faq"]["positive"] and len(data["faq"]) == 2
+    assert "massive para" not in data["faq"]["positive"] and len(data["faq"]["anchor"]) == 2
     assert "pairs" not in datasets_for("no_langcache", TRIPLETS, PAIRS)
-    assert len(datasets_for("all", TRIPLETS, PAIRS)["faq"]) == 3
+    assert len(datasets_for("all", TRIPLETS, PAIRS)["faq"]["anchor"]) == 3
 
 
 def test_qwen_texts_get_the_prefix_pakka_embeds_with():

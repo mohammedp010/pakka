@@ -34,24 +34,22 @@ def read(path):
 
 
 def datasets_for(run, triplets, pairs, prefix=""):
-    from datasets import Dataset
-
+    """{name: {column: texts}} for one run, without `datasets` (so pakka's CI can test it)."""
     left_out = run.removeprefix("no_") if run != "all" else None
     t = [r for r in triplets if r["source"] != left_out]
     p = [r for r in pairs if r["source"] != left_out]
     out = {}
     if t:
-        out["faq"] = Dataset.from_dict({k: [prefix + r[k] for r in t] for k in ("anchor", "positive", "negative")})
+        out["faq"] = {k: [prefix + r[k] for r in t] for k in ("anchor", "positive", "negative")}
     if p:
-        out["pairs"] = Dataset.from_dict({"sentence1": [prefix + r["s1"] for r in p],
-                                          "sentence2": [prefix + r["s2"] for r in p],
-                                          "label": [r["label"] for r in p]})
+        out["pairs"] = {"sentence1": [prefix + r["s1"] for r in p], "sentence2": [prefix + r["s2"] for r in p],
+                        "label": [r["label"] for r in p]}
     return out
 
 
 def train(base, run, triplets, pairs, out_dir, smoke=False):
     import torch
-    from datasets import DatasetDict
+    from datasets import Dataset, DatasetDict
     from sentence_transformers import SentenceTransformer, SentenceTransformerTrainer, SentenceTransformerTrainingArguments
     from sentence_transformers.losses import CoSENTLoss, MultipleNegativesRankingLoss
     from sentence_transformers.training_args import BatchSamplers
@@ -65,7 +63,7 @@ def train(base, run, triplets, pairs, out_dir, smoke=False):
         # some sentence-transformers/transformers pairs (Kaggle's 5.7 + 5.20: unexpected `every_n_layers`)
         inner = getattr(model[0], "auto_model", None) or model[0].model
         inner.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
-    data = datasets_for(run, triplets, pairs, QWEN_PREFIX if base == "qwen" else "")
+    data = {k: Dataset.from_dict(v) for k, v in datasets_for(run, triplets, pairs, QWEN_PREFIX if base == "qwen" else "").items()}
     losses = {"faq": MultipleNegativesRankingLoss(model), "pairs": CoSENTLoss(model)}
     args = SentenceTransformerTrainingArguments(
         output_dir=str(out_dir / "checkpoints"), num_train_epochs=1, per_device_train_batch_size=8 if smoke else batch,
