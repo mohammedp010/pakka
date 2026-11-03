@@ -187,3 +187,40 @@ def test_long_prompts_are_left_to_the_score():
              "aged {} to eight, with a happy ending and a moral about patience"
     assert check(prompt.format(5) + " in London", prompt.format("five")) is None
     assert check("Write 5 titles in London", "Write five titles") == "entity"
+
+
+# --- refinements from people's own messages (Phase 8 human split and public dev splits only): real messages put
+# "nahi" or "not" in a side clause that describes the situation, not in what they ask for
+
+@pytest.mark.parametrize("query, cached", [
+    ("online pay nahi karaycha, parcel aala ki cash dein, possible ahe ka?", "Is Cash on Delivery available?"),
+    ("ata hi shop nahi vaparaychi, account pura delete kara", "How do I delete my account?"),
+    ("card save karne bol raha hai par darr lagta hai, safe hai kya, koi fraud toh nahi hoga",
+     "Is it safe to save my card details?"),
+    ("emi milegi iphone pe? no cost wali", "Do you offer EMI?"),
+    ("I do not want this item, cancel my order", "How do I cancel my order?"),
+])
+def test_a_negation_about_something_else_passes(query, cached):
+    assert check(query, cached) is None
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("kisi ne gift card diya h iska kaise use kare samajh nhi aaya", "How do gift cards work?"),  # didn't understand
+    ("Could not complete transfer, it says declined", "Transfer unable to be completed, states declined"),
+    ("i dont khow how to cancel my order", "How do I cancel my order?"),
+    ("I do not knowhow to cancel my order", "How do I cancel my order?"),
+    ("Can I use my card no matter where I go?", "Is there anywhere I can't use my card?"),
+])
+def test_more_hedges_and_failure_reports_are_not_a_flip(query, cached):
+    assert check(query, cached) is None
+
+
+@pytest.mark.parametrize("query, cached", [
+    ("Cash on delivery nahi chahiye, card se pay karna hai, kaise karun?", "Is Cash on Delivery available?"),
+    ("I don't want to pay in cash at delivery, is there any way to avoid it?", "Is Cash on Delivery available?"),
+    ("Mera order kab tak deliver hoga, abhi cancel nahi karna?", "How do I cancel my order?"),
+    ("Plus membership? nahi chahiye", "I want Plus membership"),  # a negated clause that names nothing still counts
+    ("I don't keep my card details, is that safe?", "Is it safe to save my card details?"),  # "keep" isn't "know"
+])
+def test_a_negation_about_what_both_ask_still_blocks(query, cached):
+    assert check(query, cached) == "negation"

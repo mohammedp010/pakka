@@ -108,7 +108,7 @@ where the judges agreed with each other but not with the form question it answer
 This split is the style-leakage check for v1: with the threshold picked on v1 dev, the cache answers
 10–21% of v1 test but only 1–4% of these messages. Real messages are longer and add context ("password
 yaad nhi aa raha, naya kaise banaye"), so they score lower against the FAQ questions, and the negation
-guard misreads that context as a negation. Results: [docs/public_results.md](../docs/public_results.md).
+guard read that context as a negation (Phase 8 fixed most of it). Results: [docs/public_results.md](../docs/public_results.md).
 
 ## Use
 

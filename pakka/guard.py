@@ -25,11 +25,27 @@ _NEGATION_HI = re.compile(r"(?<![ऀ-ॿ])(?:नहीं|नही|मत|ब�
 _TAGS = re.compile(r"\bor not\b|\bya (?:nahi|nahin|nhi|nai)\b|\b(?:nahi|nahin|nhi) (?:hai|h|he) (?:kya|kyaa)\b|या नहीं")
 # Neither do hedges ("I don't know how to...", "pata nahi") or failure reports ("can't pay", "won't activate",
 # "isn't working"): they ask about the same thing as the plain question. "cannot be returned" still flips.
-_NEUTRAL = re.compile(r"\b(?:do not|don't|dont|didn't|didnt|did not) know\b|\bnot sure\b|\bno idea\b"
-                      r"|\bpata (?:nahi|nahin|nhi|nai)\b|पता नहीं"
-                      r"|\b(?:can't|cannot|cant|can not|couldn't|couldnt|unable|won't|wont)\b(?! be\b)|\bnot (?:\w+ ){0,2}able\b"
+# "don't khow", "dont knwo": any word after "don't" that starts with k but "keep" is "know" misspelled.
+_NEUTRAL = re.compile(r"\b(?:do not|don't|dont|didn't|didnt|did not|d not) (?!keep\b)k\w*|\bnot sure\b|\bno idea\b"
+                      r"|\bno matter\b|\b(?:pata|samajh|samaj|samjh|smjh) (?:nahi|nahin|nhi|nai)\b|पता नहीं"
+                      r"|\b(?:can't|cannot|cant|can not|could not|couldn't|couldnt|unable|won't|wont)\b(?! be\b)"
+                      r"|\bnot (?:\w+ ){0,2}able\b"
                       r"|\b(?:not|\w+n't|doesnt|isnt|didnt|hasnt|havent|wasnt|arent)\b(?: [\w']+){0,4}? work(?:s|ed|ing)?\b"
                       r"|\b(?:nahi|nhi|nahin) (?:ho|chal) (?:raha|rahi|rha|rhi)\b|नहीं (?:हो|चल) रह")
+
+# People put "nahi" or "not" in side clauses that set the scene ("online pay nahi karunga, COD ka option do",
+# "I do not want this item, cancel my order"). Such a negation is about something else, so it doesn't flip what
+# they ask. Clauses end at punctuation or a "but"/"because" word; the stopwords say nothing about a topic.
+_CLAUSE = re.compile(r"[,.;:!?।]+|\b(?:but|lekin|magar|because|kyunki|kyuki|kyonki|however|although|though)\b")
+_STOPWORDS = set("""
+the and are was were been have has had can could will would should shall may might must for from with about its
+this that these those there here what which who how when where why any some get got want need please just also yet
+still then than our you your they them their his her one ask tell know like help helpful
+hai hain hota hoti hote hua hui hue tha thi kya kyaa mein mai main mujhe muje mera meri mere aap aapka aapko apna
+apne hum yeh woh kar karna karni karo karu karun kare karein kardo krna krdo raha rahi rahe rha rhi gaya gayi gaye
+diya liya dena lena sakta sakti sakte chahiye bhi toh abhi aur par sir bhai yaar kaise kese kab kahan kaha kitna
+kitne kitni kyun kyu kyon koi kuch sab bas wala wali wale hoga hogi hoge
+""".split())  # words of 2 letters or fewer never count
 
 # Numbers, order IDs, amounts and UPI IDs / emails: if they differ, so does the answer.
 _SLOTS = re.compile(r"[\w.\-]+@[\w.\-]+|\d+")
@@ -94,9 +110,36 @@ _SCOPE = {"country", "countries", "international", "abroad", "overseas", "outsid
 _TEMPLATE = re.compile(r"\{\{[^}]*\}\}")  # placeholders such as {{Order Number}}
 
 
+def _polar(text):
+    """Lowercase, with yes/no tails, hedges and failure reports blanked: a negation still left flips the meaning."""
+    return _NEUTRAL.sub(" ", _TAGS.sub(" ", text.lower().replace("’", "'")))
+
+
 def _negated(text):
-    text = _NEUTRAL.sub(" ", _TAGS.sub(" ", text.lower().replace("’", "'")))
+    text = _polar(text)
     return bool(_NEGATION.search(text) or _NEGATION_HI.search(text))
+
+
+def _topics(text):
+    """Content words cut to 5 letters, so "cancel" meets "cancelling" and "deliver" meets "delivery"."""
+    text = _NEGATION_HI.sub(" ", _NEGATION.sub(" ", text.lower()))  # "don't" must not leave "don" behind
+    return {w[:5] for w in _WORD.findall(text) if len(w) > 2 and w not in _STOPWORDS}
+
+
+def _share(a, b):
+    # short words (pin, cod, emi) must match exactly; longer ones on a common prefix
+    return any(x == y or (min(len(x), len(y)) > 3 and (x.startswith(y) or y.startswith(x))) for x in a for y in b)
+
+
+def _negation_about(text, other):
+    """Is a negation in `text` about what it asks in common with `other`? A negated clause must use a word `other`
+    uses too, or name nothing at all ("Plus membership? nahi chahiye"). Texts with no word in common (Hindi vs
+    English) give nothing to tell by, so their negation counts."""
+    about = _topics(other)
+    if not _share(_topics(text), about):
+        return True
+    return any((_NEGATION.search(c) or _NEGATION_HI.search(c)) and (not _topics(c) or _share(_topics(c), about))
+               for c in _CLAUSE.split(_polar(text)))
 
 
 def _tokens(text):
@@ -181,7 +224,8 @@ def check(query, cached, answer=""):
     if max(len(query.split()), len(cached.split())) > MAX_WORDS:
         return None
     known = f"{cached} {answer}"
-    if _negated(query) != _negated(cached):
+    q_neg, c_neg = _negated(query), _negated(cached)
+    if q_neg != c_neg and _negation_about(*((query, cached) if q_neg else (cached, query))):
         return "negation"
     if _numbers(query, query=True) - _numbers(known) or _time_clash(query, known):
         return "slot"

@@ -35,8 +35,8 @@ causes, and keeps the cache from leaking or going stale.
 | Setup | Right answers | Wrong answers | False-hit rate (95% upper bound) | Hinglish caught |
 |---|---|---|---|---|
 | Plain cache, spec's model, 20% budget | 55 | 12 | 17.9% (28.7%) | 12/200 |
-| + pakka guards, 10% budget | 48 | 5 | 9.4% (20.3%) | 11/200 |
-| + fine-tuned encoder and approved keys, 10% budget | **69** | **2** | **2.8% (9.7%)** | **31/200** |
+| + pakka guards, 10% budget | 49 | 5 | 9.3% (19.9%) | 11/200 |
+| + fine-tuned encoder and approved keys, 10% budget | **70** | **2** | **2.8% (9.6%)** | **32/200** |
 
 In the real bot with a real LLM on the same 526 questions: **13% of questions answered from cache with
 2 wrong answers, in 56 ms instead of 1,331 ms.** The set is built to be hard: 35% of it must miss and

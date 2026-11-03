@@ -51,7 +51,7 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
 
 - **Guards still trade a few hits on intent-labelled data.** Phase 7 cut the good hits they throw away (MiniLM,
   held-out: vCache Classification 4,076 → 106, LangCache 740 → 312), but at the same 5% budget guards still lower
-  the hit rate in 39 of the 46 cases where a threshold fits (ten embedders) and raise it in 7. The drops are small
+  the hit rate in 36 of the 46 cases where a threshold fits (ten embedders) and raise it in 9. The drops are small
   now: a median of 0.3 points, the worst 4.2 (Qwen3-Embedding-8B on LangCache). In Phase 6 the average drop was 2.4
   points and the worst 10.9. Most of what's left are slot vetoes the labels call wrong
   ("set the timer for 10 minutes" served the answer to "a 4 minute timer"; bill #00108 vs #85632), and the audit's
@@ -63,9 +63,11 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
   because one seed question, "i dont know what i need to do to download my bill", read as a negation and blocked
   "check my bill" questions along with good hits. Phase 7 reads "don't know" as a hedge, which is right, and that
   win is gone (4.1%).
-- **Guards misread real people's Hinglish.** On 258 messages written by people (Phase 8), 39 of 82 guard
-  vetoes threw away a right answer, 31 of them negation: "abhi ship nahi hua na, cancel karna hai" uses "nahi"
-  to describe the problem. A Jev verifier recovers most of those hits; see "Human-written Hinglish" below.
+- **Guards misread real people's Hinglish.** On 258 messages written by people (Phase 8), 39 of Qwen3's 82
+  guard vetoes threw away a right answer, 31 of them negation: "abhi ship nahi hua na, cancel karna hai" uses
+  "nahi" to describe the problem. Phase 8's negation fix brings that to 26 of 63 (18 negation), but guards
+  still lower ranking quality on real messages. A Jev verifier recovers most of the lost hits; see
+  "Human-written Hinglish" below.
 - **Guards got slower:** about 60 µs per check, up from 35 µs. Still far below an embedding lookup.
 - **pakka's default embedder isn't the best choice.** Qwen3-Embedding-0.6B, the same order of size as bge-m3,
   doubles what the cache can answer on our set at the same budget; Qwen3-Embedding-8B nearly quadruples it.
@@ -173,7 +175,7 @@ Held-out (test) split of each dataset. Each cell is **false-hit rate · hit rate
 | LangCache pairs | pairs | 62,021 | 24.3% · 42% | 24.6% · 38% | 35.6% · 22% | 34.9% · 22% | e5-base: 33.4% · 28% |
 | LangCache pairs, stratified split | pairs | 49,618 | 24.3% · 42% | 24.7% · 37% | no threshold fits | no threshold fits | no threshold fits |
 | vCache LmArena | stream | 51,037 | 7.4% · 90% | 7.3% · 90% | no threshold fits | no threshold fits | no threshold fits |
-| vCache Classification | stream | 36,000 | 9.4% · 31% | 9.9% · 31% | 2.4% · 22% | 2.4% · 22% | OpenAI 3-small (API): 3.7% · 25% |
+| vCache Classification | stream | 36,000 | 9.4% · 31% | 9.7% · 31% | 2.4% · 22% | 2.4% · 22% | OpenAI 3-small (API): 3.7% · 25% |
 | vCache SearchQueries | stream | 120,000 | 35.1% · 54% | 34.9% · 54% | no threshold fits | no threshold fits | no threshold fits |
 
 Label-noise floor of the streams: an exact-match cache (same text after lowercasing) replayed over the whole stream is already "wrong" on vCache LmArena 871 of 9,778 hits (8.9%); vCache Classification 6 of 6,356 hits (0.1%); vCache SearchQueries 102 of 680 hits (15.0%), because identical prompts sit in different equivalence classes. No embedder can beat that floor on these labels.
@@ -202,12 +204,12 @@ Hit rate on held-out at the dev-picked threshold, with the held-out false-hit ra
 | Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | Qwen3-Embedding-0.6B | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
 |---|---|---|---|---|---|---|---|---|---|---|
 | HinglishCacheBench v1 (ours) | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
-| Banking77 | 3% (4.5%) | 3% (5.2%) | 3% (3.7%) | 2% (4.8%) | 1% (3.6%) | 1% (0.0%) | **9%** (5.0%) | 3% (1.9%) | 3% (1.2%) | 7% (4.9%) |
+| Banking77 | 3% (4.5%) | 3% (5.2%) | 3% (3.5%) | 3% (3.5%) | 1% (3.2%) | 1% (0.0%) | **9%** (5.0%) | 3% (1.9%) | 3% (1.2%) | 7% (4.9%) |
 | CLINC150 | 8% (4.5%) | none fits | none fits | 3% (2.8%) | none fits | none fits | 10% (4.7%) | 5% (3.6%) | **25%** (6.1%) | 7% (3.1%) |
-| Bitext | 1% (0.6%) | 19% (4.7%) | 1% (0.0%) | 7% (5.7%) | 5% (3.7%) | 4% (3.7%) | 10% (3.7%) | 18% (4.8%) | **22%** (4.6%) | 8% (4.3%) |
+| Bitext | 1% (0.6%) | 19% (4.5%) | 1% (0.0%) | 7% (5.7%) | 5% (3.9%) | 4% (3.7%) | 11% (3.7%) | 19% (4.7%) | **22%** (4.6%) | 8% (4.3%) |
 | Hinglish-TOP | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
 | MASSIVE en+hi | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
-| LangCache pairs | 22% (34.9%) | 17% (23.1%) | 26% (35.0%) | **28%** (33.4%) | 27% (32.9%) | 20% (39.1%) | 25% (29.4%) | 26% (31.4%) | 27% (23.6%) | 13% (31.2%) |
+| LangCache pairs | 22% (34.9%) | 17% (23.1%) | 26% (34.9%) | **28%** (33.4%) | 27% (32.9%) | 20% (39.1%) | 25% (29.3%) | 26% (31.4%) | 27% (23.6%) | 13% (31.2%) |
 | LangCache pairs, stratified split | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
 | vCache LmArena | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
 | vCache Classification | 22% (2.4%) | 21% (2.6%) | 23% (2.7%) | 24% (3.0%) | 21% (2.0%) | 22% (2.4%) | 23% (2.6%) | 22% (1.8%) | 21% (2.1%) | **25%** (3.7%) |
@@ -228,10 +230,10 @@ Same budget, threshold picked on dev with and without guards. "Plain at the same
 | LangCache pairs | 35.6% · 22% | 34.9% · 22% | 35.6% | 312 | action 4, direction 46, entity 415, negation 41, slot 127 |
 | LangCache pairs, stratified split | no threshold fits | no threshold fits | - | - | - |
 | vCache LmArena | no threshold fits | no threshold fits | - | - | - |
-| vCache Classification | 2.4% · 22% | 2.4% · 22% | - | 106 | entity 22, negation 12, slot 75 |
+| vCache Classification | 2.4% · 22% | 2.4% · 22% | - | 106 | entity 22, negation 13, slot 75 |
 | vCache SearchQueries | no threshold fits | no threshold fits | - | - | - |
 
-Across the 10 measured embedders and 11 datasets, guards raised the hit rate at the same budget in 7 cases and lowered it in 39.
+Across the 10 measured embedders and 11 datasets, guards raised the hit rate at the same budget in 9 cases and lowered it in 36.
 
 ## Threshold transfer (MiniLM-L12 (pakka default), plain)
 
@@ -294,7 +296,7 @@ No embedder has a threshold that meets the budget on Hinglish-TOP or MASSIVE, so
 |---|---|---|---|---|---|---|---|---|
 | MiniLM-L12 (pakka default) | 63.7% | 24% | 5% | 481 | 26.5% | 10% | 11% | 58 |
 | langcache-embed-v1 | 64.0% | 25% | 5% | 488 | 51.1% | 17% | 0% | 83 |
-| e5-small | 67.9% | 23% | 4% | 534 | 56.6% | 14% | 1% | 111 |
+| e5-small | 67.9% | 23% | 4% | 535 | 56.6% | 14% | 1% | 111 |
 | e5-base | 70.1% | 23% | 3% | 520 | 52.8% | 15% | 0% | 106 |
 | IndicSBERT | 41.8% | 13% | 22% | 328 | 31.8% | 10% | 9% | 54 |
 | LaBSE | 62.2% | 16% | 10% | 444 | 22.1% | 6% | 14% | 57 |
@@ -489,40 +491,44 @@ cell, each share carries about ±11 points of sampling error, on top of the judg
 315 messages from 23 people, written through a form in their own words (80% romanized Hinglish), labelled by
 two LLMs and a person ([dataset card](../data/README.md)). Thresholds are picked on HinglishCacheBench v1's
 dev split and reported on the 258 human test messages, next to v1's own test split, so the gap is the
-style leakage of an LLM-written set. Small set: the 95% bounds are wide.
+style leakage of an LLM-written set. Small set: the 95% bounds are wide. Guards here include the negation fix
+described below.
 
 | Setup, 10% budget | v1 test (526, LLM-written) | Human test (258) |
 |---|---|---|
-| MiniLM + guards | 48 right, 5 wrong (10% hit rate) | 2 right, 1 wrong (1%) |
-| Qwen3-Embedding-0.6B + guards | 103 right, 7 wrong (21%) | 10 right, 1 wrong (4%) |
+| MiniLM + guards | 49 right, 5 wrong (10% hit rate) | 2 right, 1 wrong (1%) |
+| Qwen3-Embedding-0.6B + guards | 103 right, 8 wrong (21%) | 10 right, 1 wrong (4%) |
 | IndicSBERT, plain | 47 right, 3 wrong (10%) | 3 right, 1 wrong (2%) |
-| Qwen3-Embedding-0.6B + guards + Jev | 240 right, 16 wrong (49%) | 94 right, 17 wrong (43%) |
+| Qwen3-Embedding-0.6B + guards + Jev | 241 right, 17 wrong (49%) | 107 right, 16 wrong (48%) |
 
 1. **v1 overstated what a cache can answer.** At the same threshold the cache answers a tenth to a fifth of
    v1 test but 1–4% of real messages. Real messages are longer and carry context ("password yaad nhi aa
    raha, login nahi ho paa raha, naya kaise banaye"), so they sit further from the FAQ question.
-2. **Guards hurt on real writing.** They lower P-CHR AUC for all four embedders on the human split (Qwen3
-   0.793 → 0.730, MiniLM 0.630 → 0.560). With Qwen3, 39 of the 82 vetoes on human test threw away a right
-   answer, 31 of them negation: people use "nahi" to describe the problem, not to ask the opposite.
+2. **Guards hurt on real writing.** Before the fix below they lowered P-CHR AUC for all four embedders on the
+   human split (Qwen3 0.793 → 0.730, MiniLM 0.630 → 0.560), and 39 of Qwen3's 82 vetoes on human test threw away
+   a right answer, 31 of them negation: people use "nahi" to describe the problem, not to ask the opposite.
+   After it, guards still cost, but less: Qwen3 0.752, MiniLM 0.603, IndicSBERT 0.572 (0.593 plain), LaBSE
+   0.622 (0.641 plain), and 26 of Qwen3's 63 vetoes throw away a right answer, 18 of them negation.
 3. **Jev (TypeSafe, `jev-1.14.0`) as a verifier recovers most of it.** It checks grey-band hits the guards
    let through ("would the reply for the cached question also answer this one?"). With Qwen3 + guards at a
-   5% budget: 86 right, 6 wrong (6.5%; the dev-picked threshold slightly misses 5% here), Hinglish caught
-   72/184 against 5/184 without it. It adds about 300 ms to a lookup, against 1,331 ms for the LLM call.
+   5% budget: 79 right, 1 wrong (1.2%, upper bound 6.7%), Hinglish caught 66/184; without it no threshold fits
+   5%, and at 10% guards alone catch 5/184. It adds about 300 ms to a lookup, against 1,331 ms for the LLM call.
 
-### Jev on the public sets (5% budget, guards on)
+### Jev on the public sets (guards on)
 
 | Dataset | Embedder | False hits in top 5% of held-out, guards | … + Jev |
 |---|---|---|---|
 | HinglishCacheBench v1 | MiniLM (top 10%) | 9.6% | 0.0% |
+| Human test (Phase 8) | Qwen3-Embedding-0.6B (top 10%) | 8.0% | 0.0% |
 | Hinglish-TOP | Qwen3-Embedding-0.6B | 39.0% | 11.5% |
 | Hinglish-TOP | MiniLM | 61.3% | 21.8% |
 | MASSIVE en+hi | Qwen3-Embedding-0.6B | 35.6% | 25.3% |
 | MASSIVE en+hi | MiniLM | 20.8% | 23.3% |
 
-v1 goes from "no threshold fits" to fitting 5% (Qwen3: 207 right, 7 wrong; MiniLM: 104 right, 2 wrong).
-Hinglish-TOP and MASSIVE still don't fit; 20 sampled leftover false hits were all label artifacts
-(duplicate FAQs that differ only in "30 mins" vs "30 minutes", Hindi city names counted as slot traps).
-Jev's scores bunch at 0.98–0.99 at the top. About 54,000 calls, ~$0.95.
+v1 goes from "no threshold fits" to fitting 5% (Qwen3: 182 right, 3 wrong, upper bound 4.7%; MiniLM: 106
+right, 2 wrong). Hinglish-TOP and MASSIVE still don't fit; 20 sampled leftover false hits were all label
+artifacts (duplicate FAQs that differ only in "30 mins" vs "30 minutes", Hindi city names counted as slot
+traps). Jev's scores bunch at 0.98–0.99 at the top. About 54,400 calls, ~$0.95.
 
 Reproduce (needs `TYPESAFE_API_KEY`; answers cached in `data/public/emb/jev/`):
 
@@ -531,6 +537,40 @@ Reproduce (needs `TYPESAFE_API_KEY`; answers cached in `data/public/emb/jev/`):
 pakka bench --data /tmp/human_eval.jsonl --guard --verify jev-1.14.0 --budget 0.10 --embed-cache data/public/emb \
     --embedder Qwen/Qwen3-Embedding-0.6B
 ```
+
+### Fixing the negation guard (Phase 8, dev splits only)
+
+The human split showed it first: people put "nahi" or "not" in a clause that sets the scene, not in what they
+ask ("online pay nahi karunga, COD ka option do", "I do not want this item, cancel my order"). Reading every
+negation veto on the dev splits (human dev, v1 dev and the five FAQ-protocol public sets) with MiniLM and
+Qwen3-Embedding-0.6B: in the top-scoring tenth, where a threshold actually serves hits, the rule vetoed 9 wrong
+answers and 49 right ones with MiniLM (4 and 45 with Qwen3). On every public dev split, dropping the rule
+altogether did as well as keeping it; only v1, whose traps were written for it, needs it. So the rule now
+looks at what the negation is about. The changes are in `pakka/guard.py`, with tests in `tests/test_guard.py`:
+
+| Change | What misfired on dev |
+|---|---|
+| A negation veto stands only if a negated clause shares a word with the other question, or names nothing ("Plus membership? nahi chahiye"). When the two share no word at all (Hindi vs English) there is nothing to tell by, and it stands as before | Side clauses: "online pay nahi karaycha, parcel aala ki cash dein, possible ahe ka?", "ata hi shop nahi vaparaychi, account pura delete kara", "I do not want this item, cancel order" |
+| More hedges and failure reports: misspelled "don't know" ("dont khow", "do not knowhow"), "could not", "no matter", "samajh nahi" | 27 misspelled "don't know" on Bitext dev and 16 "could not" on Banking77 dev, read as a flip |
+
+Negation vetoes in the top-scoring tenth, right (blocked a wrong answer) / wrong (blocked a right one):
+
+| Split | MiniLM, before → after | Qwen3-Embedding-0.6B, before → after |
+|---|---|---|
+| Dev, all seven sets | 9 / 49 → 7 / 38 | 4 / 45 → 4 / 36 |
+| Test, five public sets | 2 / 41 → 2 / 37 | 4 / 28 → 4 / 25 |
+| Test, human split | 1 / 3 → 0 / 1 | 0 / 5 → 0 / 3 |
+
+On human test, false hits among the top tenth fall from 16.0% to 12.0% (MiniLM) and 12.0% to 8.0% (Qwen3). On
+the public test splits the false-hit rate at the same hit rate doesn't move (Bitext with MiniLM: 13.9% →
+13.8%), and in the tables above guards now raise the hit rate at the same budget in 9 cases and lower it in 36
+(Phase 7: 7 and 39); the median and worst drop are unchanged. A check takes about 3 µs longer.
+
+The rule was changed on dev splits only, and the public test splits were not looked at until it was frozen.
+The human test split is not fully held out for this change: its failures are how the problem was found. Two
+phrases seen only there were left out ("yaad nahi", "nahi ho paa raha"), and the human test numbers above
+should be read with that in mind. What's left is out of a word rule's reach: antonym paraphrases ("I did not
+get the right rate" vs "the wrong rate was applied") and 18 of Qwen3's vetoes on human test.
 
 ## Caveats
 
