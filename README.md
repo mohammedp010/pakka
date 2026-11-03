@@ -54,11 +54,15 @@ to 0.6):
 |---|---|---|---|---|---|
 | **MiniLM-L12** + cheap LLM (`openrouter:qwen/qwen3.7-flash`, yes / no) | 118 / 6 (10.2%) | 23 / 0 (14.3%) | 12/184 | ~0.9 s | ~$0.60 |
 | **MiniLM-L12** + Jev (TypeSafe `jev-1.14.0`, score ≥ 0.84) | 96 / 1 (5.6%) | 19 / 0 (16.8%) | 10/184 | ~0.3 s | ~$1.75 |
+| Fine-tuned MiniLM-L12 (opt-in, Phase 9) + Jev (score ≥ 0.84) | 148 / 3 (5.7%) | 54 / 1 (9.6%) | 44/184 | ~0.3 s | ~$1.75 |
 | Qwen3-0.6B + cheap LLM | 231 / 13 (8.9%) | 113 / 9 (13.4%) | 97/184 | ~0.9 s | ~$0.60 |
 | Qwen3-0.6B + Jev (score ≥ 0.84) | 181 / 3 (4.7%) | 80 / 1 (6.7%) | 67/184 | ~0.3 s | ~$1.75 |
 
 - **A verifier doubles what the default answers on v1** without more wrong answers. On real messages it lifts
   MiniLM from 2 to about 20 answers: most real messages score below 0.6 with MiniLM, so the verifier never sees them.
+- **The fine-tuned MiniLM closes most of that gap on a CPU.** With Jev it answers 54 real messages with 1 wrong,
+  against 19 for MiniLM and 80 for Qwen3-0.6B, at MiniLM's 9 ms. Without a verifier it is no better than MiniLM.
+  See "Choosing an embedder".
 - **Qwen3-0.6B with a verifier is the strongest setup**: it answers a third to a half of real messages. It needs a
   GPU or Apple Silicon to stay fast (see below).
 - The cheap LLM fits about a 10% budget; Jev gives a score you can tighten, so it also fits 5% on dev. The LLM
@@ -113,6 +117,17 @@ Air M2, one question at a time, as a lookup embeds it; the CPU rows have the GPU
 | Threshold, guards on (`pakka.embed.THRESHOLDS`) | 0.79 | 0.925 |
 | v1 test, free, 10% budget | 47 / 5 | 102 / 8 |
 | Human test, free, 10% budget | 2 / 1 | 11 / 0 |
+
+**On a CPU with a verifier, try the fine-tuned MiniLM** (`TUNED_EMBEDDER`, Phase 9). It has the same size and
+speed as MiniLM (9 ms a question on 8 CPU threads), and with a verifier it answers about three times as many real
+messages: 19 → 54 with Jev, 1 wrong. Fine-tuning lifts real messages above the verifier's 0.6 floor (165 of 258
+instead of 26); the verifier then sorts them. **Without a verifier it doesn't help** (2 / 1 → 9 / 2 on real
+messages, worse on CLINC150), so keep the default then. Trained on public dev and train splits only and measured on
+data it never saw: [model card](docs/model_card_minilm_hinglish.md).
+
+```python
+cache = NumpyCache(load_embedder(TUNED_EMBEDDER))  # from pakka.embed import TUNED_EMBEDDER; threshold=0.6 + verify=
+```
 
 Mean P-CHR AUC over the public datasets: 0.571 for MiniLM, 0.647 for Qwen3-0.6B. A threshold belongs to one
 embedder; for any other model, pick one with `pakka bench --embedder <model>`.

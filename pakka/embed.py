@@ -14,8 +14,11 @@ API_DIMENSIONS = 1024  # API models return Matryoshka vectors: 1024 keeps 150k t
 PREFIXES = {"e5": "query: ", "qwen3-embedding": "Instruct: Retrieve semantically similar text.\nQuery: "}
 DEFAULT_EMBEDDER = "paraphrase-multilingual-MiniLM-L12-v2"  # ~9 ms a question on any CPU
 GPU_EMBEDDER = "Qwen/Qwen3-Embedding-0.6B"  # about twice the answers, but ~235 ms a question on a CPU: for a GPU
-# Picked on HinglishCacheBench v1 dev with pakka.guard on, for a 10% false-hit budget (95% upper bound).
-THRESHOLDS = {DEFAULT_EMBEDDER: 0.79, GPU_EMBEDDER: 0.925}
+# MiniLM-L12 fine-tuned in Phase 9: CPU speed, ~3x the real-message answers *with a verifier*; no better without one
+TUNED_EMBEDDER = "mohd010/pakka-minilm-l12-hinglish"
+# Picked on HinglishCacheBench v1 dev with pakka.guard on, for a 10% false-hit budget (95% upper bound); the tuned
+# model's on the half of v1 dev it wasn't trained on.
+THRESHOLDS = {DEFAULT_EMBEDDER: 0.79, GPU_EMBEDDER: 0.925, TUNED_EMBEDDER: 0.906}
 
 
 def _prefix(model_name):

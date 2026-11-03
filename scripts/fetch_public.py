@@ -124,15 +124,15 @@ def from_parses(records, source):
     """FAQ protocol from `records` (split, lang, text, key, skeleton, intent). Every distinct training parse
     becomes an FAQ (its first English question). A question with that exact parse should hit it, the seed's
     own translations included; same skeleton with other slot values is a `slot` trap; anything else is
-    `uncovered`. Both must miss."""
-    faqs, ids, rows = [], {}, []
+    `uncovered`. Both must miss. A slot trap's `near` is one FAQ of its skeleton, the answer it must not get."""
+    faqs, ids, rows, skeletons = [], {}, [], {}
     train = [r for r in records if r["split"] == "train"]
     for r in train:
         if r["lang"] == "en" and r["key"] not in ids:
             ids[r["key"]] = f"{r['intent']}_{hashlib.md5(repr(r['key']).encode()).hexdigest()[:8]}"
             faqs.append({"id": ids[r["key"]], "question": r["text"], "answer": r["intent"]})
+            skeletons.setdefault(r["skeleton"], []).append(ids[r["key"]])
             r["seed"] = True
-    skeletons = {r["skeleton"] for r in train if r["lang"] == "en"}
     for r in records:
         if r.get("seed"):
             continue
@@ -140,6 +140,9 @@ def from_parses(records, source):
         kind = "paraphrase" if label else "slot" if r["skeleton"] in skeletons else "uncovered"
         split = split_of(r["text"]) if r["split"] == "train" else r["split"]
         rows.append(row(r["text"], label, split, source, kind=kind, lang=r["lang"]))
+        if kind == "slot":
+            near = skeletons[r["skeleton"]]
+            rows[-1]["near"] = near[int(hashlib.md5(r["text"].encode()).hexdigest(), 16) % len(near)]
     return finish(faqs, rows)
 
 

@@ -50,6 +50,10 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
    wrote, Qwen3-0.6B + guards answers 11 for free; with a cheap OpenRouter LLM checking each hit it answers 113
    with 9 wrong, and with TypeSafe's Jev 80 with 1 wrong at a 5% budget. The default MiniLM goes from 2 to about
    20. See "Free vs with a verifier" below.
+8. **Fine-tuning MiniLM helps only with a verifier (Phase 9).** Trained on public dev and train splits and
+   measured on data it never saw, it is no better free (human test AUC 0.603 → 0.589) and worse on CLINC150. With
+   Jev it answers 54 of 258 real messages with 1 wrong, against 19 for base MiniLM and 80 for Qwen3-0.6B, at MiniLM's
+   CPU speed. See "Phase 9: fine-tuning MiniLM-L12" below.
 
 ### Where pakka loses
 
@@ -646,6 +650,89 @@ The human test split is not fully held out for this change: its failures are how
 phrases seen only there were left out ("yaad nahi", "nahi ho paa raha"), and the human test numbers above
 should be read with that in mind. What's left is out of a word rule's reach: antonym paraphrases ("I did not
 get the right rate" vs "the wrong rate was applied") and 18 of Qwen3's vetoes on human test.
+
+## Phase 9: fine-tuning MiniLM-L12
+
+MiniLM-L12 is pakka's default because it is fast on a CPU (9 ms a question). Phase 9 asked whether fine-tuning
+it closes the gap to Qwen3-0.6B (235 ms on a CPU) without the cost, measured only on data each model never saw.
+Model card: [model_card_minilm_hinglish.md](model_card_minilm_hinglish.md).
+
+**Training data** (`scripts/phase9_data.py`, 7.7 MB): 11,527 (FAQ question, paraphrase, trap) triplets from the dev
+splits of Hinglish-TOP (2,048), MASSIVE (9,296) and half of v1 dev (183), plus 21,064 LangCache pairs from its
+train split (up to 3,000 per source). Slot traps ("alarm 6 baje" against an FAQ for "alarm 7 baje") are the hard
+negatives; `fetch_public.py` now records which FAQ each one must not hit (`near`), and the converted rows are
+otherwise unchanged. Not Hinglish-TOP's or MASSIVE's Hugging Face train splits: pakka's test split reuses half of
+those rows. Any training text that appears in any test split, or among the human-written messages, was dropped.
+**Recipe** (`scripts/phase9_kaggle.py`, from `pakka/train.py`): one epoch, lr 2e-5, batch 64,
+MultipleNegativesRankingLoss on the triplets (no duplicate text in a batch) and CoSENT on the pairs; 1.4 minutes
+on a Kaggle T4.
+
+**Runs:** `all` trains on all four sources; four leave-one-dataset-out runs each drop one source entirely. Each
+`no_X` run is measured on X; `all` on the sets no run trained on and on human test. The `all` model saw half of v1
+dev, so its v1 and human thresholds are picked on the other half (252 questions). `no_ours` never saw any v1 data,
+which checks the gain isn't v1's writing style leaking in (the v1 lesson). Measured with `scripts/phase9_eval.py`
+and `pakka bench`.
+
+**Human test (258 real messages), the main yardstick.** Guards on, library settings (similarity 0.6 with a
+verifier, Jev passing at 0.84; free threshold picked on dev for a 10% budget: 0.79 base, 0.906 tuned). Right /
+wrong (false-hit rate, 95% upper bound):
+
+| Setup | Base MiniLM-L12 | Tuned (`all`) | Tuned, never saw v1 (`no_ours`) | Qwen3-0.6B, for reference |
+|---|---|---|---|---|
+| Free | 2 / 1 (33.3%, 79.2%) | 9 / 2 (18.2%, 47.7%) | 8 / 1 (11.1%, 43.5%) | 11 / 0 (0.0%, 25.9%) |
+| + Jev (`jev-1.14.0`) | 19 / 0 (0.0%, 16.8%) | **54 / 1 (1.8%, 9.6%)** | 54 / 0 (0.0%, 6.6%) | 80 / 1 (1.2%, 6.7%) |
+| + cheap LLM (`qwen/qwen3.7-flash`) | 23 / 0 (0.0%, 14.3%) | 76 / 9 (10.6%, 18.9%) | 74 / 5 (6.3%, 14.0%) | 113 / 9 (7.4%, 13.4%) |
+| Hinglish caught, + Jev | 10 / 184 | 44 / 184 | 43 / 184 | 67 / 184 |
+
+Same on v1 test (526, LLM-written): free 47 / 5 → 88 / 8 (`all`) and 77 / 9 (`no_ours`); + Jev 96 / 1 → 148 / 3 and
+142 / 3; + cheap LLM 118 / 6 → 183 / 11 and 179 / 11.
+
+- **The gain comes from the verifier seeing more.** Free, the tuned models rank real messages slightly worse
+  (AUC 0.603 → 0.589 and 0.582; among each model's 50 top-scoring answers, 7 wrong for base, 11 and 10 tuned). But
+  165 of 258 real messages now score at or above the verifier's 0.6 floor, against 26 with base MiniLM, and about
+  80 of those point at the right FAQ. The verifier then sorts them.
+- **It is not style leakage.** `no_ours` never saw any v1 question or FAQ and does as well on human test as `all`.
+- **With the cheap LLM verifier, more wrong answers get through** (9 of 85 with `all`, 10.6%), above a 10%
+  budget's point estimate. Jev's score can be tightened (with dev-picked Jev thresholds at a 5% budget: `no_ours`
+  44 / 0 on human test, base 22 / 0); the LLM's yes / no can't.
+- Same size and speed as base: 9.0 ms median on 8 CPU threads (base 8.6 ms), float32, 0.47 GB.
+
+**Leave-one-dataset-out and never-trained sets** (free, guards on, threshold picked on dev for a 5% budget;
+right / wrong on test; "top tenth" is the false-hit rate among the tenth of test each model scores highest):
+
+| Held-out set | Model | AUC base → tuned | Base | Tuned | Top tenth, base → tuned |
+|---|---|---|---|---|---|
+| Hinglish-TOP | `no_hinglish_top` | 0.222 → 0.257 | none fits | none fits | 63.7% → 56.6% |
+| MASSIVE en+hi | `no_massive` | 0.453 → 0.455 | none fits | none fits | 26.5% → 28.3% |
+| LangCache pairs | `no_langcache` | 0.595 → 0.591 | 8,715 / 4,674 | 8,649 / 4,730 | 34.5% → 35.3% |
+| LangCache, stratified | `no_langcache` | 0.593 → 0.590 | none fits | none fits | 34.8% → 35.5% |
+| Bitext | `all` | 0.710 → 0.720 | 163 / 1 (0.6%, 3.4%) | 614 / 20 (3.2%, 4.8%) | 13.8% → 10.2% |
+| Banking77 | `all` | 0.624 → 0.604 | 84 / 4 (4.5%, 11.1%) | 88 / 5 (5.4%, 12.0%) | 13.1% → 13.8% |
+| CLINC150 | `all` | 0.692 → 0.650 | 404 / 19 (4.5%, 6.9%) | none fits | 4.9% → 9.5% |
+| vCache Classification | `all` | - | 7,654 / 190 (2.4%, 2.8%) | 7,680 / 186 (2.4%, 2.7%) | - |
+| vCache LmArena, SearchQueries | `all` | - | none fits | none fits | - |
+
+Free, fine-tuning is a wash on public data: better on Hinglish-TOP and Bitext, worse on CLINC150 and Banking77,
+flat elsewhere. The verifier was not run on the public sets with the tuned models (tens of thousands of calls).
+
+**Verdict:** shipped as an opt-in, `pakka.embed.TUNED_EMBEDDER`, for CPU bots that use a verifier. It beats its
+base model on the human test it never saw, with Jev (19 → 54 answers, 0 → 1 wrong). Without a verifier it doesn't
+help, and MiniLM-L12 stays the default.
+
+**Not done:** Qwen3-0.6B fine-tune. The Kaggle script hit two library-version errors on the T4 (gradient
+checkpointing, bf16 weights), now fixed, but no Qwen run was measured. Verifier spend this phase: under $0.01
+(about 300 new Jev calls and as many cheap-LLM calls; the rest came from cache).
+
+Reproduce (training on Kaggle: `reports/` has the steps; the rest on the Mac):
+
+```bash
+python scripts/phase9_data.py                  # writes data/public/phase9/, upload/ goes to Kaggle
+python scripts/phase9_kaggle.py --base minilm  # on a Kaggle T4; unzip the outputs into models/phase9/
+python scripts/phase9_eval.py                  # free tables above
+pakka bench --data data/public/human_eval.jsonl --guard --budget 0.10 --verify jev-1.14.0 \
+    --verify openrouter:qwen/qwen3.7-flash --embed-cache data/public/emb \
+    --embedder models/phase9/paraphrase-multilingual-minilm-l12-v2-pakka-no_ours
+```
 
 ## Caveats
 

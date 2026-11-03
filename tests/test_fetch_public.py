@@ -94,7 +94,8 @@ def test_hinglish_top_same_parse_hits_and_same_intent_with_other_slots_is_a_trap
     assert (rows["create alarm at 6 am"]["label"], rows["create alarm at 6 am"]["split"]) == (alarm, "dev")
     assert rows["alarm lagao 6 am pe"]["label"] == alarm
     for q in ("set an alarm at 7 am", "7 am ka alarm lagao"):
-        assert (rows[q]["label"], rows[q]["kind"]) == (None, "slot")
+        assert (rows[q]["label"], rows[q]["kind"], rows[q]["near"]) == (None, "slot", alarm)  # a hard negative for training
+    assert "near" not in rows["pause my timer"]
     assert (rows["pause my timer"]["label"], rows["pause my timer"]["kind"], rows["pause my timer"]["split"]) == \
         (None, "uncovered", "test")
 
