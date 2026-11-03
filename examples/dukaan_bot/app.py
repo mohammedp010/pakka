@@ -2,7 +2,8 @@
 
     uvicorn examples.dukaan_bot.app:create_app --factory
 
-Settings (env vars): PAKKA_EMBEDDER, PAKKA_THRESHOLD, PAKKA_GUARD (1 or 0), PAKKA_TTL_DAYS,
+Settings (env vars): PAKKA_EMBEDDER (default Qwen/Qwen3-Embedding-0.6B; paraphrase-multilingual-MiniLM-L12-v2 on a
+small CPU server), PAKKA_THRESHOLD (default: the one picked for that embedder, pakka.embed.THRESHOLDS), PAKKA_GUARD (1 or 0), PAKKA_TTL_DAYS,
 PAKKA_BACKEND (numpy or redis), PAKKA_REDIS_URL, PAKKA_MODEL, OPENROUTER_API_KEY.
 
 Answers the LLM writes for a `user_id` are cached for that user only. Answers for anonymous
@@ -55,17 +56,19 @@ def kb_version(faqs):
 def build(embed=None, llm=None, threshold=None, log_path=None, store_misses=True,
           pending_path=ROOT / "data" / "pending.jsonl", approved_path=ROOT / "data" / "approved.jsonl"):
     """Seed a cache with the 30 FAQs and wrap the LLM. Arguments left as None come from env vars."""
-    if embed is None:
-        from pakka.embed import load_embedder
+    from pakka.embed import DEFAULT_EMBEDDER, THRESHOLDS, load_embedder
 
-        embed = load_embedder(os.environ.get("PAKKA_EMBEDDER", "paraphrase-multilingual-MiniLM-L12-v2"))
+    name = os.environ.get("PAKKA_EMBEDDER", DEFAULT_EMBEDDER)
+    if embed is None:
+        embed = load_embedder(name)
     if llm is None:
         from examples.dukaan_bot.llm import make_llm
 
         llm = make_llm(FAQS)
     if threshold is None:
-        # Best pilot setting for the default embedder: 2 false hits on 100 questions (see README).
-        threshold = float(os.environ.get("PAKKA_THRESHOLD", "0.70"))
+        if "PAKKA_THRESHOLD" not in os.environ and name not in THRESHOLDS:
+            raise SystemExit(f"Set PAKKA_THRESHOLD for {name}: `pakka bench --embedder {name}` picks one")
+        threshold = float(os.environ.get("PAKKA_THRESHOLD") or THRESHOLDS[name])
     if log_path is None:
         log_path = ROOT / "logs" / "requests.jsonl"
         log_path.parent.mkdir(exist_ok=True)

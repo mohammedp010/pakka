@@ -12,7 +12,7 @@ from pakka.pii import mask
 class Result:
     answer: str
     hit: bool
-    reason: str  # "hit", "below_threshold", "empty_cache" or "blocked:<guard reason>"
+    reason: str  # "hit", "below_threshold", "empty_cache", "blocked:<guard reason>", "blocked:verify" or "blocked:verify_error"
     score: float | None
     matched_id: str | None
     latency_ms: float
@@ -23,11 +23,14 @@ class Result:
 class CachedAnswerer:
     """`llm(question) -> (answer, tokens)`. Hit when similarity is at or above `threshold` and the
     optional `guard(question, cached_question, cached_answer)` returns no veto reason. With a
-    `policy` (pakka.policy.Policy), lookups and stores respect partitions, versions, expiry and PII."""
+    `policy` (pakka.policy.Policy), lookups and stores respect partitions, versions, expiry and PII. With
+    `verify(question, cached_question, cached_answer) -> bool` (e.g. pakka.verify.load_verifier("jev")), a hit the
+    guards let through is served only if it says yes; it sees PII-masked text, and an error counts as a miss."""
 
-    def __init__(self, cache, llm, threshold, log_path=None, store_misses=True, guard=None, policy=None):
+    def __init__(self, cache, llm, threshold, log_path=None, store_misses=True, guard=None, policy=None, verify=None):
         self.cache, self.llm, self.threshold = cache, llm, threshold
         self.log_path, self.store_misses, self.guard, self.policy = log_path, store_misses, guard, policy
+        self.verify = verify
 
     def ask(self, question, partition=None):
         start = time.perf_counter()
@@ -38,6 +41,8 @@ class CachedAnswerer:
         veto = None
         if match and match.score >= self.threshold and self.guard:
             veto = self.guard(question, match.question, match.answer)
+        if match and match.score >= self.threshold and not veto and self.verify:
+            veto = self._verify(question, match)
         stored = None
         if match and match.score >= self.threshold and not veto:
             answer, hit, reason, tokens = match.answer, True, "hit", 0
@@ -60,6 +65,13 @@ class CachedAnswerer:
         )
         self._log(question, result)
         return result
+
+    def _verify(self, question, match):
+        try:  # masked, since a verifier is often a remote API; any failure, a timeout too, must not serve the hit
+            ok = self.verify(mask(question), mask(match.question), mask(match.answer))
+        except Exception:
+            return "verify_error"
+        return None if ok else "verify"
 
     def _log(self, question, result):
         if not self.log_path:

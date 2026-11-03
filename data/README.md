@@ -113,8 +113,7 @@ guard read that context as a negation (Phase 8 fixed most of it). Results: [docs
 ## Use
 
 ```bash
-pakka bench --data data/bench_v1.jsonl --faqs data/faqs.json --guard --budget 0.10 \
-    --embedder paraphrase-multilingual-MiniLM-L12-v2
+pakka bench --data data/bench_v1.jsonl --faqs data/faqs.json --guard --budget 0.10   # Qwen3-Embedding-0.6B
 ```
 
 ## License

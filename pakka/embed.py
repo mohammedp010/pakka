@@ -12,13 +12,17 @@ API_URL = "https://openrouter.ai/api/v1/embeddings"
 API_DIMENSIONS = 1024  # API models return Matryoshka vectors: 1024 keeps 150k texts in memory on 8 GB
 # What a model card asks to put before each text (matched on the model name); a cache pair gets it on both sides.
 PREFIXES = {"e5": "query: ", "qwen3-embedding": "Instruct: Retrieve semantically similar text.\nQuery: "}
+DEFAULT_EMBEDDER = "Qwen/Qwen3-Embedding-0.6B"
+FAST_EMBEDDER = "paraphrase-multilingual-MiniLM-L12-v2"  # ~9 ms a question on CPU, vs ~235 ms: for small servers
+# Picked on HinglishCacheBench v1 dev with pakka.guard on, for a 10% false-hit budget (95% upper bound).
+THRESHOLDS = {DEFAULT_EMBEDDER: 0.925, FAST_EMBEDDER: 0.79}
 
 
 def _prefix(model_name):
     return next((p for key, p in PREFIXES.items() if key in model_name.lower()), "")
 
 
-def load_embedder(model_name="all-MiniLM-L6-v2", max_length=None, half=False, transport=None, batch=256):
+def load_embedder(model_name=DEFAULT_EMBEDDER, max_length=None, half=False, transport=None, batch=256):
     """`max_length` caps tokens per text (long chat prompts are cut there), never raising a model's own limit.
     `half` loads float16 weights, half the memory, for a big model on a small machine; vectors stay float32.
     `openrouter:<model>` (e.g. `openrouter:qwen/qwen3-embedding-8b`) embeds through OpenRouter's API with
@@ -34,8 +38,9 @@ def load_embedder(model_name="all-MiniLM-L6-v2", max_length=None, half=False, tr
     prefix = _prefix(model_name)
 
     def embed(texts):
-        vectors = model.encode([prefix + t for t in texts], normalize_embeddings=True, convert_to_numpy=True)
-        return np.asarray(vectors, dtype=np.float32)
+        vectors = np.asarray(model.encode([prefix + t for t in texts], convert_to_numpy=True), dtype=np.float32)
+        # Normalized here, in float32: a bf16 model (Qwen3's default) normalizes to within 0.4% of unit length
+        return vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
 
     return embed
 

@@ -28,6 +28,7 @@ pakka = "pakka.cli:main"
 redis = ["redisvl>=0.4"]
 bot = ["fastapi", "uvicorn", "httpx"]
 dev = ["pytest"]
+verify = ["httpx"]  # pakka.verify: Jev or an OpenRouter model as a second opinion
 train = ["sentence-transformers[train]>=3"]
 
 [tool.setuptools]

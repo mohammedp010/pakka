@@ -1,6 +1,6 @@
 """Measure a semantic cache on a labelled question set.
 
-    python -m pakka.bench --data data/bench_v1.jsonl --embedder exact --embedder all-MiniLM-L6-v2
+    python -m pakka.bench --data data/bench_v1.jsonl --embedder exact --embedder Qwen/Qwen3-Embedding-0.6B
 
 Each labelled row has the FAQ id it should match (`label`, or None for should-miss) and, after
 lookup, what the cache returned (`matched_id`, `score`, `lookup_ms`). Rows tagged `split: dev`
@@ -11,7 +11,6 @@ on the data it is reported on.
 import argparse
 import json
 import math
-import os
 import statistics
 import sys
 import time
@@ -107,11 +106,21 @@ def score_rows(cache, data, guard=None):
 
 
 def verify_rows(rows, verify, floor):
-    """Re-score grey-band candidates (at or above `floor`, not vetoed) with `verify(pairs) -> scores`,
-    e.g. a cross-encoder. Everything else can no longer hit."""
+    """Re-score grey-band candidates (at or above `floor`, not vetoed) with `verify(pairs) -> scores`, e.g. a
+    cross-encoder or Jev. A yes/no verifier instead vetoes like a guard ("verify") and the similarity still ranks.
+    Pairs are PII-masked, as `CachedAnswerer` sends them. Nothing below `floor` was checked, so it can't hit."""
+    from pakka.pii import mask
+
     todo = [i for i, r in enumerate(rows) if r["score"] >= floor and not r.get("blocked")]
-    scores = dict(zip(todo, verify([(rows[i]["q"], rows[i]["matched_q"]) for i in todo]) if todo else []))
-    return [{**r, "score": float(scores[i]) if i in scores else -1.0} for i, r in enumerate(rows)]
+    scores = dict(zip(todo, verify([(mask(rows[i]["q"]), mask(rows[i]["matched_q"])) for i in todo]) if todo else []))
+
+    def rescore(r, s):
+        if isinstance(s, bool):
+            return {**r, "blocked": None if s else "verify"}
+        return {**r, "score": float(s)}
+
+    return [rescore(r, scores[i]) if i in scores else {**r, "score": -1.0, "blocked": r.get("blocked") or "below_floor"}
+            for i, r in enumerate(rows)]
 
 
 def replay_stream(vectors, rows, threshold, guard=None, block=256):
@@ -270,77 +279,18 @@ def score_with_method(name, embed, faqs, data, guard=None, extra_keys=False, ent
     return scored[0] + scored[1] + held_out
 
 
-JEV_URL = "https://api.typesafe.ai/v1/systemone"
-# Asks what a cache needs to know (does one reply fit both?), not how similar the texts are. Numbers and dates are
-# Jev's known weak spot, so the guards run first and only what they let through gets here.
-JEV_QUESTION = {
-    "type": "noul",
-    "instructions": "Would the support reply written for `cached_question` also correctly answer `new_question`?",
-    "criteria": {
-        "true": "Both ask for the same thing, so one reply fits both, even if the wording, language (English, "
-                "Hinglish or Hindi) or spelling differ.",
-        "false": "They ask for different things: another amount, number, day, place, product or person, the "
-                 "opposite action (on/off, cancel/undo, not), or a related but separate question, so that reply "
-                 "would be wrong or incomplete.",
-    },
-}
+def bench_verifier(name, cache_dir=None):
+    """A cross-encoder, `jev-<version>` for TypeSafe's Jev, or `openrouter:<model>`, as `verify(pairs) -> scores`
+    (or yes/no), plus its median latency for one pair in ms."""
+    from pakka.verify import jev_verifier, openrouter_verifier
 
-
-def jev_verifier(model, cache_path=None, transport=None, workers=8):
-    """TypeSafe's Jev (`jev-1.14.0`) as `verify(pairs) -> scores`: its probability that one reply fits both
-    questions. Needs TYPESAFE_API_KEY. Answers are kept at `cache_path` (JSON keyed by a hash of model, question
-    and pair) after every 200 pairs, so a rerun or a crash never pays twice."""
-    import hashlib
-    from concurrent.futures import ThreadPoolExecutor
-
-    import httpx
-
-    key = os.environ.get("TYPESAFE_API_KEY")
-    if not key:
-        raise SystemExit(f"Set TYPESAFE_API_KEY to verify with {model}")
-    client = httpx.Client(timeout=60, headers={"Authorization": f"Bearer {key}"}, transport=transport)
-    path = Path(cache_path) if cache_path else None
-    store = json.loads(path.read_text()) if path and path.exists() else {}
-
-    def ask(pair):
-        body = {"model": model, "state": {"new_question": pair[0], "cached_question": pair[1]},
-                "questions": {"same_reply": JEV_QUESTION}}
-        for attempt in range(6):  # rate limits and overload (429, 529) are documented as normal under load
-            try:
-                response = client.post(JEV_URL, json=body)
-            except httpx.TransportError:
-                if attempt == 5:
-                    raise
-                time.sleep(2 ** attempt)
-                continue
-            if (response.status_code == 429 or response.status_code >= 500) and attempt < 5:
-                time.sleep(float(response.headers.get("retry-after") or 2 ** attempt))
-                continue
-            response.raise_for_status()
-            return response.json()["answers"]["same_reply"]["noul"]
-
-    def verify(pairs):
-        keys = [hashlib.md5(json.dumps([model, JEV_QUESTION, *p]).encode()).hexdigest() for p in pairs]
-        missing = list({k: p for k, p in zip(keys, pairs) if k not in store}.items())
-        with ThreadPoolExecutor(workers) as pool:
-            for i in range(0, len(missing), 200):
-                chunk = missing[i:i + 200]
-                store.update(zip([k for k, _ in chunk], pool.map(ask, [p for _, p in chunk])))
-                if path:
-                    path.parent.mkdir(parents=True, exist_ok=True)
-                    path.write_text(json.dumps(store))
-        return [store[k] for k in keys]
-
-    verify.ask = ask
-    return verify
-
-
-def load_verifier(name, cache_dir=None):
-    """A cross-encoder, or `jev-<version>` for TypeSafe's Jev, as `verify(pairs) -> scores`, plus its median
-    latency for one pair in ms."""
     pair = ("refund kab milega?", "How long does a refund take?")
-    if name.startswith("jev-"):
-        verify = jev_verifier(name, cache_dir and Path(cache_dir) / "jev" / f"{name}.json")
+    if name.startswith(("jev-", "openrouter:")):
+        if name.startswith("jev-"):
+            verify = jev_verifier(name, cache_dir and Path(cache_dir) / "jev" / f"{name}.json")
+        else:
+            model = name.removeprefix("openrouter:")
+            verify = openrouter_verifier(model, cache_dir and Path(cache_dir) / "openrouter" / f"{model.replace('/', '__')}.json")
         predict = lambda: verify.ask(pair)  # noqa: E731  uncached: a cache hit would hide the network
         runs, warm = 7, 2
     else:
@@ -362,13 +312,13 @@ def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--faqs", default="data/faqs.json")
     p.add_argument("--data", default="data/bench_v1.jsonl")
-    p.add_argument("--embedder", action="append", help="sentence-transformers model, or 'exact' (repeatable)")
+    p.add_argument("--embedder", action="append", help="sentence-transformers model, or 'exact' (repeatable; default Qwen/Qwen3-Embedding-0.6B)")
     p.add_argument("--budget", type=float, default=0.05, help="max false-hit rate (95%% upper bound)")
     p.add_argument("--thresholds", help="also print a sweep over these thresholds, e.g. 0.6,0.7,0.8")
     p.add_argument("--llm-ms", type=float, default=1260, help="LLM latency charged to each miss in a sweep")
     p.add_argument("--fail-above", type=float, help="exit 1 if any encoder's false-hit upper bound (with --guard: guarded setup) exceeds this")
     p.add_argument("--guard", action="store_true", help="also report each encoder with pakka.guard rules on")
-    p.add_argument("--verify", action="append", default=[], help="cross-encoder, or jev-1.14.0 (TypeSafe, needs TYPESAFE_API_KEY), to re-score grey-band hits (repeatable)")
+    p.add_argument("--verify", action="append", default=[], help="cross-encoder, jev-1.14.0 (TypeSafe, needs TYPESAFE_API_KEY) or openrouter:<model> (needs OPENROUTER_API_KEY), to check grey-band hits (repeatable)")
     p.add_argument("--floor", type=float, default=0.6, help="lowest similarity a verifier looks at")
     p.add_argument("--extra-keys", action="store_true", help="also store dev paraphrases as keys (approved questions)")
     p.add_argument("--entry-thresholds", action="store_true", help="per-FAQ floors learned from dev false hits")
@@ -380,8 +330,9 @@ def main(argv=None):
     lines = []
     method = {"extra_keys": args.extra_keys, "entry_thresholds": args.entry_thresholds}
     suffix = (" + keys" if args.extra_keys else "") + (" + entry thresholds" if args.entry_thresholds else "")
-    for name in args.embedder or ["paraphrase-multilingual-MiniLM-L12-v2"]:
-        from pakka.embed import disk_cached, load_embedder
+    from pakka.embed import DEFAULT_EMBEDDER, disk_cached, load_embedder
+
+    for name in args.embedder or [DEFAULT_EMBEDDER]:
         from pakka.guard import check
 
         embed = None if name == "exact" else load_embedder(name)
@@ -397,7 +348,7 @@ def main(argv=None):
             rows = score_with_method(name, embed, faqs, data, guard=check, **method)
             lines.append(report_encoder(f"{name}{suffix} + guards", rows, args.budget))
         for model in args.verify:
-            verify, single_ms = load_verifier(model, args.embed_cache)
+            verify, single_ms = bench_verifier(model, args.embed_cache)
             line = report_encoder(f"{name}{suffix}{' + guards' if args.guard else ''} + {model}",
                                   verify_rows(rows, verify, args.floor), args.budget)
             line["lookup_p50_ms"] += single_ms

@@ -87,3 +87,43 @@ def test_guard_is_not_consulted_below_the_threshold():
     seen = []
     CachedAnswerer(FixedScoreCache(0.5), FakeLLM(), threshold=0.85, guard=lambda *a: seen.append(a)).ask("q")
     assert seen == []
+
+
+def test_verifier_is_asked_about_hits_the_guards_let_through_and_can_turn_one_into_a_miss():
+    seen, llm = [], FakeLLM()
+    answerer = CachedAnswerer(FixedScoreCache(0.95), llm, threshold=0.85,
+                              verify=lambda q, cached_q, cached_a: seen.append((q, cached_q, cached_a)) or False)
+    result = answerer.ask("refund kab milega")
+    assert not result.hit and result.reason == "blocked:verify" and llm.calls == ["refund kab milega"]
+    assert seen == [("refund kab milega", "cached question", "cached answer")]
+
+
+def test_verifier_yes_serves_the_hit():
+    assert CachedAnswerer(FixedScoreCache(0.95), FakeLLM(), threshold=0.85, verify=lambda *a: True).ask("q").hit
+
+
+def test_verifier_is_not_asked_below_the_threshold_or_after_a_guard_veto():
+    seen = []
+    verify = lambda *a: seen.append(a) or True  # noqa: E731
+    CachedAnswerer(FixedScoreCache(0.5), FakeLLM(), threshold=0.85, verify=verify).ask("q")
+    CachedAnswerer(FixedScoreCache(0.95), FakeLLM(), threshold=0.85, guard=lambda *a: "slot", verify=verify).ask("q")
+    assert seen == []
+
+
+def test_verifier_error_or_timeout_is_a_miss():
+    def verify(*a):
+        raise TimeoutError
+
+    result = CachedAnswerer(FixedScoreCache(0.95), FakeLLM(), threshold=0.85, verify=verify).ask("q")
+    assert not result.hit and result.reason == "blocked:verify_error"
+
+
+def test_verifier_only_sees_masked_text():
+    class PIICache(FixedScoreCache):
+        def nearest(self, question):
+            return Match("call 9876543210", "mail help@dukaan.in", 0.95, {"id": "faq_01"})
+
+    seen = []
+    CachedAnswerer(PIICache(0.95), FakeLLM(), threshold=0.85,
+                   verify=lambda *a: seen.append(a) or True).ask("order #123456 kab aayega?")
+    assert seen == [("<ORDER_ID> kab aayega?", "call <PHONE>", "mail <EMAIL>")]

@@ -133,6 +133,26 @@ def test_verifier_rescores_only_unblocked_candidates_at_or_above_the_floor():
     assert [r["score"] for r in out] == [0.2, 0.8, -1.0, -1.0]
 
 
+def test_a_yes_no_verifier_vetoes_like_a_guard_and_keeps_the_similarity():
+    from pakka.bench import evaluate, pick_threshold, verify_rows
+
+    rows = [{"q": "a", "matched_q": "x", "score": 0.9}, {"q": "b", "matched_q": "y", "score": 0.7},
+            {"q": "c", "matched_q": "z", "score": 0.5}]
+    rows = [{**r, "label": "faq_01", "matched_id": "faq_01"} for r in rows]
+    out = verify_rows(rows, lambda pairs: [True, False], floor=0.6)
+    assert [(r["score"], r.get("blocked")) for r in out] == [(0.9, None), (0.7, "verify"), (-1.0, "below_floor")]
+    assert evaluate(out, pick_threshold(out, budget=0.99))["hits"] == 1  # nothing below the floor is served
+
+
+def test_verify_rows_masks_pii_like_the_library_does():
+    from pakka.bench import verify_rows
+
+    seen = []
+    verify_rows([{"q": "order #123456 kab aayega", "matched_q": "Where is my order?", "score": 0.9}],
+                lambda pairs: seen.extend(pairs) or [True], floor=0.6)
+    assert seen == [("<ORDER_ID> kab aayega", "Where is my order?")]
+
+
 def test_score_rows_keeps_the_matched_question_for_verifiers():
     from pakka.cache import Match
 
@@ -307,43 +327,3 @@ def test_api_embedder_batches_in_order_cuts_long_text_adds_the_model_prefix_and_
     assert seen[0]["input"] == [prefix + "a", prefix + "bb"] and seen[1]["input"] == [prefix + "x" * 16]  # 4 tokens ~ 16 chars
     assert out.shape == (3, 2) and np.allclose(np.linalg.norm(out, axis=1), 1)
     assert out[0][0] < out[1][0] < out[2][0]  # rows stay in input order
-
-
-def fake_jev(seen, busy=0):
-    """A stand-in for TypeSafe's API: the first `busy` calls get 429, then a noul of 0.9 when both questions
-    share their first word, else 0.1."""
-    import httpx
-
-    def reply(request):
-        seen.append(json.loads(request.content))
-        if len(seen) <= busy:
-            return httpx.Response(429, headers={"retry-after": "0"})
-        state = seen[-1]["state"]
-        same = state["new_question"].split()[0] == state["cached_question"].split()[0]
-        return httpx.Response(200, json={"model": "jev-1.14.0", "answers": {"same_reply": {"type": "noul", "noul": 0.9 if same else 0.1}}})
-
-    return httpx.MockTransport(reply)
-
-
-def test_jev_verifier_asks_one_noul_per_pair_and_a_rerun_reads_its_cache(monkeypatch, tmp_path):
-    from pakka.bench import jev_verifier
-
-    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
-    seen, cache = [], tmp_path / "jev.json"
-    pairs = [("refund kab milega", "refund status?"), ("cancel my order", "track my order")]
-    assert jev_verifier("jev-1.14.0", cache, transport=fake_jev(seen))(pairs) == [0.9, 0.1]
-    assert [b["model"] for b in seen] == ["jev-1.14.0"] * 2 and seen[0]["questions"]["same_reply"]["type"] == "noul"
-    assert seen[0]["state"] == {"new_question": "refund kab milega", "cached_question": "refund status?"}
-
-    again = []
-    assert jev_verifier("jev-1.14.0", cache, transport=fake_jev(again))(pairs[::-1]) == [0.1, 0.9]
-    assert again == []  # every pair came from the cache
-
-
-def test_jev_verifier_waits_out_rate_limits(monkeypatch):
-    from pakka.bench import jev_verifier
-
-    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
-    seen = []
-    assert jev_verifier("jev-1.14.0", transport=fake_jev(seen, busy=2))([("a b", "a c")]) == [0.9]
-    assert len(seen) == 3

@@ -101,3 +101,24 @@ def test_an_approved_answer_keeps_its_faq_id_so_hits_can_be_checked(llm, paths, 
         {"question": "refund kitne din me", "answer": FAQS[0]["answer"], "kb_version": kb_version(FAQS), "id": "faq_01"}) + "\n")
     reply = bot(llm, paths, tmp_path).post("/chat", json={"question": "refund kitne din me"}).json()
     assert reply["hit"] and reply["matched_id"] == "faq_01"
+
+
+def test_threshold_defaults_to_the_one_picked_for_the_embedder(llm, paths, tmp_path, monkeypatch):
+    from examples.dukaan_bot.app import build
+
+    monkeypatch.delenv("PAKKA_THRESHOLD", raising=False)
+    monkeypatch.delenv("PAKKA_EMBEDDER", raising=False)
+    assert build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths).threshold == 0.925
+    monkeypatch.setenv("PAKKA_EMBEDDER", "paraphrase-multilingual-MiniLM-L12-v2")
+    assert build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths).threshold == 0.79
+    monkeypatch.setenv("PAKKA_THRESHOLD", "0.8")
+    assert build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths).threshold == 0.8
+
+
+def test_an_embedder_without_a_picked_threshold_needs_one_set(llm, paths, tmp_path, monkeypatch):
+    from examples.dukaan_bot.app import build
+
+    monkeypatch.delenv("PAKKA_THRESHOLD", raising=False)
+    monkeypatch.setenv("PAKKA_EMBEDDER", "my/own-model")
+    with pytest.raises(SystemExit, match="PAKKA_THRESHOLD"):
+        build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths)

@@ -2,7 +2,7 @@
 
     python scripts/label_audit.py
 
-Samples held-out hits of pakka's default embedder (plain cache) on every public dataset: labelled false hits,
+Samples held-out hits of MiniLM-L12 (pakka's default in Phase 7; plain cache) on every public dataset: labelled false hits,
 labelled true hits, and labelled-true hits the guards veto. Each pair goes, without its label, to two judges from
 different model families, 5 numbered pairs per call (in batches of 20 the judges grew stricter and agreed less).
 A third judge from a third family, with some reasoning, settles the pairs the two split on, so every verdict is a

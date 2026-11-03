@@ -35,17 +35,20 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
    but the hit rate climbs from 1–2% to about 60%. So wrong answers per 100 questions go from 0.3–1 to 21–23.
 5. **A better embedder is the biggest lever, but it doesn't remove the traps.** Qwen3-Embedding-8B (through an
    API) has the best AUC on six of the eight threshold-free rows: mean 0.699, against 0.647 for Qwen3-Embedding-0.6B,
-   the best local model, and 0.571 for MiniLM, pakka's default. On our own set at a 10% budget with guards it
-   answers 188 of 526 held-out questions with 14 wrong, where MiniLM answers 48 with 5 wrong. But no embedder,
+   the best local model and pakka's default since Phase 8.5, and 0.571 for MiniLM, the old default. On our own
+   set at a 10% budget with guards it answers 188 of 526 held-out questions with 14 wrong, where MiniLM answers 48 with 5 wrong. But no embedder,
    Qwen3-8B included, fits a 5% budget on our set, Hinglish-TOP, MASSIVE, LmArena, SearchQueries or stratified
    LangCache. Through an API it is slow, too: one question took 1.5 s to embed at the median (p90 19 s), as long as
-   the LLM call a cache is meant to skip. Its small sibling Qwen3-Embedding-0.6B runs on the laptop in 36 ms and,
-   with guards, answers 101 of our questions with 7 wrong. OpenAI's text-embedding-3-small, a common default, is no
+   the LLM call a cache is meant to skip. Its small sibling Qwen3-Embedding-0.6B runs on the laptop's GPU in 36 ms
+   (235 ms on its CPU) and, with guards, answers 101 of our questions with 7 wrong. OpenAI's text-embedding-3-small, a common default, is no
    better than MiniLM on our set and nearly blind to Hindi (MASSIVE AUC 0.266). See "Better embedders" below.
 6. **Labels are part of the problem.** Three LLM judges overturn about a third of vCache SearchQueries hit labels
    and call 68% of LmArena's labelled false hits fine. Intent datasets (Banking77, CLINC150, Bitext) label
    intent, not answers, so 39–52% of their "correct" hits would serve the wrong answer by the judges' strict reading.
    Our own set's labels held up best.
+7. **A verifier on grey-band hits is a bigger lever still, and it is optional.** On 258 messages real people
+   wrote, the free setup (Qwen3-0.6B + guards) answers 11; with a cheap OpenRouter LLM checking each hit it answers
+   113 with 9 wrong, and with TypeSafe's Jev 80 with 1 wrong at a 5% budget. See "Free vs with a verifier" below.
 
 ### Where pakka loses
 
@@ -69,14 +72,65 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
   still lower ranking quality on real messages. A Jev verifier recovers most of the lost hits; see
   "Human-written Hinglish" below.
 - **Guards got slower:** about 60 µs per check, up from 35 µs. Still far below an embedding lookup.
-- **pakka's default embedder isn't the best choice.** Qwen3-Embedding-0.6B, the same order of size as bge-m3,
-  doubles what the cache can answer on our set at the same budget; Qwen3-Embedding-8B nearly quadruples it.
-  MiniLM stays the default only because it is small and fast (about 9 ms a lookup).
+- **The default embedder is slow without a GPU.** Phase 8.5 made Qwen3-Embedding-0.6B the default: it doubles what
+  the cache can answer on our set at the same budget (Qwen3-Embedding-8B nearly quadruples it). On a CPU it takes
+  235 ms a question with 8 threads and 538 ms with 2, against about 9 ms for MiniLM-L12, which stays the
+  documented fast option for small servers.
 - **On our own HinglishCacheBench nothing fits a 5% budget** with any embedder (v1 needed 10–20%).
 - **Where pakka helps:** guards catch the structural traps a threshold can't: day and time swaps, on/off,
   direction ("pdf to jpg"), numbers. They cut RedisVL-default false hits on Hinglish-TOP from 65.8% to 61.4%, and
   the judges back 112 of the 166 audited vetoes that the labels call wrong. `pakka bench`'s dev-split method finds a
   threshold that holds when one exists, and says plainly when none does.
+
+## Free vs with a verifier (Phase 8.5)
+
+Pakka's default setup, Qwen3-Embedding-0.6B with guards, on the four sets the Jev verifier was measured on. **Free**
+calls no API. **With a verifier**, every hit at similarity 0.6 or more that the guards let through is checked by
+one more model, "would the reply for the cached question also answer this one?", and served only on a yes. Both
+verifiers see PII-masked text, as `CachedAnswerer(verify=...)` sends it. Thresholds are picked on dev (v1 dev for the
+human test) and reported on test. Cells: right / wrong served from cache (false-hit rate, 95% upper bound).
+
+| Held-out set | Free: guards | + cheap LLM (`qwen/qwen3.7-flash`, yes / no) | + Jev (`jev-1.14.0`) |
+|---|---|---|---|
+| v1 test (526), 10% budget | 102 / 8 (7.3%, 13.7%) | 231 / 13 (5.3%, 8.9%) | 236 / 16 (6.3%, 10.1%) |
+| v1 test, 5% budget | none fits | none fits | 181 / 3 (1.6%, 4.7%) |
+| Human test (258), 10% budget | 11 / 0 (0.0%, 25.9%) | 113 / 9 (7.4%, 13.4%) | 106 / 14 (11.7%, 18.6%) |
+| Human test, 5% budget | none fits | none fits | 80 / 1 (1.2%, 6.7%) |
+| Hinglish-TOP: false hits among the top 5% of held-out | 39.0% | 37.0% | 11.5% |
+| MASSIVE en+hi: false hits among the top 5% of held-out | 35.6% | 35.8% | 25.3% |
+
+On Hinglish-TOP and MASSIVE nothing fits a 5% budget, free or verified; Phase 8 found the false hits left after Jev
+are mostly label artifacts.
+
+- **Jev gives a score, the cheap LLM only yes or no.** So Jev can be tightened to a 5% budget (passing at 0.84)
+  and the LLM can't: it has one operating point, about a 10% budget. There it is as good as Jev or better (human
+  test: 113 right, 9 wrong, against 106 and 14).
+- **On the public parse datasets the cheap LLM barely moves the number.** Near the top of the similarity ranking it
+  says yes to most pairs (688 of the top 800 on MASSIVE), so its top 5% is nearly the free one. In a hand read of
+  10 sampled yes-but-labelled-wrong pairs per set, about 7 or 8 of each 10 are the same request that the parse
+  labels split ("Set alarm for 7 am" / "Set a wakeup alarm for 7 am", "delete all my calendar events" / "delete
+  all events from calendar"); the rest are real misses ("turn off my alarm" / "... for this evening"). So here
+  the number mostly measures label noise.
+- **Cost and time per checked hit.** Jev: about 300 ms and $0.0000175 (413 input tokens). `qwen/qwen3.7-flash`
+  through OpenRouter: about 900 ms from India and about $0.000006. The LLM call a hit saves took 1,331 ms in the
+  real bot.
+- **Which cheap LLM.** Five were tried on 60 v1 dev grey-band pairs (30 right hits, 30 wrong): `qwen/qwen3.7-flash`
+  kept 27 / caught 27, `google/gemini-2.5-flash-lite` 26 / 27, `openai/gpt-4.1-nano` 26 / 28,
+  `mistralai/mistral-small-3.2-24b-instruct` 28 / 23, `deepseek/deepseek-v4.1-flash` 29 / 26. Qwen3.7-flash was the
+  cheapest ($0.03 per million input tokens) and as accurate, so it was measured. Any OpenRouter model can be
+  plugged in; measure it the same way first.
+- The MASSIVE cell for the cheap LLM asks only as far down the similarity ranking as its top 5% needs (800
+  pairs), since a yes / no verifier can't fit 5% anyway. Every other cell checks every grey-band pair.
+- Phase 8.5 spent $0.08 on OpenRouter (pilot and all runs); Jev answers came from Phase 8's cache.
+
+Reproduce (needs both keys; answers are cached in `data/public/emb/jev/` and `data/public/emb/openrouter/`):
+
+```bash
+(jq -c 'select(.split=="dev")' data/bench_v1.jsonl; jq -c 'select(.split=="test")' data/bench_human.jsonl) > data/public/human_eval.jsonl
+for f in data/bench_v1.jsonl data/public/human_eval.jsonl; do for b in 0.05 0.10; do
+  pakka bench --data $f --guard --budget $b --verify jev-1.14.0 --verify openrouter:qwen/qwen3.7-flash --embed-cache data/public/emb
+done; done
+```
 
 ## Reproduce
 
@@ -164,10 +218,10 @@ One dataset with the usual CLI:
 
 Held-out (test) split of each dataset. Each cell is **false-hit rate · hit rate**. "RedisVL defaults" is `redis/langcache-embed-v1` at similarity 0.9 (RedisVL 0.29's out-of-the-box semantic cache), no tuning. "Tuned" picks the threshold on the dev split so the false-hit rate's 95% upper bound stays under 5%, then reports test. LangCache is pairs: hit rate there is the share of pairs scored as the same.
 
-| Dataset | Protocol | Held-out | RedisVL defaults | RedisVL defaults + pakka guards | MiniLM-L12 (pakka default), tuned | … + guards | Best measured embedder, tuned + guards |
+| Dataset | Protocol | Held-out | RedisVL defaults | RedisVL defaults + pakka guards | MiniLM-L12 (pakka fast option), tuned | … + guards | Best measured embedder, tuned + guards |
 |---|---|---|---|---|---|---|---|
 | HinglishCacheBench v1 (ours) | faq | 526 | 0.0% · 2% | 0.0% · 2% | no threshold fits | no threshold fits | no threshold fits |
-| Banking77 | faq | 3,051 | 4.2% · 3% | 4.4% · 3% | 4.4% · 3% | 4.5% · 3% | Qwen3-Embedding-0.6B: 5.0% · 9% |
+| Banking77 | faq | 3,051 | 4.2% · 3% | 4.4% · 3% | 4.4% · 3% | 4.5% · 3% | Qwen3-Embedding-0.6B (pakka default): 5.0% · 9% |
 | CLINC150 | faq | 5,494 | 1.0% · 4% | 1.0% · 4% | 4.1% · 9% | 4.5% · 8% | Qwen3-Embedding-8B (API): 6.1% · 25% |
 | Bitext | faq | 12,057 | 4.0% · 5% | 4.1% · 5% | 1.4% · 2% | 0.6% · 1% | Qwen3-Embedding-8B (API): 4.6% · 22% |
 | Hinglish-TOP | faq | 13,243 | 65.8% · 8% | 61.4% · 7% | no threshold fits | no threshold fits | no threshold fits |
@@ -185,7 +239,7 @@ Label-noise floor of the streams: an exact-match cache (same text after lowercas
 
 Area under precision vs cache-hit ratio (higher is better), plain cache, held-out split. It doesn't depend on any threshold, so it compares embedders fairly. Streams have none: what a stream stores depends on the threshold.
 
-| Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | Qwen3-Embedding-0.6B | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
+| Dataset | MiniLM-L12 (pakka fast option) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | Qwen3-Embedding-0.6B (pakka default) | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
 |---|---|---|---|---|---|---|---|---|---|---|
 | HinglishCacheBench v1 (ours) | 0.650 | 0.600 | 0.639 | 0.641 | 0.690 | 0.657 | 0.776 | 0.705 | **0.844** | 0.646 |
 | Banking77 | 0.643 | 0.663 | 0.572 | 0.597 | 0.532 | 0.506 | 0.731 | 0.727 | **0.790** | 0.705 |
@@ -201,7 +255,7 @@ Area under precision vs cache-hit ratio (higher is better), plain cache, held-ou
 
 Hit rate on held-out at the dev-picked threshold, with the held-out false-hit rate in brackets: above 5% means the threshold picked on dev didn't hold.
 
-| Dataset | MiniLM-L12 (pakka default) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | Qwen3-Embedding-0.6B | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
+| Dataset | MiniLM-L12 (pakka fast option) | langcache-embed-v1 | e5-small | e5-base | IndicSBERT | LaBSE | Qwen3-Embedding-0.6B (pakka default) | bge-m3 | Qwen3-Embedding-8B (API) | OpenAI 3-small (API) |
 |---|---|---|---|---|---|---|---|---|---|---|
 | HinglishCacheBench v1 (ours) | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
 | Banking77 | 3% (4.5%) | 3% (5.2%) | 3% (3.5%) | 3% (3.5%) | 1% (3.2%) | 1% (0.0%) | **9%** (5.0%) | 3% (1.9%) | 3% (1.2%) | 7% (4.9%) |
@@ -215,7 +269,7 @@ Hit rate on held-out at the dev-picked threshold, with the held-out false-hit ra
 | vCache Classification | 22% (2.4%) | 21% (2.6%) | 23% (2.7%) | 24% (3.0%) | 21% (2.0%) | 22% (2.4%) | 23% (2.6%) | 22% (1.8%) | 21% (2.1%) | **25%** (3.7%) |
 | vCache SearchQueries | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits | none fits |
 
-## Do guards help on data they weren't designed for? (MiniLM-L12 (pakka default))
+## Do guards help on data they weren't designed for? (MiniLM-L12 (pakka fast option))
 
 Same budget, threshold picked on dev with and without guards. "Plain at the same hit rate" is the plain cache's held-out false-hit rate if it served as many questions as the guarded one did.
 
@@ -235,7 +289,7 @@ Same budget, threshold picked on dev with and without guards. "Plain at the same
 
 Across the 10 measured embedders and 11 datasets, guards raised the hit rate at the same budget in 9 cases and lowered it in 36.
 
-## Threshold transfer (MiniLM-L12 (pakka default), plain)
+## Threshold transfer (MiniLM-L12 (pakka fast option), plain)
 
 Each row picks its threshold on one dataset's dev split (5% budget); each column applies it to another dataset's held-out split. Cells are **false-hit rate · hit rate**; bold means the measured false-hit rate itself is over the 5% budget. The diagonal is the honest in-domain number.
 
@@ -257,7 +311,7 @@ Each row picks its threshold on one dataset's dev split (5% budget); each column
 
 Redis's own sentence-pair benchmark, test split. Each cell is **false-hit rate · duplicates caught** (share of same-meaning pairs scored as hits). The tuned threshold comes from the validation split, which has no QQP, PAWS or APT pairs. On the stratified split, whose dev holds a fifth of every source, a threshold fits for none of the 10 embedders.
 
-| Source | Pairs (same) | AUC MiniLM-L12 (pakka default) | AUC langcache-embed-v1 | MiniLM-L12 (pakka default) at 0.955 | RedisVL defaults (0.9) |
+| Source | Pairs (same) | AUC MiniLM-L12 (pakka fast option) | AUC langcache-embed-v1 | MiniLM-L12 (pakka fast option) at 0.955 | RedisVL defaults (0.9) |
 |---|---|---|---|---|---|
 | apt | 1,252 (799) | 0.762 | 0.749 | 15.0% · 19% | 27.6% · 52% |
 | mrpc | 1,725 (1,147) | 0.828 | 0.826 | 5.8% · 17% | 18.4% · 61% |
@@ -274,8 +328,8 @@ The 150,000 search queries replayed in order, every miss stored. Questions are g
 
 | Cache size when asked → | 0k–1k | 1k–2k | 2k–5k | 5k–10k | 10k–20k | 20k–50k | 50k–100k |
 |---|---|---|---|---|---|---|---|
-| MiniLM-L12 (pakka default) at 0.9 (none fits dev) | 50.0% · 2% · 1.0 | 50.9% · 5% · 2.7 | 44.2% · 11% · 5.0 | 43.6% · 20% · 8.8 | 40.1% · 33% · 13.4 | 38.4% · 49% · 19.0 | 38.3% · 61% · 23.4 |
-| MiniLM-L12 (pakka default) + guards at 0.9 (none fits dev) | 41.2% · 2% · 0.7 | 52.0% · 5% · 2.5 | 42.7% · 10% · 4.4 | 42.1% · 18% · 7.8 | 37.9% · 31% · 11.7 | 36.6% · 46% · 16.8 | 36.3% · 58% · 20.9 |
+| MiniLM-L12 (pakka fast option) at 0.9 (none fits dev) | 50.0% · 2% · 1.0 | 50.9% · 5% · 2.7 | 44.2% · 11% · 5.0 | 43.6% · 20% · 8.8 | 40.1% · 33% · 13.4 | 38.4% · 49% · 19.0 | 38.3% · 61% · 23.4 |
+| MiniLM-L12 (pakka fast option) + guards at 0.9 (none fits dev) | 41.2% · 2% · 0.7 | 52.0% · 5% · 2.5 | 42.7% · 10% · 4.4 | 42.1% · 18% · 7.8 | 37.9% · 31% · 11.7 | 36.6% · 46% · 16.8 | 36.3% · 58% · 20.9 |
 | RedisVL defaults (0.9) | 27.3% · 1% · 0.3 | 37.8% · 4% · 1.6 | 39.8% · 11% · 4.3 | 39.8% · 19% · 7.6 | 35.8% · 31% · 11.2 | 35.1% · 48% · 16.7 | 35.1% · 59% · 20.8 |
 
 ```mermaid
@@ -294,13 +348,13 @@ No embedder has a threshold that meets the budget on Hinglish-TOP or MASSIVE, so
 
 | Embedder | Hinglish-TOP false-hit rate | English caught | Hinglish caught | Slot-trap false hits | MASSIVE false-hit rate | English caught | Hindi caught | Slot-trap false hits |
 |---|---|---|---|---|---|---|---|---|
-| MiniLM-L12 (pakka default) | 63.7% | 24% | 5% | 481 | 26.5% | 10% | 11% | 58 |
+| MiniLM-L12 (pakka fast option) | 63.7% | 24% | 5% | 481 | 26.5% | 10% | 11% | 58 |
 | langcache-embed-v1 | 64.0% | 25% | 5% | 488 | 51.1% | 17% | 0% | 83 |
 | e5-small | 67.9% | 23% | 4% | 535 | 56.6% | 14% | 1% | 111 |
 | e5-base | 70.1% | 23% | 3% | 520 | 52.8% | 15% | 0% | 106 |
 | IndicSBERT | 41.8% | 13% | 22% | 328 | 31.8% | 10% | 9% | 54 |
 | LaBSE | 62.2% | 16% | 10% | 444 | 22.1% | 6% | 14% | 57 |
-| Qwen3-Embedding-0.6B | 43.4% | 24% | 16% | 357 | 43.3% | 16% | 2% | 67 |
+| Qwen3-Embedding-0.6B (pakka default) | 43.4% | 24% | 16% | 357 | 43.3% | 16% | 2% | 67 |
 | bge-m3 | 63.1% | 28% | 3% | 483 | 33.2% | 11% | 8% | 57 |
 | Qwen3-Embedding-8B (API) | 36.7% | 23% | 19% | 285 | 32.6% | 14% | 6% | 50 |
 | OpenAI 3-small (API) | 64.7% | 23% | 5% | 518 | 52.0% | 16% | 0% | 128 |
@@ -318,13 +372,13 @@ answers served from cache out of 526 questions:
 
 | Embedder | AUC (guards) | Plain: right / wrong | Guards: right / wrong (false-hit rate, upper) | Hinglish caught | Hindi caught |
 |---|---|---|---|---|---|
-| MiniLM-L12 (pakka default) | 0.706 | none fits | 48 / 5 (9.4%, 20.3%) | 11/200 | 7/45 |
+| MiniLM-L12 | 0.706 | none fits | 48 / 5 (9.4%, 20.3%) | 11/200 | 7/45 |
 | langcache-embed-v1 | 0.614 | none fits | none fits | - | - |
 | e5-small | 0.719 | none fits | none fits | - | - |
 | e5-base | 0.719 | none fits | none fits | - | - |
 | IndicSBERT | 0.712 | 47 / 3 (6.0%, 16.2%) | 46 / 3 (6.1%, 16.5%) | 17/200 | 6/45 |
 | LaBSE | 0.718 | none fits | none fits | - | - |
-| Qwen3-Embedding-0.6B | 0.804 | none fits | 101 / 7 (6.5%, 12.8%) | 51/200 | 8/45 |
+| Qwen3-Embedding-0.6B (pakka default) | 0.804 | none fits | 101 / 7 (6.5%, 12.8%) | 51/200 | 8/45 |
 | bge-m3 | 0.756 | none fits | none fits | - | - |
 | Qwen3-Embedding-8B (API) | 0.840 | 183 / 16 (8.0%, 12.7%) | 188 / 14 (6.9%, 11.3%) | 94/200 | 27/45 |
 | OpenAI 3-small (API) | 0.715 | none fits | none fits | - | - |
@@ -335,7 +389,9 @@ through OpenRouter from India, one question per call):
 | Embedder | Where | Median | Slowest 10% |
 |---|---|---|---|
 | MiniLM-L12 | local | about 9 ms (lookup included) | - |
+| MiniLM-L12 | local, CPU only, 8 threads / 2 threads | 9 ms / 8 ms | 10 ms / 8 ms |
 | Qwen3-Embedding-0.6B | local, float16 | 36 ms | - |
+| Qwen3-Embedding-0.6B | local, CPU only (bf16, its default), 8 threads / 2 threads | 235 ms / 538 ms | 312 ms / 834 ms |
 | OpenAI 3-small | API | 1,156 ms | 1,331 ms |
 | Qwen3-Embedding-8B | API | 1,513 ms | 18,852 ms |
 
@@ -397,7 +453,7 @@ on MASSIVE.
 
 ### Before and after, held-out splits
 
-MiniLM-L12 (pakka's default), threshold picked on dev for a 5% budget. Cells are **hit rate (false-hit rate)**.
+MiniLM-L12 (then pakka's default), threshold picked on dev for a 5% budget. Cells are **hit rate (false-hit rate)**.
 Phase 6 numbers are from the results kept before the rerun, except MASSIVE's, where the Phase 6 guards were re-run
 on the fixed labels.
 
@@ -431,7 +487,7 @@ approved keys, goes from 67 right and 2 wrong (2.9%, upper bound 10.0%) to 69 ri
 
 ## Label audit: how often are the labels wrong?
 
-Three LLMs from three families judged 1,455 held-out hits of the default embedder's plain cache, without seeing
+Three LLMs from three families judged 1,455 held-out hits of MiniLM-L12's plain cache (the default then), without seeing
 their labels: *would the answer to A also be a correct answer to B as asked, with the same names, numbers, dates,
 places, direction and negation?* Where the dataset has real answers (ours, Bitext) the judges saw the stored
 answer. Per dataset we sampled up to 75 hits the label calls wrong and 75 it calls right, from the tenth the cache
@@ -487,6 +543,11 @@ cell, each share carries about ±11 points of sampling error, on top of the judg
   a long batch. So the audit uses 5 pairs per call.
 
 ## Human-written Hinglish (Phase 8)
+
+*Phase 8.5 note:* the Qwen3 numbers in this section were measured before a fix to `load_embedder`: Qwen3 loads in
+bfloat16 by default and its vectors came out up to 0.4% off unit length, which nudges dot-product scores.
+Re-measured after the fix, they move by a hit or two (human test with Jev at 5%: 80 right, 1 wrong). The current
+numbers are in "Free vs with a verifier" above.
 
 315 messages from 23 people, written through a form in their own words (80% romanized Hinglish), labelled by
 two LLMs and a person ([dataset card](../data/README.md)). Thresholds are picked on HinglishCacheBench v1's

@@ -27,13 +27,13 @@ from scripts import fetch_public  # noqa: E402
 PUBLIC, DOC = ROOT / "data/public", ROOT / "docs/public_results.md"
 EMB, RESULTS = PUBLIC / "emb", PUBLIC / "results"
 MODELS = {  # model: short name; local models slowest last, then API models (they cost money, about $0.70 together)
-    "paraphrase-multilingual-MiniLM-L12-v2": "MiniLM-L12 (pakka default)",
+    "paraphrase-multilingual-MiniLM-L12-v2": "MiniLM-L12 (pakka fast option)",
     "redis/langcache-embed-v1": "langcache-embed-v1",
     "intfloat/multilingual-e5-small": "e5-small",
     "intfloat/multilingual-e5-base": "e5-base",
     "l3cube-pune/indic-sentence-similarity-sbert": "IndicSBERT",
     "sentence-transformers/LaBSE": "LaBSE",
-    "Qwen/Qwen3-Embedding-0.6B": "Qwen3-Embedding-0.6B",
+    "Qwen/Qwen3-Embedding-0.6B": "Qwen3-Embedding-0.6B (pakka default)",
     "BAAI/bge-m3": "bge-m3",
     "openrouter:qwen/qwen3-embedding-8b": "Qwen3-Embedding-8B (API)",
     "openrouter:openai/text-embedding-3-small": "OpenAI 3-small (API)",
