@@ -33,31 +33,40 @@ causes, and keeps the cache from leaking or going stale.
 
 ## Results
 
-Pakka's default setup: Qwen3-Embedding-0.6B with pakka's guards, threshold picked on HinglishCacheBench v1's dev
-split and reported on held-out questions. Two test sets: v1's 526 LLM-written questions, and 258 messages real
-people wrote in their own words (80% romanized Hinglish), which is the harder and more honest one. Cells are
-right / wrong answers served from cache, with the 95% upper bound on the false-hit rate.
+Pakka with its guards on, threshold picked on HinglishCacheBench v1's dev split and reported on held-out questions.
+Two test sets: v1's 526 LLM-written questions, and 258 messages real people wrote in their own words (80%
+romanized Hinglish), which is the harder and more honest one. Cells are right / wrong answers served from cache,
+with the 95% upper bound on the false-hit rate. **Default** is MiniLM-L12; Qwen3-0.6B is the option for a GPU.
 
-**Free (no API calls):**
+**Free (no API calls), 10% budget:**
 
-| Setup | v1 test (526) | Human test (258) | Hinglish caught (human) |
-|---|---|---|---|
-| Guards, 10% budget (threshold 0.925) | 102 / 8 (13.7%) | 11 / 0 (25.9%) | 6/184 |
-| Guards, 5% budget | no threshold fits | no threshold fits | - |
+| Embedder | Threshold | v1 test (526) | Human test (258) | Hinglish caught (human) |
+|---|---|---|---|---|
+| **MiniLM-L12 (default)** | 0.79 | 47 / 5 (20.6%) | 2 / 1 (79.2%) | 0/184 |
+| Qwen3-Embedding-0.6B (GPU option) | 0.925 | 102 / 8 (13.7%) | 11 / 0 (25.9%) | 6/184 |
 
-**With an optional verifier** (a second opinion on each hit the guards let through, threshold lowered to 0.6):
+No threshold fits a 5% budget for either embedder without a verifier.
 
-| Verifier | v1 test (526) | Human test (258) | Hinglish caught (human) | Extra time per checked hit | Cost per 100k checks |
+**With an optional verifier** (a second opinion on each hit the guards let through; similarity threshold lowered
+to 0.6):
+
+| Embedder + verifier | v1 test (526) | Human test (258) | Hinglish caught (human) | Extra time per checked hit | Cost per 100k checks |
 |---|---|---|---|---|---|
-| Cheap LLM, `openrouter:qwen/qwen3.7-flash` (yes / no) | 231 / 13 (8.9%) | 113 / 9 (13.4%) | 97/184 | ~0.9 s | ~$0.60 |
-| Jev (TypeSafe `jev-1.14.0`), 5% budget (score ≥ 0.84) | 181 / 3 (4.7%) | 80 / 1 (6.7%) | 67/184 | ~0.3 s | ~$1.75 |
+| **MiniLM-L12** + cheap LLM (`openrouter:qwen/qwen3.7-flash`, yes / no) | 118 / 6 (10.2%) | 23 / 0 (14.3%) | 12/184 | ~0.9 s | ~$0.60 |
+| **MiniLM-L12** + Jev (TypeSafe `jev-1.14.0`, score ≥ 0.84) | 96 / 1 (5.6%) | 19 / 0 (16.8%) | 10/184 | ~0.3 s | ~$1.75 |
+| Qwen3-0.6B + cheap LLM | 231 / 13 (8.9%) | 113 / 9 (13.4%) | 97/184 | ~0.9 s | ~$0.60 |
+| Qwen3-0.6B + Jev (score ≥ 0.84) | 181 / 3 (4.7%) | 80 / 1 (6.7%) | 67/184 | ~0.3 s | ~$1.75 |
 
-Without a verifier the cache answers 4% of real messages; with one it answers a third to a half of them. The
-cheap LLM fits a 10% budget; Jev gives a score you can tighten, so it also fits 5%. The LLM call a hit saves took
-1.3 s in the real bot. On the public parse datasets (Hinglish-TOP, MASSIVE) Jev cuts false hits, the cheap LLM
-barely does, and no setup fits 5%: see [docs/public_results.md](docs/public_results.md#free-vs-with-a-verifier-phase-85).
+- **A verifier doubles what the default answers on v1** without more wrong answers. On real messages it lifts
+  MiniLM from 2 to about 20 answers: most real messages score below 0.6 with MiniLM, so the verifier never sees them.
+- **Qwen3-0.6B with a verifier is the strongest setup**: it answers a third to a half of real messages. It needs a
+  GPU or Apple Silicon to stay fast (see below).
+- The cheap LLM fits about a 10% budget; Jev gives a score you can tighten, so it also fits 5% on dev. The LLM
+  call a hit saves took 1.3 s in the real bot.
+- On the public parse datasets (Hinglish-TOP, MASSIVE) Jev cuts false hits, the cheap LLM barely does, and no
+  setup fits 5%: see [docs/public_results.md](docs/public_results.md#free-vs-with-a-verifier-phase-85).
 
-v1 results with MiniLM-L12, the old default (526 held-out questions):
+Earlier v1 results with MiniLM-L12, including a fine-tuned encoder (526 held-out questions):
 
 | Setup | Right answers | Wrong answers | False-hit rate (95% upper bound) | Hinglish caught |
 |---|---|---|---|---|
@@ -76,7 +85,7 @@ with 2 wrong answers, in 56 ms instead of 1,331 ms.** The set is built to be har
 | A planted answer reaching other users | yes | stays in the attacker's partition |
 
 **Honest caveats.** v1 overstated what a cache can answer: its questions were LLM-written, and on real
-people's messages the free setup answers a tenth as much (the human test above). Part of v1's fine-tuning gain
+people's messages the free setup answers a tenth as much or less (the human test above). Part of v1's fine-tuning gain
 is the generator's writing style too: on the 46 hand-written held-out questions, paraphrases caught only rose
 from 11 to 13 of 27. Off-the-shelf cross-encoder verifiers made every result worse; the verifiers that help
 are API calls, so they are optional and off by default. Every experiment is in [docs/results.md](docs/results.md)
@@ -84,23 +93,29 @@ and [docs/public_results.md](docs/public_results.md).
 
 ## Choosing an embedder
 
-The default is Qwen3-Embedding-0.6B. It is much slower on a CPU, so **on a small CPU-only server use MiniLM-L12**
-(`pakka.embed.FAST_EMBEDDER`, threshold 0.79). Measured on a MacBook Air M2 with the GPU switched off, one
-question at a time, as a lookup embeds it:
+The default is MiniLM-L12: about 9 ms a question on any CPU, which is where most bots run. **If you have a GPU or
+Apple Silicon, switch to Qwen3-Embedding-0.6B** for about twice the answers at the same budget:
 
-| | Qwen3-Embedding-0.6B (default) | MiniLM-L12 (fast option) |
+```python
+cache = NumpyCache(load_embedder(GPU_EMBEDDER))   # from pakka.embed import GPU_EMBEDDER; then threshold=0.925
+```
+
+In the Dukaan bot that is `PAKKA_EMBEDDER=Qwen/Qwen3-Embedding-0.6B` (the threshold follows). Measured on a MacBook
+Air M2, one question at a time, as a lookup embeds it; the CPU rows have the GPU switched off:
+
+| | MiniLM-L12 (default) | Qwen3-Embedding-0.6B (GPU option) |
 |---|---|---|
-| Download | 1.2 GB | 0.48 GB |
-| Memory (process peak) | ~1.0 GB | ~0.7 GB |
-| CPU, 8 threads (median / p90) | 235 / 312 ms | 9 / 10 ms |
-| CPU, 2 threads, like a small VPS (median / p90) | 538 / 834 ms | 8 / 8 ms |
-| M2 GPU (median) | ~36 ms | ~9 ms |
-| Threshold, guards on (`pakka.embed.THRESHOLDS`) | 0.925 | 0.79 |
-| v1 test, free, 10% budget | 102 / 8 | 47 / 5 |
-| Human test, free, 10% budget | 11 / 0 | 2 / 1 |
+| Download | 0.48 GB | 1.2 GB |
+| Memory (process peak) | ~0.7 GB | ~1.0 GB |
+| CPU, 8 threads (median / p90) | 9 / 10 ms | 235 / 312 ms |
+| CPU, 2 threads, like a small VPS (median / p90) | 8 / 8 ms | 538 / 834 ms |
+| M2 GPU (median) | ~9 ms | ~36 ms |
+| Threshold, guards on (`pakka.embed.THRESHOLDS`) | 0.79 | 0.925 |
+| v1 test, free, 10% budget | 47 / 5 | 102 / 8 |
+| Human test, free, 10% budget | 2 / 1 | 11 / 0 |
 
-Mean P-CHR AUC over the public datasets: 0.647 for Qwen3-0.6B against 0.571 for MiniLM. A threshold belongs to
-one embedder; for any other model, pick one with `pakka bench --embedder <model>`.
+Mean P-CHR AUC over the public datasets: 0.571 for MiniLM, 0.647 for Qwen3-0.6B. A threshold belongs to one
+embedder; for any other model, pick one with `pakka bench --embedder <model>`.
 
 ## Quickstart
 
@@ -130,13 +145,13 @@ from pakka.policy import GLOBAL, Policy
 def my_llm(question):                         # your LLM call: returns (answer, tokens used)
     ...
 
-cache = NumpyCache(load_embedder())          # Qwen3-Embedding-0.6B, a 1.2 GB download on first use
+cache = NumpyCache(load_embedder())          # MiniLM-L12; Qwen3-0.6B with a GPU (see above)
 cache.store("How long does a refund take?", "Refunds take 5-7 business days.",
             {"id": "faq_01", "partition": GLOBAL, "kb_version": "v1"})
 
-bot = CachedAnswerer(cache, my_llm, threshold=0.925, guard=check, policy=Policy(kb_version="v1"))
+bot = CachedAnswerer(cache, my_llm, threshold=0.79, guard=check, policy=Policy(kb_version="v1"))
 r = bot.ask("How many days does a refund take?", partition="user-42")
-r.hit, r.reason, r.score                      # (True, 'hit', 0.977)
+r.hit, r.reason, r.score                      # (True, 'hit', 0.968)
 ```
 
 Measure your cache:
@@ -206,8 +221,8 @@ More commands (building the benchmark, fine-tuning, the approval queue, the stal
 
 ## Limits
 
-Qwen3-Embedding-0.6B, the default, takes a quarter to half a second per question on a CPU (MiniLM-L12 is the
-fast option). PII detection is regex plus checksums and doesn't catch names, so a verifier can see a name. Partitions isolate answers but not
+Qwen3-Embedding-0.6B, the GPU option, takes a quarter to half a second per question on a CPU. With the default
+MiniLM-L12, most real people's messages score below a verifier's 0.6 floor, so a verifier helps it less. PII detection is regex plus checksums and doesn't catch names, so a verifier can see a name. Partitions isolate answers but not
 timing: a hit is still faster than a miss. `/forget` in the demo bot has no authentication. The
 benchmark covers one domain (Indian e-commerce support) with 30 FAQs.
 

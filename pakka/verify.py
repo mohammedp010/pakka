@@ -16,7 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 JEV_MODEL = "jev-1.14.0"
-JEV_MIN_SCORE = 0.84  # picked on HinglishCacheBench v1 dev for a 5% budget, with similarity threshold 0.6 and guards
+JEV_MIN_SCORE = 0.84  # picked on HinglishCacheBench v1 dev (Qwen3-0.6B + guards, similarity 0.6) for a 5% budget
 JEV_URL = "https://api.typesafe.ai/v1/systemone"
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 # Asks what a cache needs to know (does one reply fit both?), not how similar the texts are. Numbers and dates are

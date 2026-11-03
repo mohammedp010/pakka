@@ -1,6 +1,6 @@
 """Measure a semantic cache on a labelled question set.
 
-    python -m pakka.bench --data data/bench_v1.jsonl --embedder exact --embedder Qwen/Qwen3-Embedding-0.6B
+    python -m pakka.bench --data data/bench_v1.jsonl --embedder exact --embedder paraphrase-multilingual-MiniLM-L12-v2
 
 Each labelled row has the FAQ id it should match (`label`, or None for should-miss) and, after
 lookup, what the cache returned (`matched_id`, `score`, `lookup_ms`). Rows tagged `split: dev`
@@ -312,7 +312,7 @@ def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--faqs", default="data/faqs.json")
     p.add_argument("--data", default="data/bench_v1.jsonl")
-    p.add_argument("--embedder", action="append", help="sentence-transformers model, or 'exact' (repeatable; default Qwen/Qwen3-Embedding-0.6B)")
+    p.add_argument("--embedder", action="append", help="sentence-transformers model, or 'exact' (repeatable; default paraphrase-multilingual-MiniLM-L12-v2)")
     p.add_argument("--budget", type=float, default=0.05, help="max false-hit rate (95%% upper bound)")
     p.add_argument("--thresholds", help="also print a sweep over these thresholds, e.g. 0.6,0.7,0.8")
     p.add_argument("--llm-ms", type=float, default=1260, help="LLM latency charged to each miss in a sweep")

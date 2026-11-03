@@ -2,8 +2,8 @@
 
     uvicorn examples.dukaan_bot.app:create_app --factory
 
-Settings (env vars): PAKKA_EMBEDDER (default Qwen/Qwen3-Embedding-0.6B; paraphrase-multilingual-MiniLM-L12-v2 on a
-small CPU server), PAKKA_THRESHOLD (default: the one picked for that embedder, pakka.embed.THRESHOLDS), PAKKA_GUARD (1 or 0), PAKKA_TTL_DAYS,
+Settings (env vars): PAKKA_EMBEDDER (default paraphrase-multilingual-MiniLM-L12-v2; Qwen/Qwen3-Embedding-0.6B with a
+GPU), PAKKA_THRESHOLD (default: the one picked for that embedder, pakka.embed.THRESHOLDS), PAKKA_GUARD (1 or 0), PAKKA_TTL_DAYS,
 PAKKA_BACKEND (numpy or redis), PAKKA_REDIS_URL, PAKKA_MODEL, OPENROUTER_API_KEY.
 
 Answers the LLM writes for a `user_id` are cached for that user only. Answers for anonymous

@@ -108,9 +108,9 @@ def test_threshold_defaults_to_the_one_picked_for_the_embedder(llm, paths, tmp_p
 
     monkeypatch.delenv("PAKKA_THRESHOLD", raising=False)
     monkeypatch.delenv("PAKKA_EMBEDDER", raising=False)
-    assert build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths).threshold == 0.925
-    monkeypatch.setenv("PAKKA_EMBEDDER", "paraphrase-multilingual-MiniLM-L12-v2")
     assert build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths).threshold == 0.79
+    monkeypatch.setenv("PAKKA_EMBEDDER", "Qwen/Qwen3-Embedding-0.6B")
+    assert build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths).threshold == 0.925
     monkeypatch.setenv("PAKKA_THRESHOLD", "0.8")
     assert build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths).threshold == 0.8
 

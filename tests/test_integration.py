@@ -16,7 +16,7 @@ REDIS_URL = os.environ.get("PAKKA_REDIS_URL", "redis://localhost:6380")
 def embed():
     from pakka.embed import load_embedder
 
-    return load_embedder()  # the default, Qwen3-Embedding-0.6B
+    return load_embedder()  # the default, MiniLM-L12
 
 
 def seeded(cache):

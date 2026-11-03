@@ -18,14 +18,14 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: hf-models-v2  # Qwen3-Embedding-0.6B (~1.2 GB) and MiniLM
+          key: hf-models-v1
       - run: pip install -e ".[redis,bot,dev]"
       - name: Unit tests (fake embedder and LLM)
         run: pytest
       - name: Integration tests (real model, Redis; includes the cross-tenant canary)
         run: pytest -m integration
       - name: False-hit gate (default embedder, guarded, held-out 95% upper bound must stay under 25%)
-        # --embed-cache embeds every question in one batch first: Qwen3 on a CPU runner is slow one at a time
+        # --embed-cache embeds every question in one batch first, faster than one at a time
         run: >
           python -m pakka.bench --data data/bench_v1.jsonl --guard --budget 0.10 --fail-above 0.25
           --embed-cache ${{ runner.temp }}/emb

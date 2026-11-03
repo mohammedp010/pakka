@@ -12,10 +12,10 @@ API_URL = "https://openrouter.ai/api/v1/embeddings"
 API_DIMENSIONS = 1024  # API models return Matryoshka vectors: 1024 keeps 150k texts in memory on 8 GB
 # What a model card asks to put before each text (matched on the model name); a cache pair gets it on both sides.
 PREFIXES = {"e5": "query: ", "qwen3-embedding": "Instruct: Retrieve semantically similar text.\nQuery: "}
-DEFAULT_EMBEDDER = "Qwen/Qwen3-Embedding-0.6B"
-FAST_EMBEDDER = "paraphrase-multilingual-MiniLM-L12-v2"  # ~9 ms a question on CPU, vs ~235 ms: for small servers
+DEFAULT_EMBEDDER = "paraphrase-multilingual-MiniLM-L12-v2"  # ~9 ms a question on any CPU
+GPU_EMBEDDER = "Qwen/Qwen3-Embedding-0.6B"  # about twice the answers, but ~235 ms a question on a CPU: for a GPU
 # Picked on HinglishCacheBench v1 dev with pakka.guard on, for a 10% false-hit budget (95% upper bound).
-THRESHOLDS = {DEFAULT_EMBEDDER: 0.925, FAST_EMBEDDER: 0.79}
+THRESHOLDS = {DEFAULT_EMBEDDER: 0.79, GPU_EMBEDDER: 0.925}
 
 
 def _prefix(model_name):
