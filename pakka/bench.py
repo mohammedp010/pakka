@@ -11,6 +11,7 @@ on the data it is reported on.
 import argparse
 import json
 import math
+import os
 import statistics
 import sys
 import time
@@ -269,17 +270,92 @@ def score_with_method(name, embed, faqs, data, guard=None, extra_keys=False, ent
     return scored[0] + scored[1] + held_out
 
 
-def load_verifier(name):
-    """A cross-encoder as `verify(pairs) -> scores`, plus its median latency for one pair in ms."""
-    from sentence_transformers import CrossEncoder
+JEV_URL = "https://api.typesafe.ai/v1/systemone"
+# Asks what a cache needs to know (does one reply fit both?), not how similar the texts are. Numbers and dates are
+# Jev's known weak spot, so the guards run first and only what they let through gets here.
+JEV_QUESTION = {
+    "type": "noul",
+    "instructions": "Would the support reply written for `cached_question` also correctly answer `new_question`?",
+    "criteria": {
+        "true": "Both ask for the same thing, so one reply fits both, even if the wording, language (English, "
+                "Hinglish or Hindi) or spelling differ.",
+        "false": "They ask for different things: another amount, number, day, place, product or person, the "
+                 "opposite action (on/off, cancel/undo, not), or a related but separate question, so that reply "
+                 "would be wrong or incomplete.",
+    },
+}
 
-    model = CrossEncoder(name)
+
+def jev_verifier(model, cache_path=None, transport=None, workers=8):
+    """TypeSafe's Jev (`jev-1.14.0`) as `verify(pairs) -> scores`: its probability that one reply fits both
+    questions. Needs TYPESAFE_API_KEY. Answers are kept at `cache_path` (JSON keyed by a hash of model, question
+    and pair) after every 200 pairs, so a rerun or a crash never pays twice."""
+    import hashlib
+    from concurrent.futures import ThreadPoolExecutor
+
+    import httpx
+
+    key = os.environ.get("TYPESAFE_API_KEY")
+    if not key:
+        raise SystemExit(f"Set TYPESAFE_API_KEY to verify with {model}")
+    client = httpx.Client(timeout=60, headers={"Authorization": f"Bearer {key}"}, transport=transport)
+    path = Path(cache_path) if cache_path else None
+    store = json.loads(path.read_text()) if path and path.exists() else {}
+
+    def ask(pair):
+        body = {"model": model, "state": {"new_question": pair[0], "cached_question": pair[1]},
+                "questions": {"same_reply": JEV_QUESTION}}
+        for attempt in range(6):  # rate limits and overload (429, 529) are documented as normal under load
+            try:
+                response = client.post(JEV_URL, json=body)
+            except httpx.TransportError:
+                if attempt == 5:
+                    raise
+                time.sleep(2 ** attempt)
+                continue
+            if (response.status_code == 429 or response.status_code >= 500) and attempt < 5:
+                time.sleep(float(response.headers.get("retry-after") or 2 ** attempt))
+                continue
+            response.raise_for_status()
+            return response.json()["answers"]["same_reply"]["noul"]
+
+    def verify(pairs):
+        keys = [hashlib.md5(json.dumps([model, JEV_QUESTION, *p]).encode()).hexdigest() for p in pairs]
+        missing = list({k: p for k, p in zip(keys, pairs) if k not in store}.items())
+        with ThreadPoolExecutor(workers) as pool:
+            for i in range(0, len(missing), 200):
+                chunk = missing[i:i + 200]
+                store.update(zip([k for k, _ in chunk], pool.map(ask, [p for _, p in chunk])))
+                if path:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(json.dumps(store))
+        return [store[k] for k in keys]
+
+    verify.ask = ask
+    return verify
+
+
+def load_verifier(name, cache_dir=None):
+    """A cross-encoder, or `jev-<version>` for TypeSafe's Jev, as `verify(pairs) -> scores`, plus its median
+    latency for one pair in ms."""
+    pair = ("refund kab milega?", "How long does a refund take?")
+    if name.startswith("jev-"):
+        verify = jev_verifier(name, cache_dir and Path(cache_dir) / "jev" / f"{name}.json")
+        predict = lambda: verify.ask(pair)  # noqa: E731  uncached: a cache hit would hide the network
+        runs, warm = 7, 2
+    else:
+        from sentence_transformers import CrossEncoder
+
+        model = CrossEncoder(name)
+        verify = lambda pairs: model.predict(pairs, show_progress_bar=False).tolist()  # noqa: E731
+        predict = lambda: model.predict([pair], show_progress_bar=False)  # noqa: E731
+        runs, warm = 20, 5
     timings = []
-    for _ in range(20):
+    for _ in range(runs):
         start = time.perf_counter()
-        model.predict([("refund kab milega?", "How long does a refund take?")], show_progress_bar=False)
+        predict()
         timings.append((time.perf_counter() - start) * 1000)
-    return (lambda pairs: model.predict(pairs, show_progress_bar=False).tolist()), statistics.median(timings[5:])
+    return verify, statistics.median(timings[warm:])
 
 
 def main(argv=None):
@@ -292,7 +368,7 @@ def main(argv=None):
     p.add_argument("--llm-ms", type=float, default=1260, help="LLM latency charged to each miss in a sweep")
     p.add_argument("--fail-above", type=float, help="exit 1 if any encoder's false-hit upper bound (with --guard: guarded setup) exceeds this")
     p.add_argument("--guard", action="store_true", help="also report each encoder with pakka.guard rules on")
-    p.add_argument("--verify", action="append", default=[], help="cross-encoder to re-score grey-band hits (repeatable)")
+    p.add_argument("--verify", action="append", default=[], help="cross-encoder, or jev-1.14.0 (TypeSafe, needs TYPESAFE_API_KEY), to re-score grey-band hits (repeatable)")
     p.add_argument("--floor", type=float, default=0.6, help="lowest similarity a verifier looks at")
     p.add_argument("--extra-keys", action="store_true", help="also store dev paraphrases as keys (approved questions)")
     p.add_argument("--entry-thresholds", action="store_true", help="per-FAQ floors learned from dev false hits")
@@ -321,7 +397,7 @@ def main(argv=None):
             rows = score_with_method(name, embed, faqs, data, guard=check, **method)
             lines.append(report_encoder(f"{name}{suffix} + guards", rows, args.budget))
         for model in args.verify:
-            verify, single_ms = load_verifier(model)
+            verify, single_ms = load_verifier(model, args.embed_cache)
             line = report_encoder(f"{name}{suffix}{' + guards' if args.guard else ''} + {model}",
                                   verify_rows(rows, verify, args.floor), args.budget)
             line["lookup_p50_ms"] += single_ms

@@ -33,6 +33,7 @@ nahi/nhi/nahin) and Hindi in Devanagari. The domain is a fictional Indian online
 |---|---|
 | `faqs.json` | The 30 FAQs: `id`, `question`, `answer` |
 | `bench_v1.jsonl` | 1,059 labelled messages (below) |
+| `bench_human.jsonl` | 315 messages written by 23 people (v1.1, below) |
 | `pilot.jsonl` | The 100 hand-written messages the set started from (also inside `bench_v1.jsonl`) |
 | `raw/` | Every LLM generation and label, cached, so the set can be rebuilt with `scripts/build_bench.py` |
 
@@ -76,10 +77,38 @@ be paraphrases of a different FAQ, and they carry that FAQ as their label.
 
 - **Style leakage.** One model wrote both splits in the same prompt, so the splits share its phrasing.
   A model fine-tuned on dev scores much better on generated test messages than on the 46 hand-written
-  ones. Report results on `source: hand` messages as well.
+  ones. Report results on `source: hand` messages and on `bench_human.jsonl` as well.
 - **Labels from agreeing models are not hand-checked.** About 25 of the 880 were spot-checked.
 - **One domain, 30 FAQs.** Thresholds and guards tuned here may not transfer.
 - **Personal identifiers are fake.** Order numbers, UPI IDs and names are invented.
+
+## Human-written split (v1.1): `bench_human.jsonl`
+
+315 messages written by 23 people through a Google Form (`scripts/make_form.gs`), in their own words, the
+way they'd text a shop on WhatsApp. People saw a situation ("your parcel came and nothing is wrong with
+it, you just don't like it"), never the FAQ text, so they couldn't copy its wording. Each form had 10
+situations, 3 trap situations (a different number, a "not", a different place or product) and one
+optional question of their own. Every writer ticked a box releasing their answers under CC BY 4.0; no
+name, email or phone number was collected, and messages with personal identifiers were dropped.
+
+| | Count |
+|---|---|
+| Messages / writers | 315 / 23 |
+| Should hit / should miss | 254 / 61 |
+| English / Hinglish / Hindi | 31 / 280 / 4 |
+| Dev / test | 57 / 258 (by writer: one writer in five is dev) |
+| Written as: paraphrase / negation / entity / number / uncovered | 239 / 24 / 24 / 23 / 5 |
+
+Labels: `deepseek/deepseek-v4.1-flash` (`judged`) and `anthropic/claude-haiku-5.5` (`judged2`) labelled
+each message blind. They agreed on 245; a person decided 90 (`reviewed: true`), including every message
+where the judges agreed with each other but not with the form question it answered. Extra fields:
+`writer` (a number per person), `source: human`. Rebuild from the form exports with
+`scripts/ingest_human.py` (the raw exports are not published).
+
+This split is the style-leakage check for v1: with the threshold picked on v1 dev, the cache answers
+10–21% of v1 test but only 1–4% of these messages. Real messages are longer and add context ("password
+yaad nhi aa raha, naya kaise banaye"), so they score lower against the FAQ questions, and the negation
+guard misreads that context as a negation. Results: [docs/public_results.md](../docs/public_results.md).
 
 ## Use
 

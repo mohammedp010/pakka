@@ -63,6 +63,9 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
   because one seed question, "i dont know what i need to do to download my bill", read as a negation and blocked
   "check my bill" questions along with good hits. Phase 7 reads "don't know" as a hedge, which is right, and that
   win is gone (4.1%).
+- **Guards misread real people's Hinglish.** On 258 messages written by people (Phase 8), 39 of 82 guard
+  vetoes threw away a right answer, 31 of them negation: "abhi ship nahi hua na, cancel karna hai" uses "nahi"
+  to describe the problem. A Jev verifier recovers most of those hits; see "Human-written Hinglish" below.
 - **Guards got slower:** about 60 µs per check, up from 35 µs. Still far below an embedding lookup.
 - **pakka's default embedder isn't the best choice.** Qwen3-Embedding-0.6B, the same order of size as bge-m3,
   doubles what the cache can answer on our set at the same budget; Qwen3-Embedding-8B nearly quadruples it.
@@ -480,6 +483,54 @@ cell, each share carries about ±11 points of sampling error, on top of the judg
 - **Our own labels held up best:** 4 of 44 true hits and 0 of 8 false hits overturned.
 - An early run with 20 pairs per call agreed on only 65%: a judge answered single pairs differently than inside
   a long batch. So the audit uses 5 pairs per call.
+
+## Human-written Hinglish (Phase 8)
+
+315 messages from 23 people, written through a form in their own words (80% romanized Hinglish), labelled by
+two LLMs and a person ([dataset card](../data/README.md)). Thresholds are picked on HinglishCacheBench v1's
+dev split and reported on the 258 human test messages, next to v1's own test split, so the gap is the
+style leakage of an LLM-written set. Small set: the 95% bounds are wide.
+
+| Setup, 10% budget | v1 test (526, LLM-written) | Human test (258) |
+|---|---|---|
+| MiniLM + guards | 48 right, 5 wrong (10% hit rate) | 2 right, 1 wrong (1%) |
+| Qwen3-Embedding-0.6B + guards | 103 right, 7 wrong (21%) | 10 right, 1 wrong (4%) |
+| IndicSBERT, plain | 47 right, 3 wrong (10%) | 3 right, 1 wrong (2%) |
+| Qwen3-Embedding-0.6B + guards + Jev | 240 right, 16 wrong (49%) | 94 right, 17 wrong (43%) |
+
+1. **v1 overstated what a cache can answer.** At the same threshold the cache answers a tenth to a fifth of
+   v1 test but 1–4% of real messages. Real messages are longer and carry context ("password yaad nhi aa
+   raha, login nahi ho paa raha, naya kaise banaye"), so they sit further from the FAQ question.
+2. **Guards hurt on real writing.** They lower P-CHR AUC for all four embedders on the human split (Qwen3
+   0.793 → 0.730, MiniLM 0.630 → 0.560). With Qwen3, 39 of the 82 vetoes on human test threw away a right
+   answer, 31 of them negation: people use "nahi" to describe the problem, not to ask the opposite.
+3. **Jev (TypeSafe, `jev-1.14.0`) as a verifier recovers most of it.** It checks grey-band hits the guards
+   let through ("would the reply for the cached question also answer this one?"). With Qwen3 + guards at a
+   5% budget: 86 right, 6 wrong (6.5%; the dev-picked threshold slightly misses 5% here), Hinglish caught
+   72/184 against 5/184 without it. It adds about 300 ms to a lookup, against 1,331 ms for the LLM call.
+
+### Jev on the public sets (5% budget, guards on)
+
+| Dataset | Embedder | False hits in top 5% of held-out, guards | … + Jev |
+|---|---|---|---|
+| HinglishCacheBench v1 | MiniLM (top 10%) | 9.6% | 0.0% |
+| Hinglish-TOP | Qwen3-Embedding-0.6B | 39.0% | 11.5% |
+| Hinglish-TOP | MiniLM | 61.3% | 21.8% |
+| MASSIVE en+hi | Qwen3-Embedding-0.6B | 35.6% | 25.3% |
+| MASSIVE en+hi | MiniLM | 20.8% | 23.3% |
+
+v1 goes from "no threshold fits" to fitting 5% (Qwen3: 207 right, 7 wrong; MiniLM: 104 right, 2 wrong).
+Hinglish-TOP and MASSIVE still don't fit; 20 sampled leftover false hits were all label artifacts
+(duplicate FAQs that differ only in "30 mins" vs "30 minutes", Hindi city names counted as slot traps).
+Jev's scores bunch at 0.98–0.99 at the top. About 54,000 calls, ~$0.95.
+
+Reproduce (needs `TYPESAFE_API_KEY`; answers cached in `data/public/emb/jev/`):
+
+```bash
+(jq -c 'select(.split=="dev")' data/bench_v1.jsonl; jq -c 'select(.split=="test")' data/bench_human.jsonl) > /tmp/human_eval.jsonl
+pakka bench --data /tmp/human_eval.jsonl --guard --verify jev-1.14.0 --budget 0.10 --embed-cache data/public/emb \
+    --embedder Qwen/Qwen3-Embedding-0.6B
+```
 
 ## Caveats
 

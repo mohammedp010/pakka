@@ -50,6 +50,8 @@ def main(argv=None):
         print(f"[{n}/{len(todo)}] {item['kind']} ({item['lang']}), written for {item['near'] or 'no FAQ'}")
         print(f"  {item['q']}")
         print(f"  w) writer: {name(item['intended'])}\n  j) judge:  {name(item['judged'])}")
+        if "judged2" in item:  # human-written sets have two judges; type the FAQ number or n to take this one
+            print(f"     judge 2: {name(item['judged2'])}")
         while True:
             answer = input("> ").strip().lower()
             if answer in ("s", "q"):

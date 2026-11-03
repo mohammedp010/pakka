@@ -307,3 +307,43 @@ def test_api_embedder_batches_in_order_cuts_long_text_adds_the_model_prefix_and_
     assert seen[0]["input"] == [prefix + "a", prefix + "bb"] and seen[1]["input"] == [prefix + "x" * 16]  # 4 tokens ~ 16 chars
     assert out.shape == (3, 2) and np.allclose(np.linalg.norm(out, axis=1), 1)
     assert out[0][0] < out[1][0] < out[2][0]  # rows stay in input order
+
+
+def fake_jev(seen, busy=0):
+    """A stand-in for TypeSafe's API: the first `busy` calls get 429, then a noul of 0.9 when both questions
+    share their first word, else 0.1."""
+    import httpx
+
+    def reply(request):
+        seen.append(json.loads(request.content))
+        if len(seen) <= busy:
+            return httpx.Response(429, headers={"retry-after": "0"})
+        state = seen[-1]["state"]
+        same = state["new_question"].split()[0] == state["cached_question"].split()[0]
+        return httpx.Response(200, json={"model": "jev-1.14.0", "answers": {"same_reply": {"type": "noul", "noul": 0.9 if same else 0.1}}})
+
+    return httpx.MockTransport(reply)
+
+
+def test_jev_verifier_asks_one_noul_per_pair_and_a_rerun_reads_its_cache(monkeypatch, tmp_path):
+    from pakka.bench import jev_verifier
+
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+    seen, cache = [], tmp_path / "jev.json"
+    pairs = [("refund kab milega", "refund status?"), ("cancel my order", "track my order")]
+    assert jev_verifier("jev-1.14.0", cache, transport=fake_jev(seen))(pairs) == [0.9, 0.1]
+    assert [b["model"] for b in seen] == ["jev-1.14.0"] * 2 and seen[0]["questions"]["same_reply"]["type"] == "noul"
+    assert seen[0]["state"] == {"new_question": "refund kab milega", "cached_question": "refund status?"}
+
+    again = []
+    assert jev_verifier("jev-1.14.0", cache, transport=fake_jev(again))(pairs[::-1]) == [0.1, 0.9]
+    assert again == []  # every pair came from the cache
+
+
+def test_jev_verifier_waits_out_rate_limits(monkeypatch):
+    from pakka.bench import jev_verifier
+
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+    seen = []
+    assert jev_verifier("jev-1.14.0", transport=fake_jev(seen, busy=2))([("a b", "a c")]) == [0.9]
+    assert len(seen) == 3
