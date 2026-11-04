@@ -25,12 +25,12 @@ It is a Python library plus a benchmark, tested on nine public datasets other pe
   replies to those same questions are wrong 3.9% of the time. The price: a hit takes ~0.9 s, and it saves
   20% of LLM spend, not 50%. No free setup gets near 3%.
 - **Real Hinglish is much harder than LLM-written Hinglish.** On 258 messages people wrote, the free default
-  answers 3 (1 wrong). v1's LLM-written test made pakka look far better than this; see
-  [what v1 got wrong](docs/report.md#limitations).
+  answers 3 (1 wrong). Our LLM-written test set made pakka look far better than this; see
+  [limitations](docs/report.md#limitations).
 
-**The real-bot run** (Phases 10 and 10b): 4,000 Bitext test questions, Bitext's 27 e-commerce answers as the
-knowledge base, `claude-haiku-5.5` as the LLM. Wrong = judged wrong by the LLM judges, not by intent labels.
-Phase 10 used Bitext's answers and fixed thresholds; Phase 10b rewrote 13 weak answers and picked every threshold
+**The real-bot run:** 4,000 Bitext test questions, Bitext's 27 e-commerce answers as the knowledge base,
+`claude-haiku-5.5` as the LLM. Wrong = judged wrong by the LLM judges, not by intent labels. The first rows use
+Bitext's answers as they are and fixed thresholds; the tuned rows rewrite 13 weak answers and pick every threshold
 on Bitext's dev split for a 3% budget ([details](docs/public_results.md#phase-10b-getting-the-real-bots-wrong-answers-down-to-the-llms-level)).
 
 | Setup | Answered from cache | Wrong answers served (95% upper) | Hit time p50 | LLM spend saved, verifier paid |
@@ -40,15 +40,15 @@ on Bitext's dev split for a 3% budget ([details](docs/public_results.md#phase-10
 | Fine-tuned MiniLM + cheap LLM verifier | 52.3% | 554 of 2,091: 26.5% (28%) | 777 ms | 51.3% |
 | Fine-tuned MiniLM + Jev verifier | 30.9% | 187 of 1,236: 15% (17%) | 326 ms | 27.8% |
 | Qwen3-0.6B (GPU) + Jev verifier | 38.1% | 254 of 1,525: 17% (19%) | 379 ms | 35.1% |
-| *Phase 10b, fixed answers, 3% budget:* | | | | |
+| *Tuned: fixed answers, 3% budget:* | | | | |
 | Fine-tuned MiniLM, free | none fits | | | |
 | Fine-tuned MiniLM + Jev verifier | 11.3% | 10 of 453: 2.2% (4.0%) | 326 ms | 9.8% |
 | **Fine-tuned MiniLM + Qwen3.5-397B reading the reply** | 44.0% | 43 of 1,758: 2.4% (3.3%) | 896 ms | 19.6% |
 | Fine-tuned MiniLM + Jev and Qwen3.5-397B must agree | 34.4% | 28 of 1,376: 2.0% (2.9%) | 899 ms | 5.7% |
 
-![Phase 10, before the 10b fixes: share answered from cache against share of cached answers judged wrong, for the four setups; the LLM's own wrong rate on those questions is 3-4%](https://raw.githubusercontent.com/mohammedp010/pakka/master/docs/img/bot_run.png)
+![Before tuning: share answered from cache against share of cached answers judged wrong, for the four setups; the LLM's own wrong rate on those questions is 3-4%](https://raw.githubusercontent.com/mohammedp010/pakka/master/docs/img/bot_run.png)
 
-In Phase 10, most wrong answers came from a few FAQ answers that only fit their own seed question: Bitext's "cancel
+Before tuning, most wrong answers came from a few FAQ answers that only fit their own seed question: Bitext's "cancel
 order" answer just says "please ask your question" (27 of the free setup's 103, 61 of Jev's 187). Rewriting 13 such
 answers alone took Jev's setup from 15.1% to 5.4% wrong at the same settings. **Seed a cache with answers that
 stand on their own.**
@@ -244,7 +244,7 @@ echo "OPENROUTER_API_KEY=..." > .env                        # for the bot and e2
 .venv/bin/python -m examples.dukaan_bot.chat --user ravi    # chat with Dukaan Bot
 .venv/bin/python scripts/public_bench.py                    # every public-dataset table (hours the first time)
 .venv/bin/python scripts/phase10_bot.py --setups free,tuned+llm,tuned+jev,qwen+jev   # the real-bot run
-.venv/bin/python scripts/phase10b.py                          # Phase 10b: fixed answers, dev-picked thresholds, verifiers
+.venv/bin/python scripts/phase10b.py                          # the tuned rows: fixed answers, dev-picked thresholds, verifiers
 .venv/bin/pip install matplotlib && .venv/bin/python scripts/charts.py               # the charts above
 ```
 
