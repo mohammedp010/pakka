@@ -108,7 +108,7 @@ The fine-tuned MiniLM is no better free (AUC 0.603 → 0.589) but lifts 165 of 2
 verifier's 0.6 floor instead of 26, and the verifier sorts them. The same recipe on Qwen3-0.6B didn't help and
 wasn't shipped.
 
-**6. In a real bot, the cache saves money and is wrong 6–9 times as often as the LLM.**
+**6. In a real bot, as shipped, the cache saves money and is wrong 6–9 times as often as the LLM (Phase 10).**
 
 | Setup | Answered from cache | Wrong (judges) | LLM wrong, same questions | Hit p50 | Spend saved, verifier paid |
 |---|---|---|---|---|---|
@@ -124,6 +124,26 @@ have a question about cancelling, please go ahead and ask it") causes 27 of the 
 61 of Jev's 187; the five worst FAQs cause 72–80%. Without it, Jev's wrong rate is 10.7%. The cheap yes / no LLM
 verifier says yes too easily on Bitext's near intents. Intent labels would have flagged 51 of the free setup's
 wrong answers; the judges found 103.
+
+**7. With complete answers, dev-picked thresholds and a verifier that reads the reply, it reaches the LLM's level
+(Phase 10b).** Three changes, every choice made on 3,000 Bitext dev questions and reported on the same 4,000 test
+questions: (a) the 13 FAQ answers behind most right-intent wrong answers on dev were rewritten into complete ones;
+(b) thresholds picked with pakka's own rule, a 95% Wilson upper bound within 3% on dev; (c) LLM verifiers that see
+the stored reply and give P(yes) from logprobs, alone or with Jev ("agree").
+
+| Setup (fixed KB, 3% budget) | Answered from cache | Wrong (judges, 95% upper) | LLM wrong, same questions | Hit p50 | Spend saved, verifier paid |
+|---|---|---|---|---|---|
+| Fine-tuned MiniLM, free | none fits on dev | | | | |
+| Fine-tuned MiniLM + Jev | 11.3% | 10 / 453 (2.2%, 4.0%) | 11 (2.4%) | 326 ms | 9.8% |
+| Fine-tuned MiniLM + Qwen3.5-397B (open weights) | 44.0% | 43 / 1,758 (2.4%, 3.3%) | 69 (3.9%) | 896 ms | 19.6% |
+| Fine-tuned MiniLM + agree (Jev and Qwen3.5-397B) | 34.4% | 28 / 1,376 (2.0%, 2.9%) | 45 (3.3%) | 899 ms | 5.7% |
+
+The rewrite alone, at Phase 10's settings, takes fine-tuned MiniLM + Jev from 15.1% to 5.4% wrong. On the original
+KB no setup fits 3% on dev, and the 5% pick is 8.9% wrong on test: Bitext's dev and test phrasings differ enough
+that a dev-picked threshold under-covers there. On the questions these setups serve, the LLM's own replies are wrong
+more often than the cache's. Over all 4,000 questions the LLM is wrong on 5.3%, more than Phase 10's "3–4%", which
+covered only the questions the cache answered. At this budget the cache is a wrong-answer filter with a modest saving: the Qwen check costs a third of an
+LLM call and runs on every candidate.
 
 ## 4. Limitations
 
@@ -157,7 +177,10 @@ own seed question (`cancel_order` above), which a curated FAQ would avoid.
 LmArena 23%; 68% of LmArena's labelled false hits look fine). Parse labels split the same request ("30 mins" vs "30
 minutes"). An exact-match cache is already "wrong" on 8.9% of LmArena hits and 15.0% of SearchQueries hits. The
 judges themselves disagree: in Phase 10 DeepSeek and Haiku split on 28% of replies (Haiku stricter), and a hand read
-of 25 splits found the majority right on about 21.
+of 25 splits found the majority right on about 21. In Phase 10b they split on 24%; on the best setup's hits, 15%, enough to move a 2.4%
+wrong rate by about a point either way. The 10b verifier asks nearly the judges' question (different model
+families), and the rewritten answers were written by an LLM, so a 2–3% figure means "about the LLM's rate", not
+a precise number.
 
 **Other limits.**
 - Guards were changed after reading the public dev splits, so their held-out numbers are honest but the rules are
@@ -172,7 +195,7 @@ of 25 splits found the majority right on about 21.
   per request, not per served hit).
 - The best results need a paid API verifier. Off-the-shelf cross-encoder verifiers made every result worse.
 
-**Cost.** The largest OpenRouter items: Phase 10 $3.73, the two API embedders about $0.70 for every dataset, the
+**Cost.** The largest OpenRouter items: Phase 10 $3.73, Phase 10b $4.94, the two API embedders about $0.70 for every dataset, the
 label audit $0.47, Phase 8.5 $0.08. Jev checks came to about $1.10. Training ran on a free Kaggle T4; everything else
 on a MacBook Air M2.
 
@@ -187,6 +210,7 @@ python scripts/label_audit.py                  # the label audit (~$0.10 the fir
 python scripts/phase9_data.py                  # fine-tuning data; training runs on Kaggle: scripts/phase9_kaggle.py
 python scripts/phase9_eval.py                  # fine-tuned model, free tables
 python scripts/phase10_bot.py --setups free,tuned+llm,tuned+jev,qwen+jev   # the real bot (~70 min first time)
+python scripts/phase10b.py                          # Phase 10b (~90 min first time)
 pip install matplotlib && python scripts/charts.py                         # the charts in this report
 pakka bench --data data/bench_v1.jsonl --guard --budget 0.10 --fail-above 0.25   # the CI gate
 ```

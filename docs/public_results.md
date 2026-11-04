@@ -848,6 +848,133 @@ about 70 minutes the first time):
 `--n 100` is a dry run on the first 100 of the same questions (about $0.06). The bot itself with this setup:
 `PAKKA_FAQS=data/public/bitext.faqs.json PAKKA_EMBEDDER=mohd010/pakka-minilm-l12-hinglish PAKKA_VERIFY=jev uvicorn examples.dukaan_bot.app:create_app --factory`.
 
+## Phase 10b: getting the real bot's wrong answers down to the LLM's level
+
+Phase 10 left the best setup wrong on 15% of its cached answers. Phase 10b tries three fixes, all chosen on
+**3,000 questions from Bitext's dev split** and reported on **the same 4,000 test questions as Phase 10** (same
+LLM baseline, nothing re-asked of the bot's LLM). Same judges and judge prompt as Phase 10.
+
+1. **Fix the knowledge base.** On dev, 369 of the wrong candidates are the *right* FAQ with an answer that doesn't
+   answer the question ("please go ahead and ask your question"); the other 1,011 are the wrong FAQ. The 13 FAQs
+   with 10 or more of the first kind were rewritten into complete answers (how to cancel, change, track, reset,
+   review...), kept as `data/public/phase10b/faqs_fixed.json`, with Bitext's questions and ids unchanged and no
+   new numbers (the slot guard reads the answer). Everything is reported with the original KB too.
+2. **pakka's own threshold method** instead of a fixed 0.6: for each setup, the similarity threshold and the
+   verifier's own bar are picked on dev so the 95% Wilson upper bound of wrong answers stays within 3% (and 5%),
+   then run once on test.
+3. **Stronger verifiers that read the stored reply**, not just the two questions: *would this reply, written for
+   the cached question, correctly answer the new one?* P(yes) comes from logprobs, so the bar can be tuned. Checked
+   live on OpenRouter (4 Nov): Qwen3.5-397B-A17B and Gemma 4 31B (open weights, logprobs) and Gemini 3.1 Flash Lite
+   (closed, plain yes / no). Qwen3-235B-2507, Llama 3.3 70B and GPT-4o-mini had no logprob endpoint. All are
+   different families from the judges. Plus **agree** mode: Jev and an LLM verifier must both pass (run in
+   parallel, so a check waits for the slower one).
+
+**Free first, then with a verifier.** Fixed KB, 3% budget:
+
+| Setup | Picked on dev: similarity / verifier bar | Answered from cache | Wrong (rate, 95% upper) | LLM's own answer wrong, same questions | Hits p50 / p90 ms | Misses p50 / p90 ms | Spend saved, verifier paid |
+|---|---|---|---|---|---|---|---|
+| No cache: every question to the LLM | - | 0 | 211 of 4,000 (5.3%) | - | - | 1,248 / 1,700 | $2.03 spent |
+| MiniLM-L12 (default), free | none fits on dev | | | | | | |
+| Fine-tuned MiniLM, no verifier | none fits on dev | | | | | | |
+| Fine-tuned MiniLM + cheap LLM (questions only) | none fits on dev | | | | | | |
+| Fine-tuned MiniLM + Jev | 0.875 / 0.95 | 453 (11.3%) | 10 (2.2%, 4.0%) | 11 | 326 / 417 | 1,433 / 1,902 | $0.20 (9.8%) |
+| **Fine-tuned MiniLM + Qwen3.5-397B (open weights)** | 0.765 / 0.84 | 1,758 (44.0%) | 43 (2.4%, 3.3%) | 69 | 896 / 1,474 | 2,056 / 2,816 | $0.40 (19.6%) |
+| Fine-tuned MiniLM + Gemma 4 31B (open weights) | none fits on dev | | | | | | |
+| Fine-tuned MiniLM + Gemini 3.1 Flash Lite | none fits on dev | | | | | | |
+| **Fine-tuned MiniLM + agree (Jev and Qwen3.5-397B)** | 0.693 / 0.5 / 0.95 | 1,376 (34.4%) | 28 (2.0%, 2.9%) | 45 | 899 / 1,458 | 2,124 / 2,893 | $0.12 (5.7%) |
+| Fine-tuned MiniLM + agree (Jev and Gemma 4) | 0.779 / 0.98 / 0.5 | 210 (5.2%) | 1 (0.5%, 2.6%) | 3 | 628 / 1,112 | 1,940 / 2,706 | $-0.04 (-2.1%) |
+| Fine-tuned MiniLM + agree (Jev and Gemini) | 0.874 / 0.95 / 0.5 | 457 (11.4%) | 10 (2.2%, 4.0%) | 11 | 919 / 1,259 | 1,602 / 2,507 | $0.08 (3.9%) |
+
+What it says:
+
+- **Yes, about 3% is reachable, but not free.** Fine-tuned MiniLM + Qwen3.5-397B reading the reply answers 44% of
+  the test questions with 2.4% wrong (95% upper bound 3.3%, a little over the 3% budget it was picked for; dev was
+  2.0%). Agree mode (Jev and Qwen) answers 34% at 2.0% (upper 2.9%). On the questions each of these serves, the LLM's own replies are wrong more often than
+  the cache: 69 of Qwen's 1,758 (3.9%), 45 of agree's 1,376 (3.3%). Both are open weights
+  plus TypeSafe's Jev; Qwen alone has no closed-vendor dependency.
+- **No free setup fits 3%, and only a sliver fits 5%.** The fine-tuned MiniLM alone fits 5% at similarity 0.966 and
+  answers 2.8%. The free default fits neither.
+- **The knowledge base was the biggest single fix.** At Phase 10's own settings (no re-tuning) the fixed KB takes
+  fine-tuned MiniLM + Jev from 15.1% to 5.4% wrong, and the free default from 26.1% to 12.2%. On the original KB
+  no setup fits 3% on dev, and the best 5% pick (Qwen) is 8.9% wrong on test: a dev slice can't see what it doesn't
+  contain (test's `track_order` and address-change questions cause 34 wrong answers there, against 2 on dev). With
+  the fixed KB the same method held up (Qwen 2.0% on dev, 2.4% on test; Jev 1.3% and 2.2%).
+- **Reading the reply is what helps.** Jev and the cheap LLM see only the two questions; a verifier that reads the
+  answer can tell "set up an address" from "change it" even when the questions look alike. Gemma 4 and Gemini
+  alone say yes too easily to fit 3%; with Jev they do, but answer only 5–11%.
+- **Cost and time are the price.** Qwen's check costs about $0.00015, a third of the bot's LLM call, and is asked
+  on every candidate, hits and misses, so it saves 19.6% of LLM spend (agree: 5.7%; Jev at 3%: 9.8%). A Qwen hit
+  takes about 0.9 s at the median against 1.25 s for the LLM, and a checked miss waits about 0.8 s more than
+  with no cache. At 3% the cache is a wrong-answer filter with a modest saving, not a big cost cut.
+
+**5% budget**, fixed KB:
+
+| Setup | Picked on dev: similarity / verifier bar | Answered from cache | Wrong (rate, 95% upper) | LLM's own answer wrong, same questions | Hits p50 / p90 ms | Misses p50 / p90 ms | Spend saved, verifier paid |
+|---|---|---|---|---|---|---|---|
+| No cache: every question to the LLM | - | 0 | 211 of 4,000 (5.3%) | - | - | 1,248 / 1,700 | $2.03 spent |
+| MiniLM-L12 (default), free | none fits on dev | | | | | | |
+| Fine-tuned MiniLM, no verifier | 0.966 | 112 (2.8%) | 2 (1.8%, 6.3%) | 2 | 9 / 10 | 1,256 / 1,709 | $0.06 (2.8%) |
+| Fine-tuned MiniLM + cheap LLM (questions only) | 0.945 / yes | 242 (6.0%) | 6 (2.5%, 5.3%) | 5 | 784 / 1,106 | 1,257 / 1,715 | $0.12 (6.0%) |
+| Fine-tuned MiniLM + Jev | 0.754 / 0.95 | 641 (16.0%) | 14 (2.2%, 3.6%) | 19 | 326 / 418 | 1,562 / 2,041 | $0.27 (13.1%) |
+| Fine-tuned MiniLM + Qwen3.5-397B (open weights) | 0.693 / 0.7 | 1,942 (48.5%) | 68 (3.5%, 4.4%) | 81 | 882 / 1,458 | 2,108 / 2,871 | $0.47 (23.0%) |
+| Fine-tuned MiniLM + Gemma 4 31B (open weights) | 0.944 / 0.7 | 251 (6.3%) | 7 (2.8%, 5.6%) | 5 | 702 / 1,540 | 1,256 / 1,713 | $0.12 (6.0%) |
+| Fine-tuned MiniLM + Gemini 3.1 Flash Lite | 0.944 / 0.5 | 250 (6.2%) | 6 (2.4%, 5.1%) | 5 | 926 / 1,355 | 1,256 / 1,716 | $0.11 (5.4%) |
+| Fine-tuned MiniLM + agree (Jev and Qwen3.5-397B) | 0.693 / 0.5 / 0.7 | 1,550 (38.8%) | 61 (3.9%, 5.0%) | 50 | 897 / 1,452 | 2,115 / 2,879 | $0.20 (10.0%) |
+| Fine-tuned MiniLM + agree (Jev and Gemma 4) | 0.800 / 0.8 / 0.999 | 1,217 (30.4%) | 47 (3.9%, 5.1%) | 33 | 654 / 1,263 | 1,867 / 2,649 | $0.48 (23.4%) |
+| Fine-tuned MiniLM + agree (Jev and Gemini) | 0.754 / 0.95 / 0.5 | 640 (16.0%) | 14 (2.2%, 3.6%) | 19 | 920 / 1,256 | 2,169 / 2,844 | $0.03 (1.6%) |
+
+**Phase 10's settings**, on both KBs (the first three rows reproduce Phase 10 exactly):
+
+| Setup | Picked on dev: similarity / verifier bar | Answered from cache | Wrong (rate, 95% upper) | LLM's own answer wrong, same questions | Hits p50 / p90 ms | Misses p50 / p90 ms | Spend saved, verifier paid |
+|---|---|---|---|---|---|---|---|
+| MiniLM-L12 (default), free, orig KB | Phase 10's | 394 (9.8%) | 103 (26.1%, 30.7%) | 12 | 9 / 11 | 1,254 / 1,709 | $0.20 (9.9%) |
+| Fine-tuned MiniLM + cheap LLM (questions only), orig KB | Phase 10's | 2,091 (52.3%) | 554 (26.5%, 28.4%) | 89 | 777 / 1,055 | 1,984 / 2,581 | $1.04 (51.3%) |
+| Fine-tuned MiniLM + Jev, orig KB | Phase 10's | 1,236 (30.9%) | 187 (15.1%, 17.2%) | 33 | 326 / 418 | 1,564 / 2,054 | $0.56 (27.8%) |
+| MiniLM-L12 (default), free, fixed KB | Phase 10's | 394 (9.8%) | 48 (12.2%, 15.8%) | 12 | 9 / 11 | 1,254 / 1,711 | $0.20 (9.9%) |
+| Fine-tuned MiniLM + cheap LLM (questions only), fixed KB | Phase 10's | 2,091 (52.3%) | 210 (10.0%, 11.4%) | 89 | 775 / 1,055 | 1,984 / 2,582 | $1.04 (51.3%) |
+| Fine-tuned MiniLM + Jev, fixed KB | Phase 10's | 1,236 (30.9%) | 67 (5.4%, 6.8%) | 33 | 326 / 418 | 1,564 / 2,054 | $0.56 (27.8%) |
+
+**Original KB, budget-picked:** nothing fits 3% on dev. At 5%:
+
+| Setup | Picked on dev: similarity / verifier bar | Answered from cache | Wrong (rate, 95% upper) | LLM's own answer wrong, same questions | Hits p50 / p90 ms | Misses p50 / p90 ms | Spend saved, verifier paid |
+|---|---|---|---|---|---|---|---|
+| (5%) Fine-tuned MiniLM + Qwen3.5-397B (open weights) | 0.814 / 0.98 | 1,018 (25.4%) | 91 (8.9%, 10.8%) | 31 | 963 / 1,512 | 2,035 / 2,837 | $0.01 (0.7%) |
+| (5%) Fine-tuned MiniLM + agree (Jev and Qwen3.5-397B) | 0.809 / 0.5 / 0.98 | 949 (23.7%) | 70 (7.4%, 9.2%) | 25 | 965 / 1,512 | 2,070 / 2,852 | $-0.09 (-4.3%) |
+orig 3%: fits for []
+
+**The judges, and how far to trust a 2–3% figure.**
+- The first two judges split on 3,457 of the 14,665 replies (24%), as in Phase 10 mostly Haiku stricter than
+  DeepSeek, with GPT-5.4 settling. Over all 4,000 questions the LLM's own replies are wrong on 211 (5.3%), more
+  than Phase 10's "3–4%", which counted only the easier questions the cache answered. (OpenRouter's workspace
+  budget ran out with 451 tie-breaks left, all on the LLM's own replies; they were settled after it was raised.
+  `--unsettled wrong|right` reruns the analysis from stored votes without new calls.)
+- **Hand read of the 43 wrong answers** of the Qwen 3% setup: about 20 clearly wrong (15 are the set-up-address
+  answer served for "change or correct my address", the rest mostly delivery-time questions answered with
+  tracking), about 15 weak original answers that weren't rewritten (`edit_account`, `delete_account`,
+  `payment_issue`), about 8 borderline. In 25 sampled splits on its hits, the majority verdict looked right on about 23.
+- **Noise floor.** The judges split on 266 of that setup's 1,758 hits (15%). If the majority is wrong on 1 in 12 of
+  those, that moves the wrong count by about 20 either way, roughly ±1 point on 2.4%. Unanimous verdicts can be
+  wrong too (several `edit_account` replies look fine to me). **Read 2–3% as "about the LLM's own rate", not as a
+  precise number.**
+- The verifier now asks almost the judges' question. They are different model families, but a shared blind spot
+  would make both the verifier and the judges miss the same wrong answers. The rewritten answers were also written
+  by an LLM (Claude), whose style the judges may like.
+
+Spend: $4.94 on OpenRouter (the three new verifiers about $2.20, judges about $2.60, the cheap LLM and dry runs the rest), plus
+about 2,700 Jev checks (~$0.05). Every call is kept in `data/public/phase10b/` and `data/public/phase10/`.
+
+Reproduce (Phase 10's cached calls first; about 90 minutes the first time):
+
+```bash
+.venv/bin/python scripts/phase10b.py --dev 100 --test 0       # dry run: project the cost
+.venv/bin/python scripts/phase10b.py                          # 3,000 dev, 4,000 test, both KBs
+.venv/bin/python scripts/phase10b.py --unsettled wrong        # no new judge calls; unsettled splits count wrong
+```
+
+The bot with the best setup: `PAKKA_FAQS=data/public/phase10b/faqs_fixed.json
+PAKKA_EMBEDDER=mohd010/pakka-minilm-l12-hinglish PAKKA_THRESHOLD=0.765` and a verifier that reads the reply (see
+`scripts/phase10b.py`, `REPLY_CHECK`), passing at P(yes) 0.84.
+
 ## Caveats
 
 - **Labels are other people's, and some are wrong.** That's the point of using them, but read the numbers with it in

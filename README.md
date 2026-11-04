@@ -17,30 +17,41 @@ It is a Python library plus a benchmark, tested on nine public datasets other pe
 - **Defaults are not safe.** RedisVL's out-of-the-box cache (`langcache-embed-v1` at similarity 0.90) serves more
   than 5% wrong answers on 6 of 10 datasets, from 7% (vCache LmArena) to 66% (Hinglish-TOP). No single threshold
   carries over between datasets or embedders.
-- **In a real bot, a cache saves money but is wrong far more often than the LLM.** Dukaan Bot on 4,000 held-out
-  Bitext questions, every served reply checked by three LLM judges: the cache answers 10–52% of questions and
-  cuts LLM spend by 10–51%, but 15–27% of the cached answers are wrong, against 3–4% for the LLM's own answers
-  to the same questions (6–9 times as often).
+- **In a real bot, the cache can be as accurate as the LLM, but only with good answers and a verifier that
+  reads them.** Dukaan Bot on 4,000 held-out Bitext questions, every served reply checked by three LLM judges.
+  As shipped (Bitext's answers, fixed 0.6 threshold) the cache was wrong on 15–27% of its hits. With 13 weak
+  FAQ answers rewritten, thresholds picked on dev for a 3% budget, and an open-weights verifier that reads the
+  stored reply (Qwen3.5-397B), it answers 44% of questions with 2.4% wrong (95% upper 3.3%). The LLM's own
+  replies to those same questions are wrong 3.9% of the time. The price: a hit takes ~0.9 s, and it saves
+  20% of LLM spend, not 50%. No free setup gets near 3%.
 - **Real Hinglish is much harder than LLM-written Hinglish.** On 258 messages people wrote, the free default
   answers 3 (1 wrong). v1's LLM-written test made pakka look far better than this; see
   [what v1 got wrong](docs/report.md#limitations).
 
-**The real-bot run** (Phase 10): 4,000 Bitext test questions, Bitext's 27 e-commerce answers as the knowledge
-base, `claude-haiku-5.5` as the LLM. Wrong = judged wrong by the LLM judges, not by intent labels.
+**The real-bot run** (Phases 10 and 10b): 4,000 Bitext test questions, Bitext's 27 e-commerce answers as the
+knowledge base, `claude-haiku-5.5` as the LLM. Wrong = judged wrong by the LLM judges, not by intent labels.
+Phase 10 used Bitext's answers and fixed thresholds; Phase 10b rewrote 13 weak answers and picked every threshold
+on Bitext's dev split for a 3% budget ([details](docs/public_results.md#phase-10b-getting-the-real-bots-wrong-answers-down-to-the-llms-level)).
 
 | Setup | Answered from cache | Wrong answers served (95% upper) | Hit time p50 | LLM spend saved, verifier paid |
 |---|---|---|---|---|
-| No cache | 0 | LLM's own: 3–4% | 1,248 ms | - |
+| No cache | 0 | LLM's own: 5.3% of all 4,000 (3–4% on the questions the cache answers) | 1,248 ms | - |
 | **MiniLM-L12 (default), free** | 9.8% | 103 of 394: 26% (31%) | 9 ms | 9.9% |
 | Fine-tuned MiniLM + cheap LLM verifier | 52.3% | 554 of 2,091: 26.5% (28%) | 777 ms | 51.3% |
 | Fine-tuned MiniLM + Jev verifier | 30.9% | 187 of 1,236: 15% (17%) | 326 ms | 27.8% |
 | Qwen3-0.6B (GPU) + Jev verifier | 38.1% | 254 of 1,525: 17% (19%) | 379 ms | 35.1% |
+| *Phase 10b, fixed answers, 3% budget:* | | | | |
+| Fine-tuned MiniLM, free | none fits | | | |
+| Fine-tuned MiniLM + Jev verifier | 11.3% | 10 of 453: 2.2% (4.0%) | 326 ms | 9.8% |
+| **Fine-tuned MiniLM + Qwen3.5-397B reading the reply** | 44.0% | 43 of 1,758: 2.4% (3.3%) | 896 ms | 19.6% |
+| Fine-tuned MiniLM + Jev and Qwen3.5-397B must agree | 34.4% | 28 of 1,376: 2.0% (2.9%) | 899 ms | 5.7% |
 
-![Share answered from cache against share of cached answers judged wrong, for the four setups; the LLM's own wrong rate is 3-4%](https://raw.githubusercontent.com/mohammedp010/pakka/master/docs/img/bot_run.png)
+![Phase 10, before the 10b fixes: share answered from cache against share of cached answers judged wrong, for the four setups; the LLM's own wrong rate on those questions is 3-4%](https://raw.githubusercontent.com/mohammedp010/pakka/master/docs/img/bot_run.png)
 
-Most of those wrong answers come from a few FAQ answers that only fit their own seed question: Bitext's "cancel
-order" answer just says "please ask your question" (27 of the free setup's 103, 61 of Jev's 187). **Seed a cache
-with answers that stand on their own.**
+In Phase 10, most wrong answers came from a few FAQ answers that only fit their own seed question: Bitext's "cancel
+order" answer just says "please ask your question" (27 of the free setup's 103, 61 of Jev's 187). Rewriting 13 such
+answers alone took Jev's setup from 15.1% to 5.4% wrong at the same settings. **Seed a cache with answers that
+stand on their own.**
 
 **Our own sets**, guards on, threshold picked on v1's dev split. Cells are right / wrong answers served from cache
 (95% upper bound on the false-hit rate). v1 test is 526 LLM-written questions; human test is 258 messages real
@@ -76,7 +87,8 @@ Without a verifier no threshold fits a 5% budget for either embedder. Everything
 - answers **change fast** (stock, prices, live status): you'll spend your time invalidating;
 - traffic is **low**: there is little to reuse, and you can't measure the cache on your own traffic;
 - the domain has **zero tolerance** for a wrong answer (medical, legal, money), unless a human approves every
-  answer the cache may serve. Even the best setup above is wrong on 15% of its hits on Bitext.
+  answer the cache may serve. Even the best setup above is wrong on 2–3% of its hits on Bitext, and the judges
+  that measure that disagree with each other more often than that.
 
 ## Install
 
@@ -232,6 +244,7 @@ echo "OPENROUTER_API_KEY=..." > .env                        # for the bot and e2
 .venv/bin/python -m examples.dukaan_bot.chat --user ravi    # chat with Dukaan Bot
 .venv/bin/python scripts/public_bench.py                    # every public-dataset table (hours the first time)
 .venv/bin/python scripts/phase10_bot.py --setups free,tuned+llm,tuned+jev,qwen+jev   # the real-bot run
+.venv/bin/python scripts/phase10b.py                          # Phase 10b: fixed answers, dev-picked thresholds, verifiers
 .venv/bin/pip install matplotlib && .venv/bin/python scripts/charts.py               # the charts above
 ```
 
