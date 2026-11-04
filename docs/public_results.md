@@ -55,6 +55,11 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
    Jev it answers 54 of 258 real messages with 1 wrong, against 19 for base MiniLM and 80 for Qwen3-0.6B, at MiniLM's
    CPU speed. The same recipe on Qwen3-0.6B didn't help on real messages, so it isn't shipped. See "Phase 9:
    fine-tuning MiniLM-L12" below.
+9. **End to end on 4,000 Bitext questions, the cache serves wrong answers 4–6 times as often as the LLM (Phase 10).**
+   Through the real bot and LLM, judged by three LLMs on the reply served: free, MiniLM answers 9.8% from cache
+   (9 ms instead of 1.25 s), and 26% of those answers are wrong. With the fine-tuned MiniLM and Jev it answers 31%,
+   15% of them wrong, and saves 28% of the LLM spend, Jev paid. The LLM itself gets 3–4% of the same questions
+   wrong. A few FAQ answers that only fit their own seed question cause most of the wrong answers. See "Phase 10".
 
 ### Where pakka loses
 
@@ -755,6 +760,89 @@ pakka bench --data data/public/human_eval.jsonl --guard --budget 0.10 --verify j
     --verify openrouter:qwen/qwen3.7-flash --embed-cache data/public/emb \
     --embedder models/phase9/paraphrase-multilingual-minilm-l12-v2-pakka-no_ours
 ```
+
+## Phase 10: the real bot on 4,000 Bitext questions
+
+Until now the real-bot number came from 526 questions. Phase 10 runs Dukaan Bot end to end on **4,000 held-out
+Bitext customer-support questions**, through its real LLM (`anthropic/claude-haiku-5.5` on OpenRouter, reasoning
+off), and has LLM judges check every answer the cache served.
+
+- **Knowledge base:** Bitext's 27 e-commerce intents, each with one seed question and Bitext's own answer
+  (`data/public/bitext.faqs.json`, the same FAQ the benchmark above uses). The bot loads it with `PAKKA_FAQS`; the
+  LLM gets all 27 in its prompt, as the bot always does (about 4,700 tokens a call).
+- **Questions:** 4,000 drawn with a fixed seed from Bitext's test split. No threshold was picked on it and Phase 9
+  never trained on it. Nothing gets stored during the replay, so every hit serves one of the 27 FAQ answers.
+- **Setups**, through the bot's own `build()` with guards on: (a) the free default; (b) the fine-tuned MiniLM
+  (`TUNED_EMBEDDER`) with a verifier, the best CPU setup, once with the cheap LLM and once with Jev (passing at
+  0.84); (c) Qwen3-0.6B with Jev, run on the M2's GPU. Thresholds come from v1 dev, not Bitext: 0.79 free, the
+  verifier's 0.6 floor with one. The verifier setting is new in the bot: `PAKKA_VERIFY=jev` or
+  `PAKKA_VERIFY=openrouter:<model>`.
+- **How an answer counts as wrong.** Not by Bitext's intent labels: the label audit found those miss many wrong
+  answers. Each served reply goes, with the customer's message, to the label audit's three judges (DeepSeek and
+  Haiku, with GPT-5.4 settling their splits; 5 replies a call): *is this reply a correct answer to the message as
+  asked?* The LLM's own reply to the same questions is judged the same way, as a control. (The audit's own prompt
+  asks whether B is "the same request as A, with the same specifics". In the 100-question dry run it rejected
+  replies that fit, such as the refund-policy answer for "in which cases can I request my money back", so this one
+  asks about the reply itself.)
+
+**Free first.** Cells: answers served from cache, wrong ones by the judges (rate, 95% upper bound), and time as the
+customer waits. A miss's time includes the LLM call it waited for.
+
+| Setup | Answered from cache | Wrong answers served (judges) | LLM's own answer wrong, same questions | Hits p50 / p90 | Misses p50 / p90 | LLM tokens saved | LLM spend saved, verifier paid |
+|---|---|---|---|---|---|---|---|
+| No cache: every question to the LLM | 0 | - | - | - | 1,248 / 1,700 ms | 19.0M used | $2.03 spent |
+| **(a) MiniLM-L12 (default), free, 0.79** | 394 (9.8%) | 103 (26.1%, 30.7%) | 12 | 9 / 13 ms | 1,256 / 1,712 ms | 1.9M | $0.20 (9.9%) |
+| (b) Fine-tuned MiniLM + cheap LLM (`qwen/qwen3.7-flash`) | 2,091 (52.3%) | 554 (26.5%, 28.4%) | 89 | 777 / 1,055 ms | 1,983 / 2,583 ms | 10.0M | $1.04 (51.3%) |
+| **(b) Fine-tuned MiniLM + Jev** | 1,236 (30.9%) | 187 (15.1%, 17.2%) | 33 | 326 / 418 ms | 1,564 / 2,054 ms | 5.9M | $0.56 (27.8%) |
+| (c) Qwen3-0.6B (M2 GPU) + Jev | 1,525 (38.1%) | 254 (16.7%, 18.6%) | 41 | 379 / 472 ms | 1,598 / 2,087 ms | 7.3M | $0.71 (35.1%) |
+
+What it says:
+
+- **The cache serves wrong answers 4–6 times as often as the LLM does on the same questions.** Free, a quarter of
+  its 394 hits are wrong, where the LLM gets 12 of those questions wrong. Jev halves the cache's wrong rate (15%)
+  and answers three times as many questions, but it is still five times the LLM's rate. None of the four setups
+  comes near a 5% budget on this traffic.
+- **Most wrong answers come from a few FAQ answers that only fit their own seed.** Bitext's `cancel_order` answer
+  is "you have a question about cancelling, please go ahead and ask it". That fits its seed ("question about
+  cancelling order") but not "I want to cancel order X". It is 27 of the free setup's 103 wrong answers and 61 of
+  Jev's 187. The five worst FAQs make up 72–80% of the wrong answers with the free setup and with Jev. Without
+  `cancel_order`, Jev's wrong rate is 10.7%. Lesson for anyone seeding a cache: **an answer that leans on its own
+  question's wording is a trap.** "Set up a shipping address" against "change it", and "edit account details"
+  against "switch account type", make up most of the rest.
+- **The cheap LLM verifier says yes too easily here.** It answers 52% of questions but a quarter of them wrong, the
+  same rate as no verifier. On the human test it did well (Phase 8.5); on Bitext's near-intent pairs ("set up" vs
+  "change" an address) a yes / no from a tiny model isn't enough. Jev, with a score and a 0.84 bar, is the one to use.
+- **Time and money.** Free hits take 9 ms against 1.25 s for the LLM. With Jev a hit takes about 330 ms, and a
+  checked question that still misses waits about 300 ms more than with no cache. The verifier's cost is small
+  next to what it saves: $0.065 of Jev checks for $0.63 of LLM calls saved. Qwen3-0.6B ran on the M2's GPU; on a
+  CPU add about 235 ms a question.
+- **Bitext's labels would have hidden half of this.** The judges call 103 of the free setup's hits wrong; intent
+  labels flag 51.
+- **The judges.** DeepSeek and Haiku split on 1,398 of the 4,943 replies (28%), almost always Haiku saying wrong
+  where DeepSeek says fine (1,128). GPT-5.4 sided with DeepSeek on 998 of those 1,128. In a hand read of 25 sampled
+  splits on cache answers, the majority verdict looked right on about 21. The misses were borderline (whether
+  "locate bill #85632" is answered by a reply about downloading it). The commonest splits were cancellation-fee,
+  address-change and refund questions, where the FAQ answer asks for details instead of giving them.
+- **A bug in the bot found on the way: its LLM answers English questions in Hinglish.** About 1,100 of the 4,000
+  baseline replies (28%) are Hinglish although every question is English ("Main {{Person Name}} ke bills ko nahi
+  dekh sakta..."). The bot's prompt says "reply in the customer's own language and style (English, Hinglish or
+  Hindi)" for "an Indian online store", and Haiku reads that as "use Hinglish". The judges were asked about content,
+  not language, and called 731 of the 761 such replies they saw correct, so the LLM column above ignores this.
+  A cached FAQ answer is always in the FAQ's language, so here the cache never had this bug. The prompt fix is
+  left for later: changing it now would mean paying for the baseline again.
+
+Spend: $3.73 on OpenRouter ($2.03 for the LLM baseline, judges and the cheap verifier for the rest, including the
+dry run), plus about 7,500 Jev checks (~$0.13). Every call is kept in `data/public/phase10/`, so a rerun is free.
+
+Reproduce (needs `OPENROUTER_API_KEY` and `TYPESAFE_API_KEY` in `.env`, and `scripts/fetch_public.py bitext` first;
+about 70 minutes the first time):
+
+```bash
+.venv/bin/python scripts/phase10_bot.py --setups free,tuned+llm,tuned+jev,qwen+jev
+```
+
+`--n 100` is a dry run on the first 100 of the same questions (about $0.06). The bot itself with this setup:
+`PAKKA_FAQS=data/public/bitext.faqs.json PAKKA_EMBEDDER=mohd010/pakka-minilm-l12-hinglish PAKKA_VERIFY=jev uvicorn examples.dukaan_bot.app:create_app --factory`.
 
 ## Caveats
 

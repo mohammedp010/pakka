@@ -4,7 +4,9 @@
 
 Settings (env vars): PAKKA_EMBEDDER (default paraphrase-multilingual-MiniLM-L12-v2; Qwen/Qwen3-Embedding-0.6B with a
 GPU), PAKKA_THRESHOLD (default: the one picked for that embedder, pakka.embed.THRESHOLDS), PAKKA_GUARD (1 or 0), PAKKA_TTL_DAYS,
-PAKKA_BACKEND (numpy or redis), PAKKA_REDIS_URL, PAKKA_MODEL, OPENROUTER_API_KEY.
+PAKKA_BACKEND (numpy or redis), PAKKA_REDIS_URL, PAKKA_MODEL, OPENROUTER_API_KEY, PAKKA_FAQS (a JSON list of
+{id, question, answer}; default data/faqs.json), PAKKA_VERIFY (off by default; jev or openrouter:<model>, see
+pakka.verify; the threshold then defaults to the verifier's 0.6 floor).
 
 Answers the LLM writes for a `user_id` are cached for that user only. Answers for anonymous
 questions wait in data/pending.jsonl until `python -m pakka.approve` moves them to
@@ -27,6 +29,7 @@ from pakka.policy import GLOBAL, Policy
 
 ROOT = Path(__file__).resolve().parents[2]
 FAQS = json.loads((ROOT / "data" / "faqs.json").read_text())
+VERIFY_THRESHOLD = 0.6  # with a verifier, hits from this similarity up get checked (pakka bench --floor)
 
 
 USER_ID = r"^[A-Za-z0-9_.-]{1,64}$"
@@ -54,17 +57,26 @@ def kb_version(faqs):
 
 
 def build(embed=None, llm=None, threshold=None, log_path=None, store_misses=True,
-          pending_path=ROOT / "data" / "pending.jsonl", approved_path=ROOT / "data" / "approved.jsonl"):
-    """Seed a cache with the 30 FAQs and wrap the LLM. Arguments left as None come from env vars."""
+          pending_path=ROOT / "data" / "pending.jsonl", approved_path=ROOT / "data" / "approved.jsonl",
+          faqs=None, verify=None):
+    """Seed a cache with the FAQs and wrap the LLM. Arguments left as None come from env vars."""
     from pakka.embed import DEFAULT_EMBEDDER, THRESHOLDS, load_embedder
 
     name = os.environ.get("PAKKA_EMBEDDER", DEFAULT_EMBEDDER)
+    if faqs is None:
+        faqs = json.loads(Path(os.environ["PAKKA_FAQS"]).read_text()) if os.environ.get("PAKKA_FAQS") else FAQS
+    if verify is None and os.environ.get("PAKKA_VERIFY"):
+        from pakka.verify import load_verifier
+
+        verify = load_verifier(os.environ["PAKKA_VERIFY"])
     if embed is None:
         embed = load_embedder(name)
     if llm is None:
         from examples.dukaan_bot.llm import make_llm
 
-        llm = make_llm(FAQS)
+        llm = make_llm(faqs)
+    if threshold is None and verify and "PAKKA_THRESHOLD" not in os.environ:
+        threshold = VERIFY_THRESHOLD
     if threshold is None:
         if "PAKKA_THRESHOLD" not in os.environ and name not in THRESHOLDS:
             raise SystemExit(f"Set PAKKA_THRESHOLD for {name}: `pakka bench --embedder {name}` picks one")
@@ -79,9 +91,9 @@ def build(embed=None, llm=None, threshold=None, log_path=None, store_misses=True
         cache = RedisVLCache(embed, name="dukaan", redis_url=os.environ.get("PAKKA_REDIS_URL", "redis://localhost:6380"))
     else:
         cache = NumpyCache(embed)
-    version = kb_version(FAQS)
+    version = kb_version(faqs)
     shared = {"partition": GLOBAL, "kb_version": version}
-    for faq in FAQS:
+    for faq in faqs:
         cache.store(faq["question"], faq["answer"], {"id": faq["id"], **shared})
     if Path(approved_path).exists():
         for line in Path(approved_path).read_text().splitlines():
@@ -92,7 +104,7 @@ def build(embed=None, llm=None, threshold=None, log_path=None, store_misses=True
                     pending_path=pending_path)
     guard = check if os.environ.get("PAKKA_GUARD", "1") == "1" else None
     return CachedAnswerer(cache, llm, threshold, log_path=log_path, store_misses=store_misses, guard=guard,
-                          policy=policy)
+                          policy=policy, verify=verify)
 
 
 def create_app(**kwargs):

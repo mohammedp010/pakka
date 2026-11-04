@@ -57,8 +57,12 @@ def make_chat(model=None, max_tokens=300, transport=None, reasoning=None):
     return chat
 
 
+def system_prompt(faqs):
+    return SYSTEM + "\n\nFAQ:\n" + "\n".join(f"Q: {f['question']}\nA: {f['answer']}" for f in faqs)
+
+
 def make_llm(faqs, model=None, max_tokens=300, transport=None):
     """The bot's LLM: `llm(question) -> (answer, tokens)`, answering only from the FAQ."""
-    system = SYSTEM + "\n\nFAQ:\n" + "\n".join(f"Q: {f['question']}\nA: {f['answer']}" for f in faqs)
+    system = system_prompt(faqs)
     chat = make_chat(model, max_tokens, transport)
     return lambda question: chat(system, question)

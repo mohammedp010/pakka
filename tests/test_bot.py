@@ -122,3 +122,27 @@ def test_an_embedder_without_a_picked_threshold_needs_one_set(llm, paths, tmp_pa
     monkeypatch.setenv("PAKKA_EMBEDDER", "my/own-model")
     with pytest.raises(SystemExit, match="PAKKA_THRESHOLD"):
         build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths)
+
+
+def test_pakka_verify_turns_on_a_verifier_at_its_floor(llm, paths, tmp_path, monkeypatch):
+    import pakka.verify
+    from examples.dukaan_bot.app import build
+
+    asked = []
+    monkeypatch.setattr(pakka.verify, "load_verifier", lambda name: asked.append(name) or (lambda *a: False))
+    monkeypatch.delenv("PAKKA_THRESHOLD", raising=False)
+    monkeypatch.delenv("PAKKA_EMBEDDER", raising=False)
+    monkeypatch.setenv("PAKKA_VERIFY", "openrouter:some/model")
+    answerer = build(embed=fake_embed, llm=llm, log_path=tmp_path / "log.jsonl", **paths)
+    assert asked == ["openrouter:some/model"] and answerer.threshold == 0.6
+    assert answerer.ask(FAQS[0]["question"]).reason == "blocked:verify"
+
+
+def test_pakka_faqs_swaps_the_knowledge_base(llm, paths, tmp_path, monkeypatch):
+    from examples.dukaan_bot.app import build
+
+    kb = tmp_path / "kb.json"
+    kb.write_text('[{"id": "x1", "question": "Where is my parcel?", "answer": "Track it under Orders."}]')
+    monkeypatch.setenv("PAKKA_FAQS", str(kb))
+    result = build(embed=fake_embed, llm=llm, threshold=0.9, log_path=tmp_path / "log.jsonl", **paths).ask("Where is my parcel?")
+    assert result.hit and result.matched_id == "x1" and result.answer == "Track it under Orders."

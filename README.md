@@ -78,9 +78,24 @@ Earlier v1 results with MiniLM-L12, including a fine-tuned encoder (526 held-out
 | + pakka guards, 10% budget | 49 | 5 | 9.3% (19.9%) | 11/200 |
 | + fine-tuned encoder and approved keys, 10% budget | **70** | **2** | **2.8% (9.6%)** | **32/200** |
 
-In the real bot with a real LLM on the same 526 questions (MiniLM): **13% of questions answered from cache
-with 2 wrong answers, in 56 ms instead of 1,331 ms.** The set is built to be hard: 35% of it must miss and
+In the real bot with a real LLM on the same 526 questions (MiniLM): 13% of questions answered from cache
+with 2 wrong answers, in 56 ms instead of 1,331 ms. The set is built to be hard: 35% of it must miss and
 55% is Hinglish.
+
+**At scale, on 4,000 held-out Bitext questions with Bitext's 27 e-commerce answers as the knowledge base** (Phase 10;
+every served answer checked by three LLM judges, not by intent labels):
+
+| Setup | Answered from cache | Wrong answers served (95% upper) | Hit time p50 | LLM spend saved, verifier paid |
+|---|---|---|---|---|
+| **MiniLM-L12 (default), free** | 9.8% | 103 of 394: 26% (31%) | 9 ms | 9.9% |
+| Fine-tuned MiniLM + Jev | 30.9% | 187 of 1,236: 15% (17%) | 326 ms | 27.8% |
+| Qwen3-0.6B (GPU) + Jev | 38.1% | 254 of 1,525: 17% (19%) | 379 ms | 35.1% |
+
+The LLM itself (1,248 ms p50) got 3–4% of the same questions wrong, so on this traffic the cache is wrong 4–6 times as
+often. Most of it comes from a few FAQ answers that only fit their own seed question: Bitext's "cancel order" answer
+just says "please ask your question". Lesson: seed a cache with answers that stand on their own. Details,
+the cheap-LLM verifier (52% answered, 26% wrong) and a one-command reproduce:
+[docs/public_results.md](docs/public_results.md#phase-10-the-real-bot-on-4000-bitext-questions).
 
 | Safety check | Without pakka | With pakka |
 |---|---|---|
@@ -128,6 +143,9 @@ data it never saw: [model card](docs/model_card_minilm_hinglish.md).
 ```python
 cache = NumpyCache(load_embedder(TUNED_EMBEDDER))  # from pakka.embed import TUNED_EMBEDDER; threshold=0.6 + verify=
 ```
+
+In the Dukaan bot: `PAKKA_EMBEDDER=mohd010/pakka-minilm-l12-hinglish PAKKA_VERIFY=jev` (or
+`PAKKA_VERIFY=openrouter:<model>`); the threshold drops to 0.6 when a verifier is on.
 
 Mean P-CHR AUC over the public datasets: 0.571 for MiniLM, 0.647 for Qwen3-0.6B. A threshold belongs to one
 embedder; for any other model, pick one with `pakka bench --embedder <model>`.
