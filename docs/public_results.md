@@ -828,8 +828,12 @@ What it says:
   dekh sakta..."). The bot's prompt says "reply in the customer's own language and style (English, Hinglish or
   Hindi)" for "an Indian online store", and Haiku reads that as "use Hinglish". The judges were asked about content,
   not language, and called 731 of the 761 such replies they saw correct, so the LLM column above ignores this.
-  A cached FAQ answer is always in the FAQ's language, so here the cache never had this bug. The prompt fix is
-  left for later: changing it now would mean paying for the baseline again.
+  A cached FAQ answer is always in the FAQ's language, so here the cache never had this bug. **Fixed after Phase 10**
+  in `examples/dukaan_bot/llm.py`: the prompt now says to reply in English unless the message itself uses Hindi
+  words, and that informal or misspelled English is still English. On 50 of these English questions the new prompt
+  answered all 50 in English (the old one: 0), and 19 of 20 Hinglish questions from `data/bench_human.jsonl` still
+  got a reply in their own language (one was Punjabi in Latin letters and got Punjabi; the miss: "password bhul gya login nhi ho rha help", answered in English). The baseline above
+  was not re-run and still uses the old prompt.
 
 Spend: $3.73 on OpenRouter ($2.03 for the LLM baseline, judges and the cheap verifier for the rest, including the
 dry run), plus about 7,500 Jev checks (~$0.13). Every call is kept in `data/public/phase10/`, so a rerun is free.
