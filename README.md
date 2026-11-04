@@ -26,12 +26,12 @@ It is a Python library plus a benchmark, tested on nine public datasets other pe
   20% of LLM spend, not 50%. No free setup gets near 3%.
 - **Real Hinglish is much harder than LLM-written Hinglish.** On 258 messages people wrote, the free default
   answers 3 (1 wrong). Our LLM-written test set made pakka look far better than this; see
-  [limitations](docs/report.md#limitations).
+  [limitations](https://github.com/mohammedp010/pakka/blob/master/docs/report.md#limitations).
 
 **The real-bot run:** 4,000 Bitext test questions, Bitext's 27 e-commerce answers as the knowledge base,
 `claude-haiku-5.5` as the LLM. Wrong = judged wrong by the LLM judges, not by intent labels. The first rows use
 Bitext's answers as they are and fixed thresholds; the tuned rows rewrite 13 weak answers and pick every threshold
-on Bitext's dev split for a 3% budget ([details](docs/public_results.md#phase-10b-getting-the-real-bots-wrong-answers-down-to-the-llms-level)).
+on Bitext's dev split for a 3% budget ([details](https://github.com/mohammedp010/pakka/blob/master/docs/public_results.md#phase-10b-getting-the-real-bots-wrong-answers-down-to-the-llms-level)).
 
 | Setup | Answered from cache | Wrong answers served (95% upper) | Hit time p50 | LLM spend saved, verifier paid |
 |---|---|---|---|---|
@@ -67,9 +67,9 @@ people wrote (80% romanized Hinglish), the harder and more honest one.
 | Qwen3-0.6B + cheap LLM | 231 / 13 (8.9%) | 113 / 9 (13.4%) | 97/184 |
 | Qwen3-0.6B + Jev | 181 / 3 (4.7%) | 80 / 1 (6.7%) | 67/184 |
 
-Without a verifier no threshold fits a 5% budget for either embedder. Everything: [the tech report](docs/report.md),
-[public results](docs/public_results.md) (every table, with a one-command reproduce) and the
-[lab notebook](docs/results.md).
+Without a verifier no threshold fits a 5% budget for either embedder. Everything: [the tech report](https://github.com/mohammedp010/pakka/blob/master/docs/report.md),
+[public results](https://github.com/mohammedp010/pakka/blob/master/docs/public_results.md) (every table, with a one-command reproduce) and the
+[lab notebook](https://github.com/mohammedp010/pakka/blob/master/docs/results.md).
 
 ## When pakka helps, and when it doesn't
 
@@ -166,12 +166,12 @@ pakka bench --data data/bench_v1.jsonl --guard --budget 0.05 --verify jev-1.14.0
 | Part | What it is |
 |---|---|
 | `pakka bench` | Replays a labelled question set through a cache. Reports hit rate and false hits with 95% Wilson intervals, picks the threshold on a dev split and reports on held-out, breaks errors down by trap type and language, and fails CI when the false-hit bound regresses |
-| HinglishCacheBench (`data/`) | 1,059 support questions in English, Hinglish and Hindi with labelled traps (negation, entity, number, near intent, personal), LLM-written and labelled blind by a second LLM with human review, plus 315 messages written by 23 people ([dataset card](data/README.md)) |
+| HinglishCacheBench (`data/`) | 1,059 support questions in English, Hinglish and Hindi with labelled traps (negation, entity, number, near intent, personal), LLM-written and labelled blind by a second LLM with human review, plus 315 messages written by 23 people ([dataset card](https://github.com/mohammedp010/pakka/blob/master/data/README.md)) |
 | `pakka.guard` | Microsecond rule guards that veto a hit: negation (incl. nahi/nhi/nahin, नहीं), numbers and IDs, days and times (today/kal/आज, am/pm), opposite actions (on/off, buy/sell), swapped direction ("pdf to jpg"), and out-of-scope names |
 | `pakka.verify` | Optional, off by default: a second opinion on hits the guards let through, from TypeSafe's Jev, any OpenRouter model, or your own function. PII is masked first; an error or timeout counts as a miss |
 | `pakka.policy` + `pakka.pii` | Never stores Indian PII (Aadhaar with checksum, PAN, UPI, +91 mobiles, IFSC, cards, order IDs), keeps each user's answers in their own partition, retires answers when the FAQ changes, expires stored answers, queues shared answers for approval, and supports erasure requests |
 | `pakka.testset`, `pakka.train` | Generate a stress-test set for your own FAQ with two LLMs, and fine-tune an embedder on it |
-| Fine-tuned MiniLM (`TUNED_EMBEDDER`) | [`mohd010/pakka-minilm-l12-hinglish`](https://huggingface.co/mohd010/pakka-minilm-l12-hinglish): same size and speed as MiniLM, helps only with a verifier ([model card](docs/model_card_minilm_hinglish.md)) |
+| Fine-tuned MiniLM (`TUNED_EMBEDDER`) | [`mohd010/pakka-minilm-l12-hinglish`](https://huggingface.co/mohd010/pakka-minilm-l12-hinglish): same size and speed as MiniLM, helps only with a verifier ([model card](https://github.com/mohammedp010/pakka/blob/master/docs/model_card_minilm_hinglish.md)) |
 | Dukaan Bot (`examples/dukaan_bot`) | A small FAQ support bot for a fictional Indian store, used as the end-to-end test |
 
 | Safety check | Without pakka | With pakka |
@@ -249,7 +249,7 @@ echo "OPENROUTER_API_KEY=..." > .env                        # for the bot and e2
 ```
 
 More commands (building the benchmark, fine-tuning, the approval queue, the stale-answer demo) are in
-[docs/results.md](docs/results.md); reproduce steps per experiment are in [docs/report.md](docs/report.md#reproduce).
+[docs/results.md](https://github.com/mohammedp010/pakka/blob/master/docs/results.md); reproduce steps per experiment are in [docs/report.md](https://github.com/mohammedp010/pakka/blob/master/docs/report.md#reproduce).
 
 ## Limits
 
