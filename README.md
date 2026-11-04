@@ -12,7 +12,7 @@ It is a Python library plus a benchmark, tested on nine public datasets other pe
 
 ## Results
 
-![RedisVL's default cache on ten datasets: more than 5% of its hits are wrong on six of them, up to 66%](docs/img/redisvl_defaults.png)
+![RedisVL's default cache on ten datasets: more than 5% of its hits are wrong on six of them, up to 66%](https://raw.githubusercontent.com/mohammedp010/pakka/master/docs/img/redisvl_defaults.png)
 
 - **Defaults are not safe.** RedisVL's out-of-the-box cache (`langcache-embed-v1` at similarity 0.90) serves more
   than 5% wrong answers on 6 of 10 datasets, from 7% (vCache LmArena) to 66% (Hinglish-TOP). No single threshold
@@ -36,7 +36,7 @@ base, `claude-haiku-5.5` as the LLM. Wrong = judged wrong by the LLM judges, not
 | Fine-tuned MiniLM + Jev verifier | 30.9% | 187 of 1,236: 15% (17%) | 326 ms | 27.8% |
 | Qwen3-0.6B (GPU) + Jev verifier | 38.1% | 254 of 1,525: 17% (19%) | 379 ms | 35.1% |
 
-![Share answered from cache against share of cached answers judged wrong, for the four setups; the LLM's own wrong rate is 3-4%](docs/img/bot_run.png)
+![Share answered from cache against share of cached answers judged wrong, for the four setups; the LLM's own wrong rate is 3-4%](https://raw.githubusercontent.com/mohammedp010/pakka/master/docs/img/bot_run.png)
 
 Most of those wrong answers come from a few FAQ answers that only fit their own seed question: Bitext's "cancel
 order" answer just says "please ask your question" (27 of the free setup's 103, 61 of Jev's 187). **Seed a cache
@@ -81,11 +81,11 @@ Without a verifier no threshold fits a 5% budget for either embedder. Everything
 ## Install
 
 ```bash
-pip install "pakka @ git+https://github.com/mohammedp010/pakka"            # default: free, offline, CPU
-pip install "pakka[verify] @ git+https://github.com/mohammedp010/pakka"    # + the optional verifier's HTTP client
+pip install pakka            # default: free, offline, CPU
+pip install "pakka[verify]"  # + the optional verifier's HTTP client
 ```
 
-Not on PyPI yet. From a clone: `pip install -e ".[verify]"`.
+From a clone: `pip install -e ".[verify]"`.
 
 ## Quickstart
 
