@@ -55,7 +55,7 @@ led to one label fix: MASSIVE Hindi questions whose slot value is only translate
    Jev it answers 54 of 258 real messages with 1 wrong, against 19 for base MiniLM and 80 for Qwen3-0.6B, at MiniLM's
    CPU speed. The same recipe on Qwen3-0.6B didn't help on real messages, so it isn't shipped. See "Phase 9:
    fine-tuning MiniLM-L12" below.
-9. **End to end on 4,000 Bitext questions, the cache serves wrong answers 4–6 times as often as the LLM (Phase 10).**
+9. **End to end on 4,000 Bitext questions, the cache serves wrong answers 6–9 times as often as the LLM (Phase 10).**
    Through the real bot and LLM, judged by three LLMs on the reply served: free, MiniLM answers 9.8% from cache
    (9 ms instead of 1.25 s), and 26% of those answers are wrong. With the fine-tuned MiniLM and Jev it answers 31%,
    15% of them wrong, and saves 28% of the LLM spend, Jev paid. The LLM itself gets 3–4% of the same questions
@@ -798,9 +798,9 @@ customer waits. A miss's time includes the LLM call it waited for.
 
 What it says:
 
-- **The cache serves wrong answers 4–6 times as often as the LLM does on the same questions.** Free, a quarter of
-  its 394 hits are wrong, where the LLM gets 12 of those questions wrong. Jev halves the cache's wrong rate (15%)
-  and answers three times as many questions, but it is still five times the LLM's rate. None of the four setups
+- **The cache serves wrong answers 6–9 times as often as the LLM does on the same questions.** Free, a quarter of
+  its 394 hits are wrong, where the LLM gets 12 of those questions wrong. Jev cuts the cache's wrong rate from 26% to 15%
+  and answers three times as many questions, but it is still nearly six times the LLM's rate (2.7%). None of the four setups
   comes near a 5% budget on this traffic.
 - **Most wrong answers come from a few FAQ answers that only fit their own seed.** Bitext's `cancel_order` answer
   is "you have a question about cancelling, please go ahead and ask it". That fits its seed ("question about
